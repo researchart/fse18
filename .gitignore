@@ -1,0 +1,27 @@
+#vimstuff
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+*.un~
+Session.vim
+netrwhist
+*~
+# sed stuff
+*.bak
+# doc stuff
+docs
+locco
+# mac stuff
+.DS_Store
+# testing stuff
+_allok.lua
+* coffeescript stuff
+raw
+presentation
+test.coffee
+test*.coffee
+test.coffee.md
+test*.coffee.md
+test/*.js
+parser.output
+/node_modules
+npm-debug.log*
