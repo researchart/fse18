@@ -4,6 +4,12 @@
 
 <p align="right"><strong> -- general theory of relativity </strong></p>
 
+Jiayi Wei   
+Jia Chen  
+Yu Feng   
+Kostas Ferles  
+Isil Dillig
+
 Singularity is an automatic fuzzing tool for generating inputs (called patterns) that demonstrate the maximal resource usage behavior of a given program.
 
  * [Overview](#overview)
