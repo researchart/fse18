@@ -1,4 +1,5 @@
 Contact author: Tian Tan
+Other authors: Yue Li,   Anders Møller, Yannis Smaragdakis
 Email: tiantan@cs.au.dk
 
 Tool name: Scaler
