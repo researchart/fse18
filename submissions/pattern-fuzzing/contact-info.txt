@@ -1,0 +1,4 @@
+Contact Author: Jiayi Wei <wjydzh1@gmail.com>, Jia Chen <grievejia@gmail.com>
+Tool Name: Singularity
+Paper ID: 18
+Title: Singularity: Pattern Fuzzing for Worst Case Complexity
