@@ -1,0 +1,3 @@
+We are applying for "Available" badge.
+
+This artifact is able to reproduce the results of all four research questions (RQ1 -- RQ4) in our companion paper, and contains comprehensive documents which provide step-by-step instructions on describing how to install and use the artifact. Therefore, it satisfies the criteria of "Functional". In addition, we will release the artifact and make it publicly accessible, as required by "Available". Thus, we are applying for "Available" badge.

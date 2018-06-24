@@ -1,0 +1,8 @@
+Contact author: Tian Tan
+Email: tiantan@cs.au.dk
+
+Tool name: Scaler
+
+ESEC/FSE title: Scalability-First Pointer Analysis with Self-Tuning Context-Sensitivity
+
+ESEC/FSE ID: 81
