@@ -197,6 +197,7 @@ def runScalerPTA(app, analysis):
     writeClientResults(app, analysis, LAST_ANALYSIS, CLIENT_OUT)
 
 def setTST(tst):
+    global SCALER_TST
     if tst[-1] in ['M', 'm']:
         SCALER_TST = int(tst[:-1]) * 1000000
     else:
