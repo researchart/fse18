@@ -1,0 +1,773 @@
+NOTE: reference the file substitutability-study.txt
+NOTE: see file final-patterns.txt for the example IDs that are considered
+
+For each ID with a substitutability violation, this file shows the call sequence
+to achieve the violation.
+
+In arguments, `...` indicates any valid set of arguments to the supermethod, and
+`any` indicates a valid, non-null placeholder argument whose exact value isn't
+important to show the violation.
+Valid here means it is a value that the method will understand and be able to
+properly handle without creating more errors.
+For each, `obj` indicates an object that could be either the sub or superclass
+whereas `subclass` and `superclass` refer to the sub and superclass instances
+respectively.
+
+If either are abstract, we assume that `obj` is some concrete subclass object
+that contains the same logic as the superclass or subclass.
+This represents a programmer / effect analysis analyzing the implementations of
+the class they're expecting regardless of if the class is abstract.
+
+Unless otherwise shown, we assume that we are given a newly constructed object
+for each call sequence.
+So, for example:
+	subclass.m1();
+	obj.m2();
+Means that the subclass, after construction, has `m1` called. After that both
+sub and superclass instances have `m2` called.
+
+Furthermore, in cases where an interface or otherwise is used as a transitive
+call, we considered the various implementations of the interface available in
+the codebase. Similarly for abstract methods.
+
+########################################
+### Precondition examples ###
+########################################
+ID:02
+obj.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+// sub: IllegalArgumentException
+// spr: likely not IllegalArgument, but many transient calls
+
+ID:04
+obj.formatToCharacterIterator(null);
+// NOTE: transient call to format(obj) which calls format(x,y,z) abstract method in superclass
+// sub: NullPointerException
+// spr: likely either none or IllegalArgument - some implementors of the abstract
+//      format(x,y,z) method throw IllegalArgument (NumberFormat, DateFormat)
+//      and others do not (MessageFormat).
+
+ID:09
+obj.setUserBuffer(0, false); // only second argument matters
+// sub: IllegalArgumentException
+// spr: none
+
+ID:10
+obj.findDomainBounds(null);
+// sub: IllegalArgumentException
+// spr: likely not IllegalArgument, but many transient calls
+
+ID:12
+Let 'str' be a string that is filtered by an instance extending the subclass:
+obj.wFloatValue(str);
+// sub: IllegalArgumentException
+// spr: empty method
+
+ID:13
+obj.visitAttribute(null);
+// sub: IllegalStateException (via `checkState` method)
+// spr: likely IllegalArgumentException (via `cv.visitAttribute` - see ClassVisitor impls)
+// note the super could also do nothing if `cv` is a `EmptyVisitor`, or have
+// possibly other types of exceptions depending on the actual type of `cv`
+
+ID:15
+obj.setParent(new InputMap());
+// sub: IllegalArgumentException
+// spr: none
+
+ID:16
+obj.multiply(null);
+// sub: IllegalArgumentException
+// spr: likely NullPointer via transitive method, but transitive method not
+//      available in codebase, must be retrievd from external source.
+
+ID:19
+obj.setWebView(null, false); // both: should force super.canGoBack() to return false
+obj.goBack(); // sub: sees if super.canGoBack() is false, sets mIsLive to false
+obj.addChildTab(new Tab(...));
+// sub: IllegalStateException
+// spr: likely none, but many transient calls
+
+ID:20
+Constant[] c = new Constant[] {new ConstantUtf8("x")}; // getTag() == CONSTANT_Utf8
+ConstantPool p = new ConstantPool(c);
+subclass = new ConstantValue(any, any, 0, p); // i.e. subclass constructed with index 0, pool p
+obj.toString();
+// sub: IllegalStateException
+// spr: either no exception or ArrayOutOfBounds (if `tag` was set incorrectly)
+
+ID:21
+obj.getWidth(65);
+// sub: IllegalArgument (since `widths3` is empty at construction)
+// spr: either none or possible ArrayIndexOutOfBounds or ExceptionConverter
+
+ID:24
+int height = __; // value must be different from subclass instance's width
+obj.mul(new MatrixObject(height, 0, "name"));
+// sub: IllegalArgumentException (reqires its width to be same as arg's height)
+// spr: NotSupportedException (doubleValue not supported on MatrixObject)
+
+ID:25
+XYDataset dataset = new SimpleHistogramDataset(); // is IntervalXYDataset but not TableXYDataset
+obj.setBaseSeriesVisible(true, false); // so `getItemVisible()` returns true
+obj.drawItem(any, any, any, any, any, any, dataset, any, any, any, any);
+// sub: IllegalArgumentException (requires argument to also be a TableXYDataset)
+// spr: none
+
+ID:26
+obj.drawChars(null, -1, -1, any, any);
+// sub: NullPointerException
+// spr: StringIndexOutOfBounds
+//      string ctor seems to check the offset / len > 0 before length check
+//      so while sub throws NullPointerException, string throws StringIndexOutOfBounds
+
+ID:27
+List<MessageProcessor> list = new ArrayList<>();
+list.add(new ReplyToParameterProcessor()); // one of many implementors
+list.add(new ReplyToParameterProcessor());
+obj.setRoutes(list);
+// sub: IllegalArgumentException (only allows one route)
+// spr: none
+
+ID:28
+obj.setParent(null);
+// sub: IllegalArgumentException (expects non-null SFrameSet object)
+// spr: none
+
+ID:29
+// Suppose super is set up with class `MethodNode`, which just creates and adds
+// an object to a field when this method is called.
+// Alternatively could be set up with many others, as long as it is not the
+// subclass under discussion.
+
+obj.visitIntInsn(-1, -1);
+// sub: IllegalStateException (via `checkStartCode` transitive call)
+//      alt: IllegalArgumentException because unexpected operand argument
+// spr: none
+
+ID:31
+obj.setImmutable(false); // instead of these two calls, could just use subclass
+subclass.setValue(null); // no argument constructor
+obj.validate();
+// sub: IllegalStateException
+// spr: none
+
+ID:32
+Container c = new StandardHost();
+c.setName("something unique");
+obj.addChild(c);
+// sub: IllegalArgumentException (only accepts sub instance of Wrapper)
+// spr: none
+
+ID:33
+obj.getBaseline(null, 0, 0);
+// sub: NullPointerException
+// spr: none
+
+ID:34
+obj.setType(Token.ERROR);
+// sub: IllegalArgumentException (only allows certain Token.* constant values)
+// spr: none
+
+ID:35
+obj.startAsyncRead();
+obj.startAsyncRead();
+// sub: IllegalStateException
+// spr: none
+
+ID:37
+obj.mkdirs(null);
+// sub: IllegalArgumentException
+// spr: none or NullPointerException (This depends on the implementation of the
+//      abstract method. Most implementors assume it is non-null and thus will
+//      end up throwing NullPointerException, though there are other variations.)
+
+ID:38
+subclass = new CheckSignatureAdapter(0, CheckSignatureAdapter.CLASS_SIGNATURE, null);
+obj.visitClassType(any);
+// sub: IllegalStateException (expects TYPE_SIGNATURE)
+// spr: none
+
+ID:39
+subclass.data = new byte[] {0}; // alternate: use the read subclass constructor
+subclass.setReadable();         // instead of calling these two
+obj.writeDouble(0);
+// sub: NotWritableException
+// spr: none
+
+ID:40
+// assume: `nestedTargetXPath != null` (via superclass constructor)
+Object x = null;
+// x is some object not in subclass's `instances` HashMap
+// supermethod ignores the argument
+obj.getFeatures(x, any, any, any, any, any, any);
+// sub: IllegalArgumentException
+// spr: none
+
+ID:41
+obj.setImmutable(false); // so supermethod doesn't transitively throw IllegalStateException
+obj.setValue("non-boolean string value");
+// sub: IllegalArgumentException (only allows "true", "false", "1", "0")
+// spr: none
+
+ID:42
+obj.setImmutable(false); // instead of these two calls, could just use subclass
+subclass.setValue(null); // no argument constructor
+obj.validate();
+// sub: IllegalStateException
+// spr: none
+
+ID:43
+obj.invoke(new Object());
+// sub: IllegalArgumentException
+// spr: ArityException (via transitive call, only action of supermethod)
+
+ID:44
+Request req = new Request();
+Reference ref = new Reference(); // getScheme() will return null on this object
+req.setResourceRef(ref);
+req.setMethod(Method.MOVE);      // so supermethod takes simplest branch
+obj.handleLocal(req, any, any);
+// sub: IllegalArgumentException (the scheme doesn't match expected)
+// spr: none (should just set a few things in the response)
+
+ID:45
+obj.close();
+obj.close();
+// sub: IllegalStateException
+// sub: none
+
+ID:46
+obj.getSystemService(any);
+// sub: IllegalStateException
+//      Note: a newly constructed Activity w/ default constructor has no base
+//      context, so throws the exception
+// spr: NullPointerException
+//      Note: supermethod also doesn't allow null base contexts, but doesn't
+//      explicitly handle this case, implicitly throwing NullPointerException
+
+ID:49
+// Uri here is the Android version. Uri.EMPTY is basically the empty string
+obj.query(Uri.EMPTY, any, any, any, any);
+// sub: IllegalArgumentException (`sUriMatcher` will return an int that leads to default case)
+// spr: none (`open()` should return false, so the supermethod does nothing)
+
+ID:50
+// assume: `sequencePrepared` is still false in the subclass
+obj.setOutput( any ); // any valid non-null argument
+obj.writeToSequence(any, any);
+// sub: IllegalStateException
+// spr: UnsupportedOperationException (or IllegalStateException if `output` is null)
+
+ID:51
+obj.getDataElements( -1, any, any, any);
+// sub: ArrayIndexOutOfBounds (doesn't let first 2 arguments be < 0)
+// spr: none (seems a -1 would still be allowed / fine)
+
+ID:52
+obj.call(null, new AviatorNil());
+// sub: NullPointerException (AviatorNil's getValue always returns null)
+// spr: IllegalArgumentException (always occurs, might as well have been UnsupportedOperationException)
+
+ID:53
+obj.getPixelDataField();
+// sub: IllegalStateException (always)
+// spr: none (just returns a field's value)
+
+ID:54
+Mesh m = new Mesh();
+subclass.setMesh(m);
+obj.setLodLevel(1);
+// sub: IllegalStateException
+// spr: none (empty method)
+
+ID:55
+subclass.setMaxActiveSessions(0);
+obj.createSession();
+// sub: IllegalStateException
+// spr: none (should create a new StandardSession without any exceptions thrown)
+
+ID:56
+obj.paintContent(any);
+// sub: IllegalStateException (assuming `root` is still null)
+// spr: none (empty method)
+
+
+########################################
+### UnsupportedOperation examples ###
+########################################
+For all IDs but 19:
+obj.m(...); // where '...' are any valid arguments for the method `m`
+// sub: UnsupportedOperationException
+// spr: Either none or a different exception. Supermethod throwing UOE is very unlikely
+//      and only possible via transitive calls.
+
+ID:19
+obj.playLoop(1, ...);
+// sub: UnsupportedOperationException
+// spr: none
+
+
+########################################
+### Synchronized examples ###
+########################################
+
+ID:20
+T1:
+	obj.init(context1);
+T2:
+	obj.init(context2);
+
+// spr: `theContext` var will be whichever runs last
+// sub: `theCommonDBHelper` and `theDBHelper` could be out of sync due to
+//      reference visibility. i.e. T1 sets `theContext` and sees context1,
+//      halts, then T2 does and sees `theContext` as context2.
+
+ID:24
+T1 & T2:
+	obj.start();
+
+// spr: synchronized method, so no problems
+// sub: T1 might set this.server and halt, then T2. Assuming no ref visibility
+//      issue so T1 and T2 see the same instance, the server may be started
+//      twice. Starting the server also starts 2 instance variable threads on
+//      that object, so the second thread could throw
+//      IllegalThreadStateException.
+
+ID:27
+T1:
+	subclass.addNote(0, any); // sets `changedNotes` to true in subclass
+	boolean result = obj.hasChanged();
+
+T2:
+	boolean result = obj.hasChanged();
+
+// spr: hasChanged() is thread safe, so no safety issues.
+// sub: T1 could complete first and have `result = true` as expected. However,
+//      T2 may not see the update to the state, getting `result = false`.
+
+ID:28
+T1:
+	subclass.addPrefix(any);
+	obj.addABox(...);
+
+T2:
+	obj.addABox(...);
+
+// spr: `addABox` is thread-safe
+// sub: with T1 adding a prefix, T2 may not see the results of that add due to
+//      visibility, potentially getting a wrong outcome even if T1 calls and
+//      completes first.
+
+ID:34
+T1:
+	Xid x = new MysqlXid(any, any, any); // assume correct, so prepare() call doesn't fail
+	subclass.prepare(x);
+
+T2:
+	obj.close();
+
+// spr: `close` is thread-safe, can be called multiple times without problem
+// sub: T2 may not see up-to-date version of `currentXAConnection` and may call
+//      `super.close()` rather than removing the XAConnection.
+//      Note that the rest of the class is synchronized: it looks like multiple
+//      threads are _expected_ to use this object concurrently.
+//      The `currentXAConnection` variable should be volatile.
+
+ID:38
+T1:
+	obj.setNCharacterStream(any, any, any);
+T2:
+	obj.setNCharacterStream(any, any, any);
+
+// spr: synchronizes on result from method called `checkClosed()`, thread-safe
+// sub: Assuming argument `reader != null`, it retrieves a `binding` object
+//      and manipulates its fields. These changes are clearly not thread-safe
+//      and can lead to inconsistent values. This could later manifest as subtle
+//      bugs when the `binding` object is actually used.
+// Note: `checkClosed()` in the subclass's direct superclass (subclass of the
+//       supermethod here) is also unsafe since it checks a non-volatile boolean
+//       field.
+
+ID:40
+T1:
+	obj.removeAll();
+T2:
+	obj.removeAll();
+
+// spr: synchronized, so thread-safe
+// sub: manipulates both a `model` field which is not thread-safe. Depending on
+//      ordering, could lead to the two threads running incorrectly / leaving an
+//      inconsistent state.
+
+ID:42
+T1:
+
+	// assume 'obj' already has some sort of signature class assigned
+	// note that Signatures may not be thread-safe
+	obj.write(new byte[] {1, 2, 3}, 0, 3);
+
+T2:
+	obj.write(new byte[] {5, 6, 7}, 0 ,3);
+
+// spr: updates the byte array, adding one or the other first with no sync issues
+// sub: Suppose T1 and T2 complete the `super.write()` call. Then they may both
+//      act on the Signature object, which is not defined as thread-safe. Therefore
+//      the Signature may end up in an invalid inconsistent state.
+
+ID:43
+// Assume we start with:
+	SnmpMib mib = new JVM_MANAGEMENT_MIB_IMPL();
+	subclass = new JvmMemGCTableMetaImpl(mib, any);
+	// and equivalent for superclass construction
+
+T1:
+	obj.getEntry(any);
+	mib.registerTableMeta("JvmMemManagerTable", any); // note: this call is thread-safe
+	obj.getEntry(any);
+
+T2:
+	obj.getEntry(any);
+
+// spr: synchronized and only modifies a local Vector object
+// sub: The call to `getHandlers()` in turn calls `getManagers()` which assigns
+//      to a local `managers` variable. If T1 completes its first call,
+//      `manager` will be assigned to whatever it was originally. Then in call
+//      2 and 3 a new manager will be set in the `theMib` HashTable (which is
+//      thread-safe). However, 3 will use the 1st assignment of `manager` as
+//      dictated by the method logic.
+//      When T2 executes, it may see `managers` as null, get the newly
+//      registered table meta, and assign it to `managers`.
+//      Result: T1 and T2 getEntry calls (and possibly others) use inconsistent
+//      fields.
+
+ID:47
+T1:
+	// assume: `src == null`
+	obj.setDir(any);
+T2:
+	// only observes object
+	obj.toString(); // e.g. toString relies on `hasDir`'s value
+
+// spr: As the supermethod is synchronized, there are no problems
+// sub: If T1 calls `setDir`, it will see `hasDir = true`, but T2 may not
+//      necessarily see this update which can affect it when it calls other
+//      methods that check its value.
+
+ID:48
+T1:
+	obj.addFetchFailedMap(any);
+
+T2:
+	obj.addFetchFailedMap(any);
+
+// spr: empty synchronized method so no problems
+// sub: acts on an ArrayList on multiple thread -> inconsistent state
+//      -> race condition possible
+
+ID:49
+T1:
+	// assume `isRootPaneCheckingEnabled` is false to begin with
+	Button b = new Button("test");
+	obj.add(b);
+	obj.remove(b);
+
+T2:
+	Button b = new Button("test2");
+	subclass.getContentPane().add(b);
+	// can have something execute the two lines above this before publishing to
+	// these threads as well
+
+	obj.remove(b);
+
+// spr: Uses the AWT Container tree lock to synchronize access to `component` list
+// sub: Note that assuming the `add()` calls are successful, T1's button is
+//      added to the container and T2's button is added to the root content pane
+//      (also a AWT Container or subclass of it -- we assume it's threadsafe here).
+//      Now suppose T1 and T2 call `remove()` at the same time.
+//      It may be the case that T2 gets the old count, T1 does and removes its
+//      button, then T2 calls `super.remove()` which has no button to remove.
+//      Then T2 may see the update to the component count, so not making the call
+//      to `getContentPane().remove()`, failing to remove the button.
+
+ID:51
+T1:
+	obj.surfaceChanged(any, any, any, any);
+
+T2:
+	obj.surfaceChanged(any, any, any, any);
+
+// spr: Synchronizes on `this`, so multiple threads should be able to use it
+//      without problems (assuming object is published correctly).
+// sub: While the supermethod call is thread safe, T1 and T2 could otherwise
+//      interleave. For example T1 could complete the supermethod call and
+//      then execute mRender.surfaceChanged() with T2's execution to produce
+//      a `mRender` state object that is inconsistent or out of date.
+
+ID:58
+T1:
+	obj.getGraphicsConfiguration();
+T2:
+	obj.getGraphicsConfiguration();
+
+// spr: Synchronizes on AWT tree lock, so fine.
+// sub: T1 and T2 could end up getting different results from the method and
+//      the `graphicsConfig` each thread sees may be different as well.
+
+ID:62
+// assume: `_urlString` ends with `!/`
+T1:
+	obj.exists();
+
+T2:
+	obj.exists();
+
+// spr: No problem since the method is synchronized.
+// sub: The `_jarConnection` variable may be set to different things in each thread.
+//      For example, if `super.checkConnection()` fails for T1 it may leave
+//      `_jarConnection` as null whereas T2's may succeed and change it.
+//      Afterwards each thread may see different values for `_jarConnection`.
+
+########################################
+### I/O examples ###
+########################################
+ID:03 - output difference
+obj.post();
+// sub: outputs to stderr
+// spr: empty method
+
+ID:04 - output difference
+obj.toString(any, null, any);
+// sub: prints the class name to stdout the first time it's called anywhere
+// spr: transiently calls another tostring method that has its own transient calls
+//      and may use sterr with a different output (in certain cases), but does
+//      not appear to use stdout anywhere.
+
+ID:05 - output difference
+obj.writeValue(new Tuple(), new File("text.txt"));
+// note: method in question is `post()`, which is called via `writeTuple`,
+// called by subclass's `writeValue` implementation.
+// sub: `post()` outputs text to the file
+// spr: `post()` is an empty method
+
+ID:07 - crash difference
+obj.implCloseChannel();
+obj.tryLock(...);
+// sub: ChannelClosedException
+// spr: UnsupportedOperationException
+
+ID:09 - crash difference
+subclass.setJspFile("..");
+obj.doEndTag();
+// sub: throws JspTagException
+// spr: returns a constant value (trivial supermethod)
+
+ID:10 - output difference
+subclass = new SourceLineAudioOutputStream(any, any); // want `converted_input_stream` to be non-null
+obj.write(any);
+// spr: none
+// sub: none; however the converted stream may modify the actual output
+
+ID:11 - output difference
+obj.init();
+// sub: outputs to stderr: `getParameter("source")` returns an invalid URL as
+//      set in the overridden `getParameterInfo()` method
+// spr: no stderr output
+
+ID:12 - crash difference
+DataInputStream dis = new DataInputStream(System.in);
+dis.close();
+obj.readItem(dis);
+// sub: IOException due to closed stream
+// spr: returns 0 (trivial supermethod)
+
+ID:14 - output difference
+obj.getProperties().setProperty("db.url", "badurlhere!~.>");
+obj.init();
+// sub: outputs to stdout, may also throw an exception
+// spr: empty method
+
+ID:15 - output difference
+obj.playbackFinished(any);
+// sub: outputs to stdout then ends the program
+// spr: empty method
+
+ID:16 - output difference
+Scaler scale = new Scaler(0,0,0,0,0,0);
+WCS wcs = new WCS(..., scale);
+image = new Image(wcs);
+obj.setInput(image);
+// sub: outputs to stderr
+// spr: none
+
+ID:17 - output difference
+obj.toSpim(new PrintWriter(System.out));
+// sub: outputs to stdout because of the parameter
+// spr: empty method
+
+ID:18 - crash difference
+obj.flushCurrentResults(false);
+// sub: outputs to stdout
+// spr: assertion error (method is basically `assert false`)
+
+ID:19 - output difference
+obj.onEntry();
+// sub and super print out different text, both use stdout most likely
+
+ID:20 - output difference
+subclass.setRemoveUrl("badurlhere!~.>");
+obj.loadListOfPlugins(...);
+// sub: catches MalformedURL and outputs to logger which outputs (by default) to
+//      stderr.
+// spr: none
+
+ID:21 - output difference
+// assumption: the arguments are valid, currently open request / responses
+obj.doPropfind(any, any);
+// sub: outputs to stderr (and sends output through the response)
+// spr: none (though sends output through the response)
+// note: the responses are also different as well here
+
+ID:22 - crash difference
+OutputStream out = new FileOutputStream("text.txt");
+out.close();
+subclass = new FontEmbedderType1(any, out, any);
+obj.openGlyphs();
+// sub: Attempts to use closed stream, throws IOException
+// spr: empty method
+
+ID:23 - output difference
+Syste.setProperty("os.name", "mac"); // force Minecraft.getOs() to return MACOS
+GuiButton button = new GuiButton(5, any, any, any, any, any);
+obj.actionPerformed(button);
+// sub: outputs to stdout
+// spr: empty method
+
+ID:25 - output difference
+subclass = new VerboseRunDecorator(any, System.out);
+obj.setOutputType(any);
+// sub: outputs to stdout (or a file, etc. whatever is provided in ctor)
+// spr: none directly, but depends on the implementation of the object set in
+//      the `decorated` field.
+
+ID:26 - output difference
+subclass = new SlimPrintVisitor(System.out);
+obj.visit((NProduction) null);
+// sub: outputs to stdout (or whatever is provided in ctor)
+// spr: trivial method
+
+ID:28 - output difference
+obj.onEndTag();
+// sub: outputs to stdout
+// spr: empty method
+
+ID:29 - output difference
+obj.caseAFormalrest(any);
+// sub: outputs to stdout
+// spr: trivial method
+
+ID:30 - output difference
+obj.loadList("nonexistentfile", new HashMap<String,Boolean>());
+// sub: outputs to stdout when it catches FileNotFoundExcepton from FileReader
+// spr: empty method
+
+ID:32 - crash difference
+FileInputStream fis = new FileInputStream("text.txt");
+DataInput in = new DataInputStream(fis);
+fis.close();
+BooleanStream bs = new BooleanStream();
+bs.writeBoolean(true);
+obj.tightUnarshal(any, any, in, bs);
+// sub: IOException (via transitive call to `tightUnmarsalNestedObject`, which
+//      eventually reads from the DataInput, which throws IOException due to fis
+//      being closed.)
+// spr: empty method
+
+ID:33 - output difference
+// precondition: delete file "data/textures/checkerboard.jpg"
+obj.init(any);
+// sub: IOException of some sort due to reading from a non-existant file.
+// spr: none (mostly sets some GL properties)
+
+ID:35 - crash difference
+// assume we've set up a connection via obj.create(Env env);
+// and a correct curl environment with a file to be uploaded
+obj.cleanup(); // closes the connection
+obj.transfer(any);
+// sub: IOException (due to writing to closed HttpConnection's out stream)
+// spr: empty method
+
+ID:37 - output difference
+obj.pushFrame(); // adds a frame that will be removed on `endXPath()`
+obj.push(null);  // or an obj of type Expr
+obj.endXPath();
+// sub: outputs to stdout
+// spr: none
+
+ID:38 - crash difference
+obj.setOutputStreamParam("text.txt"); // open file
+obj.teardown(); // close file
+obj.start();
+// sub: IOException (attempts to write to closed stream)
+// spr: RuntimeException (similar to most UnsupportedOperation methods)
+
+ID:39 - output difference
+obj.setFile(new File("text.txt"));
+obj.setDestination(new File("text2.txt"));
+// sub: outputs to stderr ONLY when the file "text2.txt" does not exist when it
+//      checks for its existence, but some other program creates it just before
+//      the program calls `createNewFile()`
+// spr: IOException (similar to most UnsupportedOperation methods)
+//      For supermethod, both these calls cause the IOException.
+
+ID:40 - output difference
+obj.writeValue(Undefined.UNDEFINED, new File("text.txt"));
+// note: method in question is `writeUndefined()`, which is called via `writeTuple`,
+// called by subclass's `writeValue` implementation.
+// sub: `writeUndefined()` outputs text to the file
+// spr: `writeUndefined()` throws a SerialisingException (similar to most
+//      UnsupportedOperation methods)
+
+ID:42 - output differece
+obj.handlePacket(any);
+// sub: outputs to stdout
+// spr: none (but may depend on what the assigned handler does)
+
+ID:44 - output difference
+// NOTE: `ProcessBuilder` as used in the submethod doesn't seem to exist, so
+// unsure what its effect are, but assuming them to be none for the purposes of
+// this example.
+VariableContainer c = new VariableContainerWrapper(null);
+c.setVar("DEBUG", "true");
+subclass.init(any, c, any, any); // sets `subclass.debug` to true
+obj.open(any, any);
+// sub: outputs to stdout since `debug` is true
+// spr: none
+
+ID:45 - output difference
+obj.notPerformed(any);
+// sub: outputs to stdout
+// spr: empty method
+
+ID:46 - output difference
+obj.setSupplyPoint(any);
+// sub: outputs to stdout
+// spr: none
+
+ID:47 - output difference
+obj.enterSubRule(any);
+// sub: outputs to stdout
+// spr: empty method
+
+ID:48 - crash difference
+BufferedImage img = new BufferedImage(1,1,BufferedImage.TYPE_INT_RGB);
+img.setRBG(0, 0, 0); // set single pixel to black
+FileOutputStream fos = new FileOutputStream("text.txt");
+fos.close();
+obj.writeImage(img, fos, new HashMap());
+// sub: IOException (attempts to write to closed stream)
+// spr: outputs to stdout if its attempt to close fails, then throws ImageWriteException
+
+ID:49 - crash difference
+obj.createFont("file that does not exist");
+// sub: FileNotFoundException (from instantating FileInputStream)
+// spr: empty method

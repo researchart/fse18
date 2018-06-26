@@ -1,0 +1,242 @@
+########################################
+### Precondition examples ###
+########################################
+GOAL: Can we crash the subclass but not the superclass?
+
+Reference file: precondition-exceptions-examples.txt
+See also: patterns-exception.txt
+
+1. Substitutability violation
+	a. Brittle parameters (possibly variable)
+		i. instanceof
+			(ID:15,25,28,32,43)
+
+		ii. argument value restriction
+			(ID:02,09,24,27,34,41,44,51)
+
+		iii. Filter
+			(ID:12,49)
+
+		iv. Param has to be in a collection stored as instance var first
+			(does this qualify as brittle param?)
+			(ID:21)
+
+	b. Superclass fine with a null param, subclass throws an exception instead
+		(ID:10,33)
+
+	c. Same precondition, but different exceptions get thrown
+		(ID:16,46)
+
+		i. But super's precondition from transitive call
+		(relies on impl of abstract method)
+			(ID:04,37)
+
+		ii. Precondition exceptions out of order giving different output if all are wrong
+			(ID:26)
+
+	d. Submethod may throw an exception depending on state, super does not
+		(ID:19,20,35,38,39,45,50,55,56)
+
+	e. Violation, but used for validation (e.g. method name is "validate")
+		(ID:31,42)
+		NOTE: the above 2 are basically the same but different subclasses
+
+	f. Fits into multiple of above
+		(ID:13,29,40,54)
+
+	g. Uncategorized violation type
+		(ID:52,53)
+
+2. No violation
+	(may have violations depending on other objects' actual type)
+	(if interfaces are used, examine a limited portion of the concrete versions
+	of transitive methods)
+
+	a. Same precondition (sub explicit, super implicit)
+		(ID:01,23)
+
+	b. Same precondition (via a transitive call)
+		(ID:11,14,47,48)
+
+	c. NullPointer -> no call sequence for super to not throw
+		(ID:17)
+
+	d. Same precondition, same types
+		(ID:30)
+
+	e. Submethod precondition can never be triggered
+		(ID:36)
+
+	f. Can't trigger the precondition without subclassing an object
+		(ID:22)
+
+
+########################################
+### UnsupportedOperation examples ###
+########################################
+Reference: unsupported-operation-examples.txt
+See also: patterns-exception.txt
+
+While it is possible some of the supermethods transiently throw UOE, we saw no
+evidence of this.
+
+1. Substitutability violation
+	a. Submethod only throws UOE
+		(ID:02,06,07,10,15,21,22,23,24,25,26,27,28,29,30,31,32,33,34)
+
+	b. Brittle param
+		(ID:19)
+
+
+########################################
+### Synchronized examples ###
+########################################
+GOAL: Can we cause a deadlock or race condition in the subclass that won't
+occur in the superclass?
+
+Reference: synchronized-examples.txt
+
+CONSIDERED EXAMPLES: (all superhasmore)
+	(ID:02,10,12,18-64)
+SKIPPED: ID:06 - private methods that are now filtered out
+
+1. Sync Substitutability violation
+	a. Violation leading to reference visibility problems
+		(ID:20,38,43,47,49,58,62)
+
+		i. Involved subclass methods
+
+	b. Violation due to reference visibility problem
+		(ID:51)
+
+		i. Involved subclass methods
+			(ID:27,28,34)
+
+	c. Violation due to general race condition (normally via operating on unsafe object)
+		(ID:24,40,42)
+
+		i. Involved subclass methods
+
+	d. Super is empty synchronized method, but sub is clearly thread-unsafe
+		(Maybe this is a wrong method def? Maybe super should not have synchronized?)
+		(ID:48)
+
+2. No violation:
+	a. Submethod is trivial
+		(ID:25,29,31,32,36,53,55)
+
+		i. Just calls supermethod
+			(ID:35,39,44,46,63)
+
+	b. Supermethod may not be intended to be thread-safe alone
+		i.e. supermethod uses sync for specific object, but nothing else in the method body
+		(ID:02,45,56,59,60,64)
+
+		i. Alone is fine, but protects specific obj + no race cond w/o potential in super
+			(ID:57)
+
+		ii. Reason for supermethod's sync is not present in submethod
+			(ID:19)
+
+	c. Sub delegates to something that either delegates or is synchronized
+		(ID:10,12,23,41,50)
+
+	d. Has secondary logic, but doesn't appear to have threading issues
+		i.e. the secondary logic appears fine no matter if it's ran in multiple threads
+		(ID:22 (dup2 is syscall, threadsafe))
+		(ID:33 (transitive call thread-safe))
+		(ID:37 (logger should be thread-safe))
+		(ID:54 (transitive call only operates on local variable))
+
+		i. Uses / Returns (something associated with) a state object, but the state
+		object is thread safe.
+			(ID:18,21)
+
+		ii. Out of order output, but uses thread-safe operations
+			(ID:61)
+
+	e. Likely not a sub violation, but code not available (due to it being impld by users)
+		(Note: this assumes `getMeta()` has no extra effects)
+		(ID:30)
+
+	f. UOE exception involved
+		(ID:26,52)
+
+3. May re-examine
+	(ID:24,47)
+
+########################################
+### I/O examples ###
+########################################
+GOAL: can we crash the subclass and not the superclass? Can we make
+output differences?
+
+Reference: io-examples.txt
+
+1. Substitutability violation
+	a. Can cause a crash using I/O operation in submethod (but not supermethod)
+		i. Giving a bad filename
+			(ID:09,49)
+
+		ii. Provide a bad input/output stream
+			(ID:12,22,32,38,48)
+
+		iii. Can crash via call to a method used for closing/shutdown
+			(ID:07,35)
+
+	b. Does logging (via System.out / System.err) in submethod -> output difference
+		i. Likely used for debugging
+			(ID:04,21,23,28,37,42,44,45,46,47)
+
+		ii. For errors / failures / warnings
+			(ID:11,16,18,20,33,39)
+
+		iii. Console-based program (i.e. the output is intended as neither debug nor error)
+			(ID:03,15,19,29)
+
+		iv. Debug + error
+			(ID:14)
+
+	c. Has general output difference
+		i. Trivial super
+			(ID:05,26,30,40)
+
+		ii. More processing
+			(ID:10)
+
+		iii. Not implemented / debug message
+			(ID:17,25)
+
+2. No violation
+	a. Not an I/O operation that can be crashed / used
+		(e.g. such as ByteArrayOutputStream, which only writes to a byte array
+		or a try/catch where catch does nothing)
+		(ID:01,08,13,34,50)
+	b. Can't cause the violation (e.g. because of a false private DEBUG flag)
+		(ID:02,43)
+	c. Sub and supermethods are basically duplicates
+		(ID:24)
+	d. Sub delegates to method of superclass type
+		(ID:41)
+
+	e. Reads from a socket, does some conversion and updates a buffer
+		(Looks like SocketException will be thrown (via operating on a closed
+		underlyingSocket). Not a violation because this SocketException can be
+		seen from PlainSocket's SocketInputStream's implementation of read(),
+		the abstract method InputStream refers to.)
+		(ID:31)
+
+		(Another subclass, com.android.exchange.MockParserStream can also throw
+		I/O exception on read())
+		(ID:36)
+
+	f. Both methods seem to create a wrapper around another stream, no major I/O
+	differences.
+		(ID:27)
+
+3. Unsure
+	a. Output difference, but not sure how to trigger
+		(ID:06)
+
+4. May re-examine
+	(ID:20)

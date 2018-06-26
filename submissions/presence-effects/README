@@ -1,0 +1,213 @@
+########################################
+### Paper Abstract
+########################################
+A majority of modern software is constructed using languages that compute by
+producing side-effects such as reading/writing from/to files, throwing
+exceptions, acquiring locks, etc. To understand a piece of software, e.g. a
+class, it is important for a developer to understand its side-effects.
+Similarly, to replace a class with another, it is important to understand
+whether the replacement is a safe substitution for the former in terms of its
+behavior, a property known as substitutability, because mismatch may lead to
+bugs. The problem is especially severe for superclass-subclass pairs since at
+runtime an instance of the subclass may be used in the client code where a
+superclass is mentioned. Despite the importance of this property, we do not yet
+know whether substitutability w.r.t. effects between subclass and superclass
+is preserved in the wild, and if not what sorts of substitutability violations
+are common and what is the impact of such violations. This paper conducts a
+large scale study on over 20 million Java classes, in order to compare the
+effects of the methods of subclasses and superclasses in practice. Our
+comprehensive study considers the exception, synchronization, I/O, and method
+call effects. It reveals several interesting findings and provides useful
+guidance for bug detection, testing, and code smell detection tool design.
+
+
+########################################
+### Paper's Summary of Findings
+########################################
+We find that only 8-24% method pairs have the same effects, and 31-56% of
+submethods have more effects than their supermethod when considering the effect
+types independently. Finally, when analyzing method pairs in terms of these
+effects, we confirm the above: a large percentage of the effects of submethods
+cannot be inferred through the supermethod’s implementation when at least one of
+them has an effect.
+
+
+########################################
+### This Artifact's Summary
+########################################
+This artifact provides the necessary source code and data to reconstruct the
+results in our paper "Large-scale Study of Substitutability in the Presence of
+Effects". Specifically, this artifact provides the following:
+1. source code of our 5 effect analyses provided as self-contained Boa programs
+2. the raw output of running these 5 analyses on Boa's 2015 GitHub dataset
+3. the list of randomly chosen cases (called examples herein) from our case
+	study along with files of our analysis and categorizations each example.
+
+The folder structure is as follows:
+src/     == source code for each of the 5 Boa programs
+data/    == the raw Boa output
+results/ == case study
+
+
+########################################
+### Implementation
+########################################
+We wrote our analysis programs in the Boa language to be used with the Boa
+Infrastructure and the 2015 GitHub dataset.
+See http://boa.cs.iastate.edu for more information.
+
+There are 5 analyses and hence 5 different Boa programs:
+1. Exception Effect
+2. Synchronization Effect
+3. I/O Effect
+4. Method Call Effect
+5. Combined - Includes all of the above 4 effects
+
+which are all stored in self-contained files in the src/ directory. They all
+share the same basic structure, but have different behavior based on the effects
+they are to examine. The INSTALL file describes how they can be ran using the
+existing Boa Infrastructure.
+
+Each analyses runs over a large dataset of mined repositories and outputs its
+results into a human-readable text file. When mining this data, it removes
+intra-project duplicates, files with test cases. Forks and non-Java files do
+not exist in the dataset. They then conduct a light-weight effect and type
+inference and output both statistical information and individual pairs of
+sub/super methods with a given effect. Abstract methods and interfaces were
+ignored since they do not provide an implementation to analyze. The analysis of
+this output of these programs are what makes up the results of our paper.
+
+
+########################################
+### Explanation of the Raw Output
+########################################
+This section describes the basic structure of the Boa programs' output format.
+The next sections will give a brief explanation of what each program does and
+the structure of their outputs. The programs themselves are as contained in the
+src/ folder and the Boa output are contained in the and data/ folder.
+
+In the data/ files, each line has the form “x[y] = z” where x is the output
+type, y is the key, and z is the value. There are two output types that are the
+most important. The first is lines with the format “stat[key] = # occurrences”,
+which provides statistical information such as the number of source files
+examined or the number of private methods that do not throw exceptions. The
+second has the format “out[] = value”, which is used by the exception,
+synchronization, and I/O analyses to output information on each method pair with
+that effect type. This data consists of a #-delimited list with the following
+format:
+
+1. GitHub repository name
+2. Method name for the method pair
+3. Subclass name
+4. Supermethod effect
+5. Submethod effect
+6. Category of effect difference between the two methods
+7. Further information that dependent on the analysis
+
+To provide an example, consider the following output line:
+out[] = JSansalone/JFreeChart#findDomainBounds#VectorRenderer#,#IllegalArgumentException#!subissuperset#,
+
+JSansalone/JFreeChart is the repository and can be found at https://github.com/JSansalone/JFreeChart
+The subclass is VectorRenderer and method is findDomainBounds.
+The supermethod doesn't appear to have an exception effect, but the submethod
+throws IllegalArgumentException, so the category is "sub is superset".
+
+In general, the categories (#6) begin with an exclamation and compare the sub
+and supermethod effects to each other, stating which method has “more” effects
+than the other. For example, a category of !n is used to state the effects of
+both methods in a pair are the same (i.e. no difference) and !y is used to state
+the “size” of the effects are the same, but the effect itself is different.
+
+As a final note, the remaining output types such as "methodCallDebug" or
+"resolvOut" or "ioOut" are useful only for debugging.
+
+
+########################################
+### Exception Effect Output
+########################################
+This analysis looks for 'throw' statements inside methods and logs the exception
+type thrown. The method effects (#4, #5) are the set of exception types thrown
+in the format of a comma delimited list. The last item (#7) is the set of
+exception types that the supermethod declare it may throw in the method
+signature. An exception of type !UNKNOWN! indicates that the type could not be
+definitively decided by the analysis. The category is a set-based comparison of
+the effects of the sub and supermethods.
+
+
+########################################
+### Synchronization Effect Output
+########################################
+This analysis looks for method pairs who use lock object or the synchronized
+keyword. Method effects are the way synchronization is used: none (!NONE), only
+acquiring a lock (!ACQUIRE), only releasing (!RELEASE), or both (!BOTH). The
+last entry denotes the most fine-grained synchronization used in either of the
+methods. So if one method uses locks it would be !hasLock, if synchronized
+blocks are used then !hasBlock, and if only the synchronized modifier is used
+then !hasModifier.
+
+
+########################################
+### I/O Effect Output
+########################################
+This analysis logs usage of I/O operations on objects commonly known to be used
+for I/O (e.g. System.out or FileWriter) and categorizes them by type. Method
+effects are type of I/O identified: none (NONE), output only (OUT), input only
+(IN), and both (BOTH). The last entry denotes the type of I/O classes used:
+!CONSOLE if any console-related objects were directly operated on, !FILE if file
+objects are directly operated on but no console ones, otherwise !BUS.
+
+
+########################################
+### Method Call Output
+########################################
+This analysis considers method calls to be an effect, and distinguishes them
+based on the method's source (e.g. this, super, class/instance). Due to the
+number of methods and method calls in the dataset, we only output statistics.
+
+
+########################################
+### Combined Analysis Output
+########################################
+This output mainly provides statistics regarding the kinds of side-effects used
+by all methods and by all method pairs where the submethod has more of an
+effect. That is, it's a combination of the above 4 analyses.
+
+stat[SUB_HAS_MORE_CLASS=0101] = #
+In particular, consider the above line. "SUB_HAS_MORE_CLASS" indicates method
+pairs where at in least one of the effects the submethod has "more" of an effect
+than its supermethod, and the remaining are similarly categorized or equal.
+Then the "=0101" is a binary form where 1 indicates the effect exists and 0 that
+it does not in this method. They are ordered as follows: exception,
+synchronization, I/O, and method call.
+
+So it is the number of "subhasmore" pairs with synchronization and method calls.
+
+However, note that a number of method pairs are output. This represents is a
+small subset of all the methods as determined by a random number generator.
+This was used solely for debugging and includes the effect of each of the 4
+effect types.
+
+
+########################################
+### Case Study Data
+########################################
+The case study is located in the results/ folder.
+4 of these files contain examples for each of the case studies. The examples
+were randomly chosen according to specific criteria, analyzed, given a unique
+ID# for that effect kind. Some examples were chosen early into the research
+process with categories different from what we examined. While these remain,
+they were removed from consideration when conducting the final case study.
+This case study was conducted by one author whose results were confirmed and
+agreed upon with another. They are normally identified either by the section of
+the file they are located in, or a note in all-caps alongside the ID#.
+
+The example files also include the raw output line, links to the sub and
+supermethods on GitHub, and sometimes more information about that example.
+
+The substitutability-*.txt files contain the results of our case studies.
+In particular, substitutability-study.txt contains categorizations for each
+example (whether or not a violation occurs) and substitutability-calls.txt
+contains the call sequences and the effect output if they were executed that
+shows how the effects of the sub and supermethod differ. The remaining files
+attempt categorize the examples based on their Javadocs, whether the example
+appears to be a bug, and other categorizations as listed in the files.

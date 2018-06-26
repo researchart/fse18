@@ -1,0 +1,192 @@
+########################################
+### Exception + subhasmore + sub has stronger precondition ###
+########################################
+EXAMPLE FILE: stronger-precondition-examples.txt
+IGNORED EXAMPLES: ID:03,07 (test class), ID:06 (wrong category)
+TOTAL EXAMPLES: 29 (ID:01 to ID:32)
+
+1. What kind of precondition is it?
+	a. Precondition established near or at construction time
+		i. at
+			(ID:08,20,22)
+		ii. near
+			(ID:27,28)
+		iii. (likely) near
+			(ID:02)
+
+	b. Brittle parameter
+		i. uses instanceof
+			(ID:04,14,15,25,28,32)
+
+			a. Not explicit (via method call)
+				(ID:24)
+
+		ii. value is restricted (e.g. valid enum values)
+			(ID:02,09)
+
+		iii. filtered parameters
+			(ID:12)
+
+	c. Submethod performs parameter validation that supermethod does not
+		(i.e. bounds checking where the superclass just passes the args elsewhere)
+		(must be potentially valid in both sub/super contexts to count for this)
+
+		i. adds null check
+			(ID:01,04,11,13,16)
+		ii. add bounds check
+			(ID:17)
+		iii. adds null + bounds check
+			(ID:23,26)
+
+	d. Other
+		i. Checks the object state validity, but superclass doesn't check
+			(supermethod may simply not have any state)
+			(ID:05,18,19,21,30,31)
+		ii. Supermethod checks and returns some default value, submethod throws exception
+			(ID:10)
+		iii. Some sort of configurable argument filtering
+			(ID:12)
+		iv. Does: transient checks (via calling a method) then a local argument check
+			(ID:24,29)
+
+		NOTE: ID:04 is in multiple categories
+
+2. How is the subclass instance used?
+	a. Precondition on construction, don't need to worry
+		(see #1a)
+
+	b. Client knows about subclass
+		i. instanceof or passing a particular value to an instantiating method
+			(ID:09,15,26,27 instantiation #2)
+
+			NOTE: ID:09 sub is abstract, but sub's subs aren't and don't
+			override the method.
+
+		ii. Subclass instance is at INITIALLY assigned to a subclass variable
+			(may be passed or returned as the superclass)
+			(needs at least _one_ instantiation to comply to this)
+			(NOTE: in most cases these are passed as super/sub somewhere soon after)
+
+			(ID:02,04,15,24 instantiation #2, 26 instantiation #2,28,31,32)
+
+		iii. INITIALLY assigned to subclass variable (but only momentarily)
+			(ID:05,19)
+
+	c. Subclass not instantiated anywhere in codebase (likely a library or something else)
+		(ID:01,10,11,18,21,23,25,30)
+
+		i. Because it's abstract
+			(ID:09,12)
+
+	d. Other (instantiated and either assigned to super or passed as super right away)
+		(ID:13,14,16,17,29)
+		TODO: break down the above more
+		REFER TO: example-stored-as-super-sets.txt
+
+3. Potential bugs + code smell indicators
+	a. Documentation of effect
+		i. Effect not documented (though others may be)
+			(ID:01,02,09,10,11,12,13,14,16,19,20,21,22,24,25,27,28,29)
+			(also see #3a.iv.)
+
+		ii. Documented on superclass
+			(ID:08,17,18,23,26,31,32)
+
+		iii. Documented only on subclass
+			(ID:04,05,15)
+
+		iv. Not necessary to document (will never occur)
+			(ID:30)
+
+4. Categorizations from "Analyzing APIs Documentation and Code to Detect Directive Defects" paper
+	a. Nullness not allowed
+		(ID:01,04,10,11,13,14,16,23,26,17,28,30,32)
+
+		i. Not sure
+			(ID:25)
+
+	b. Nullness allowed
+		(ID:02,15,19,24)
+
+	c. Type restriction
+		i. instanceof
+			(ID:04,14,15,25,28,32)
+
+	d. Range limitation
+		i. enum
+			(ID:02,30)
+		ii. boolean
+			(ID:09)
+		iii. checking a collection
+			(ID:21)
+		iv. array bounds
+			(ID:01,23,26)
+		v. int
+			(ID:29)
+
+	e. Other
+		i. non-nullness not allowed
+			(ID:05)
+		ii. no arguments
+			(ID:08,17,18,20,31)
+		iii. filtered argument - brittle
+			(ID:12,22)
+		iv. object must have correct size (not sure if this fits here)
+			(ID:24,27)
+
+########################################
+### Exception + subhasmore + sub throws UnsupportedOperation ###
+########################################
+EXAMPLE FILE: unsupported-operation-examples.txt
+CONSIDERED EXAMPLES: ID:02,06,07,10,15,19,21-34
+IGNORED EXAMPLES: ID:20 (super throws UOE)
+TOTAL EXAMPLES: 20
+
+1. Why does submethod throw UOE?
+
+	a. Restrict changes (immutability, fixed-size container)
+		i. Immutable
+			(ID:07,15,24,28)
+		i. Fixed size
+			(ID:26)
+
+	b. Features more limited, subclass more specialized
+		i. "Stub" object
+			(ID:10)
+		b. Other limits
+			(ID:19,30,33)
+
+	c. Unable to decide why it throws UOE
+		(no comments, Javadoc, or useful exception message)
+		(ID:02,06,21,22,23,25,29,31,32,34)
+		TODO: examine the ones above again, categorize using best guess
+
+	d. Other
+		i. A "not implemented yet" UOE
+			(ID:27)
+
+2. How is the subclass instance used?
+	a. A hint to the client is provided
+		i. (e.g. getImmutable())
+			(ID:26,28)
+
+	b. Kept or exposed as the subclass type
+		(ID:02,06,07,27,32,33)
+
+	c. Subclass not instantiated anywhere
+		(ID:19,22,23)
+
+		i. Because it's abstract
+			(ID:31)
+
+	d. Other
+		i. Passed to constructor of class that is aware of it (instanceof)
+			(ID:10)
+		ii. Passed to class named to take the subclass type
+			(ID:21)
+		iii. No apparent categorization
+			(ID:15,25,29,30)
+
+3. Potential bugs + code smell indicators
+	a. No documentation? Not clear why UOE is thrown
+		(ID:02,06,07,10,15,19,21,22,23,24,25,26,27,28,29,30,31,32,33,34)

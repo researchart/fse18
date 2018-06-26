@@ -1,0 +1,586 @@
+ID:01 - WRONG CATEGORY
+out[] = anbangr/trusted-mr#initialize#WebHdfsFileSystem#NONE#METHOD#!subhasmore
+Subclass: https://github.com/anbangr/trusted-mr/blob/efca1518be069e051e78614d1d71057cb79807ee/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/web/WebHdfsFileSystem.java#L174
+Superclass: https://github.com/anbangr/trusted-mr/blob/efca1518be069e051e78614d1d71057cb79807ee/hadoop-common-project/hadoop-common/src/main/java/org/apache/hadoop/fs/FileSystem.java#L193
+(no non-test instantiations)
+
+	Super abstract, sub concrete. Super synchronizes on a "deleteOnExit"
+	collection variable for all operations on it. Super also synchronizes on
+	"this" for operations on a "map" instance variable.
+	Sub adds more synchronization on "this" for what appears to be delegation
+	tokens and working directories, but not on all paths.
+
+
+ID:02
+out[] = yuifan/pexus4_packages_apps_Browser#onEndTransaction#BrowserProvider2#!BOTH#!NONE#!sprhasmore#!hasBlock
+Subclass: https://github.com/yuifan/pexus4_packages_apps_Browser/blob/efaf41e1689a0f8689f1b07563a8baa346c4051f/src/com/android/browser/provider/BrowserProvider2.java#L814
+Superclass: https://github.com/yuifan/pexus4_packages_apps_Browser/blob/efaf41e1689a0f8689f1b07563a8baa346c4051f/src/com/android/browser/provider/SQLiteContentProvider.java#L234
+(no instantiations)
+
+	Super abstract, sub concrete. Super synchronizes all access to a private
+	"mChangedUris" instance variable. Sub does no additional synchronization and
+	in this case calls the supermethod to modify "mChangedUris".
+
+
+ID:03 - WRONG CATEGORY
+out[] = andreamoruno/Mora-Ormj#close#HttpSendSocket#BOTH#METHOD#!y
+Subclass: https://github.com/andreamoruno/Mora-Ormj/blob/14174b243926d3708c9733c23453bdb273f48e48/test/Mora/Ormj/java/openjdk-6-src-b27/jdk/src/share/classes/sun/rmi/transport/proxy/HttpSendSocket.java#L328
+Superclass: https://github.com/andreamoruno/Mora-Ormj/blob/14174b243926d3708c9733c23453bdb273f48e48/test/Mora/Ormj/java/openjdk-6-src-b27/jdk/src/share/classes/java/net/Socket.java#L1365
+(no useful instantiations)
+
+	Both concrete. Super synchronizes "this" for certain features (not really
+	sure which features exactly) and also on a "closeLock" instance variable for
+	close() and isClosed(). Sub overrides some methods as synchronized. For the
+	close() method, the call is delegated to an instance variable. No
+	"closeLock" in the subclass.
+
+
+ID:04 - WRONG CATEGORY
+out[] = cmri/bc-hadoop2.0#addBlackListedReduceSlots#JobTrackerMetricsInst#NONE#METHOD#!subhasmore
+Subclass: https://github.com/cmri/bc-hadoop2.0/blob/b7ecbec65554a3d2540b33bf7ff0d81b31407be4/hadoop-2.0.0-cdh4.3.0/src/hadoop-mapreduce1-project/src/mapred/org/apache/hadoop/mapred/JobTrackerMetricsInst.java#L252
+Superclass: https://github.com/cmri/bc-hadoop2.0/blob/b7ecbec65554a3d2540b33bf7ff0d81b31407be4/hadoop-2.0.0-cdh4.3.0/src/hadoop-mapreduce1-project/src/mapred/org/apache/hadoop/mapred/JobTrackerInstrumentation.java#L82
+
+Instantiation (as super): https://github.com/cmri/bc-hadoop2.0/blob/b7ecbec65554a3d2540b33bf7ff0d81b31407be4/hadoop-2.0.0-cdh4.3.0/src/hadoop-mapreduce1-project/src/mapred/org/apache/hadoop/mapred/JobTracker.java#L1903
+Instatiation (as super): https://github.com/cmri/bc-hadoop2.0/blob/b7ecbec65554a3d2540b33bf7ff0d81b31407be4/hadoop-2.0.0-cdh4.3.0/src/hadoop-mapreduce1-project/src/mapred/org/apache/hadoop/mapred/LocalJobRunner.java#L614
+
+(no supertype instantiations)
+
+	Both concrete. Super provides a lot of methods with no implementations. Sub
+	provides synchronized implementations. All sub methods are synchronized.
+
+
+ID:05 - WRONG CATEGORY
+Category: library
+out[] = codehaus/jcsp#removeWriteFilter#FilteredSharedChannelOutputWrapper#NONE#BLOCK#!subhasmore
+Subclass: https://github.com/codehaus/jcsp/blob/f7193306f7c9b6e208e6e304a7b2bafb5a710fb3/src/org/jcsp/util/filter/FilteredSharedChannelOutputWrapper.java#L86
+Superclass: https://github.com/codehaus/jcsp/blob/f7193306f7c9b6e208e6e304a7b2bafb5a710fb3/src/org/jcsp/util/filter/FilteredChannelOutputWrapper.java#L78
+
+Instantiation (as super): https://github.com/codehaus/jcsp/blob/f7193306f7c9b6e208e6e304a7b2bafb5a710fb3/src/org/jcsp/util/filter/FilteredChannelEndFactory.java#L106
+Instantiation (as super): https://github.com/codehaus/jcsp/blob/f7193306f7c9b6e208e6e304a7b2bafb5a710fb3/src/org/jcsp/util/filter/FilteredAny2AnyChannelImpl.java#L58
+Instantiation (as super): https://github.com/codehaus/jcsp/blob/f7193306f7c9b6e208e6e304a7b2bafb5a710fb3/src/org/jcsp/util/filter/FilteredAny2OneChannelImpl.java#L58
+
+	Super abstract, sub concrete. Submethod implements several write-related
+	supermethods as synchronized, but no others. Intention is that subclass is
+	thread-safe whereas superclass is not.
+
+
+ID:06 - BAD METHOD PAIR (PRIVATE)
+Category: confusing
+out[] = eclipse/vjet.rhino#writeObject#IdScriptableObject#METHOD#NONE#!sprhasmore
+Subclass: https://github.com/eclipse/vjet.rhino/blob/beb7d471e9b58bc77cd1c517e130d0fff7cd785e/org.eclipse.vjet.extmod.rhino/src/org/mozilla/mod/javascript/IdScriptableObject.java#L722
+Superclass: https://github.com/eclipse/vjet.rhino/blob/beb7d471e9b58bc77cd1c517e130d0fff7cd785e/org.eclipse.vjet.extmod.rhino/src/org/mozilla/mod/javascript/ScriptableObject.java#L2428
+
+Interesting code comment: https://github.com/eclipse/vjet.rhino/blob/beb7d471e9b58bc77cd1c517e130d0fff7cd785e/org.eclipse.vjet.extmod.rhino/src/org/mozilla/mod/javascript/ScriptableObject.java#L2266
+
+NOTE: bad example, the methods are private - thus not an actual method pair
+
+	Both abstract. Super seems to be partially synchronizing to "this" for its
+	"slots" instance variable. Sub seems to synchronize to "this" for changing
+	two instance variable arrays but not for reading.
+
+
+ID:07 - WRONG CATEGORY
+out[] = xdtianyu/android-4.3#setLength#StringBuffer#NONE#METHOD#!subhasmore
+Subclass: https://github.com/xdtianyu/android-4.3/blob/d035e0af4a5927f615a24780a547cf08a9f6f61e/libcore/luni/src/main/java/java/lang/StringBuffer.java#L702
+Superclass: https://github.com/xdtianyu/android-4.3/blob/d035e0af4a5927f615a24780a547cf08a9f6f61e/libcore/luni/src/main/java/java/lang/AbstractStringBuilder.java#L559
+(too many instantiations, would be hard to find a useful one)
+
+	Super abstract, sub concrete. Super has no synchronization. Sub adds some
+	straightforward functionality in synchronized methods and proxies some
+	(all?) public super methods through a synchronized method.
+
+
+ID:08 - WRONG CATEGORY
+out[] = dextero/labyrinth#setRate#AbstractPlayer#METHOD#METHOD#!n
+Subclass: https://github.com/dextero/labyrinth/blob/b209b182e057bf839e727ecd3178e03ce282fb83/FMJ/src.ejmf/net/sf/fmj/ejmf/toolkit/media/AbstractPlayer.java#L337
+Superclass: https://github.com/dextero/labyrinth/blob/b209b182e057bf839e727ecd3178e03ce282fb83/FMJ/src.ejmf/net/sf/fmj/ejmf/toolkit/media/AbstractController.java#L399
+
+	Both abstract. Super synchronizes onto either "listeners" or "controls" when
+	modifying those instance variables or "this" for other instance variables.
+	Does not synchronize for get methods. Sub seems to do the same thing as
+	super synchronization wise.
+
+
+ID:09 - WRONG CATEGORY
+out[] = sladoled/platform_frameworks_base#handleMessage#SyncStorageEngine#NONE#BLOCK#!subhasmore
+Subclass: https://github.com/sladoled/platform_frameworks_base/blob/4499e0852405c4f153aa6a5b0e59ac6fc1d308c4/core/java/android/content/SyncStorageEngine.java#L333
+Superclass: https://github.com/sladoled/platform_frameworks_base/blob/4499e0852405c4f153aa6a5b0e59ac6fc1d308c4/core/java/android/os/Handler.java#L84
+
+Instantiation (returned as sub): https://github.com/sladoled/platform_frameworks_base/blob/4499e0852405c4f153aa6a5b0e59ac6fc1d308c4/core/java/android/content/SyncStorageEngine.java#L313
+	^^^ used only for tests, ignoring this one
+
+Instantiation (stored as sub): https://github.com/sladoled/platform_frameworks_base/blob/4499e0852405c4f153aa6a5b0e59ac6fc1d308c4/core/java/android/content/SyncStorageEngine.java#L323
+	^^^ used here : https://github.com/sladoled/platform_frameworks_base/blob/4499e0852405c4f153aa6a5b0e59ac6fc1d308c4/core/java/android/content/SyncManager.java#L298
+
+	Both concrete. Super synchronizes on a "mQueue" instance variable in one
+	small method for no apparent reason. No other synchronization in super. Sub
+	seems to synchronize almost everything on a "mAuthorities" instance var, but
+	not everything.
+
+	(for subclass)
+	Threading story: Many of the SyncManager's methods use mSyncStorageEngine.
+	It's hard to say whether a client of this class will share it among multiple
+	threads. Instead, it's easier to show that the mSyncAdapters.setListener()
+	call executes on a different thread (the syncThread). This listener calls
+	scheduleSync which modifies mSyncStorageEngine.
+
+
+ID:10
+out[] = jenkinsci/groovy#getLoadedClasses#InnerLoader#!BOTH#!NONE#!sprhasmore#!hasBlock
+Subclass: https://github.com/jenkinsci/groovy/blob/73ad9b61697e453fb334f0fe6eb3a9c3d66ce2ab/src/main/groovy/lang/GroovyClassLoader.java#L426
+Superclass: https://github.com/jenkinsci/groovy/blob/73ad9b61697e453fb334f0fe6eb3a9c3d66ce2ab/src/main/groovy/lang/GroovyClassLoader.java#L930
+
+Instantiation (returned as sub): https://github.com/jenkinsci/groovy/blob/73ad9b61697e453fb334f0fe6eb3a9c3d66ce2ab/src/main/groovy/lang/GroovyClassLoader.java#L493
+
+	Both concrete. Superclass synchronizes access to its 2 caches and a counter
+	variable. Subclass does no synchronization: it simply proxies the calls to
+	an instance variable named "delegate" which is of the superclass type.
+
+
+ID:11 - WRONG CATEGORY
+out[] = kfazz/android_packages_inputmethods_LatinIME#getWords#SynchronouslyLoadedUserBinaryDictionary#NONE#METHOD#!subhasmore
+Subclass: https://github.com/kfazz/android_packages_inputmethods_LatinIME/blob/247fe198135170703829c1d700c3898a81b31c48/java/src/com/android/inputmethod/latin/SynchronouslyLoadedUserBinaryDictionary.java#L35
+Superclass: https://github.com/kfazz/android_packages_inputmethods_LatinIME/blob/247fe198135170703829c1d700c3898a81b31c48/java/src/com/android/inputmethod/latin/ExpandableBinaryDictionary.java#L197
+
+Instantiation (as super): https://github.com/kfazz/android_packages_inputmethods_LatinIME/blob/247fe198135170703829c1d700c3898a81b31c48/java/src/com/android/inputmethod/latin/spellcheck/AndroidSpellCheckerService.java#L427
+
+	Super abstract, sub concrete. Super does not synchronize anything. Sub syncs
+	on the methods getWords and isValidWord.
+
+	Subclass thread: See instantiation. Placed in mUserDictionaries. Then in
+	closeAllDictionaries() it's placed in oldUserDictionaries which are then
+	closed on a different thread.
+
+ID:12
+Category: Library w/ instantiations
+out[] = ravila/TCC_Library#inverse#ProjectiveTransform2D#!BOTH#!NONE#!sprhasmore#!hasModifier
+Subclass: https://github.com/ravila/TCC_Library/blob/573b39f2901afe58bc55c3778f1a26d9213a205d/src_geotools/org/geotools/referencing/operation/transform/ProjectiveTransform2D.java#L48
+Superclass: https://github.com/ravila/TCC_Library/blob/573b39f2901afe58bc55c3778f1a26d9213a205d/src_geotools/org/geotools/referencing/operation/transform/ProjectiveTransform.java#L498
+
+Instantiation (returned as super): https://github.com/ravila/TCC_Library/blob/573b39f2901afe58bc55c3778f1a26d9213a205d/src_geotools/org/geotools/referencing/operation/transform/ProjectiveTransform2D.java#L57
+Instantiation (returned as super): https://github.com/ravila/TCC_Library/blob/573b39f2901afe58bc55c3778f1a26d9213a205d/src_geotools/org/geotools/referencing/operation/transform/ProjectiveTransform.java#L161
+
+	Both concrete. inverse() is the ony synchronized thing in superclass.
+	Subclass just delegates to superclass.
+
+ID:13 - WRONG CATEGORY
+out[] = ElenaHudyakova/Chess-game-recognizer#updateAsciiStream#UpdatableResultSet#NONE#METHOD#!subhasmore
+Subclass: https://github.com/ElenaHudyakova/Chess-game-recognizer/blob/c2d5bfc6e6520e093506330006395cad10b624c6/chessRecognizer/mysql-connector-java-5.1.18/mysql-connector-java-5.1.18/src/com/mysql/jdbc/UpdatableResultSet.java#L1593
+Superclass: https://github.com/ElenaHudyakova/Chess-game-recognizer/blob/c2d5bfc6e6520e093506330006395cad10b624c6/chessRecognizer/mysql-connector-java-5.1.18/mysql-connector-java-5.1.18/src/com/mysql/jdbc/ResultSetImpl.java#L8015
+
+Instantiation (returned as super): https://github.com/ElenaHudyakova/Chess-game-recognizer/blob/c2d5bfc6e6520e093506330006395cad10b624c6/chessRecognizer/mysql-connector-java-5.1.18/mysql-connector-java-5.1.18/src/com/mysql/jdbc/ResultSetImpl.java#L376
+
+	Note: sub never actually instantiated. The above requires a bool arg to be
+	true, but is always false in the codebase.
+
+	Both concrete. Super just throws "NotUpdatable" exception. Sub implements it
+	and has all of its _public_ methods as synchronized.
+
+
+ID:14 - WRONG CATEGORY
+out[] = freemarker/freemarker#values#SynchronizedHash#NONE#BLOCK#!subhasmore
+Category: library
+Subclass: https://github.com/freemarker/freemarker-old/blob/34587c07e414810d6e7435a583ac9b1a1f776fc9/src/main/java/freemarker/template/SimpleHash.java#L390
+Superclass: https://github.com/freemarker/freemarker-old/blob/34587c07e414810d6e7435a583ac9b1a1f776fc9/src/main/java/freemarker/template/SimpleHash.java#L337
+
+Instantiation (returned as super): https://github.com/freemarker/freemarker-old/blob/34587c07e414810d6e7435a583ac9b1a1f776fc9/src/main/java/freemarker/template/SimpleHash.java#L342
+	^^^ never called
+
+Unrelated and only threading: https://github.com/freemarker/freemarker-old/blob/34587c07e414810d6e7435a583ac9b1a1f776fc9/src/main/java/freemarker/debug/impl/DebuggerServer.java#L60
+
+	Both concrete. Sub methods are synchronized, and just delegates the call to
+	the outer class instance.
+
+
+ID:15 - WRONG CATEGORY
+Category: library
+out[] = tingleshao/jrablo2D#getN#SynchronizedDescriptiveStatistics#NONE#METHOD#!subhasmore
+Subclass: https://github.com/tingleshao/jrablo2D/blob/87d8d70cf56dc6f7a2c83512d2cdcf614fcd8694/src/org/apache/commons/math3/stat/descriptive/SynchronizedDescriptiveStatistics.java#L106
+Superclass: https://github.com/tingleshao/jrablo2D/blob/87d8d70cf56dc6f7a2c83512d2cdcf614fcd8694/src/org/apache/commons/math3/stat/descriptive/DescriptiveStatistics.java#L302
+
+Instantiation (returned as sub): https://github.com/tingleshao/jrablo2D/blob/87d8d70cf56dc6f7a2c83512d2cdcf614fcd8694/src/org/apache/commons/math3/stat/descriptive/SynchronizedDescriptiveStatistics.java#L159
+
+	Neither are actually instantiated.
+
+	Both concrete. Superclass has some synchronized methods but doesnt sync the
+	getN one and others. Subclass seems to take the non-sync'd methods and
+	synchronize them.
+
+ID:16 - WRONG CATEGORY
+out[] = robbik/naw#putBoolean#SynchronizedBundle#NONE#METHOD#!subhasmore
+Subclass: https://github.com/robbik/naw/blob/0cf6591658d06b3a1c0eb083ddd6b26a3b6b5f08/naw-core/src/main/java/naw/os/SynchronizedBundle.java#L71
+Superclass: https://github.com/robbik/naw/blob/0cf6591658d06b3a1c0eb083ddd6b26a3b6b5f08/naw-core/src/main/java/naw/os/Bundle.java#L51
+
+Instantiation (returned as super): https://github.com/robbik/naw/blob/0cf6591658d06b3a1c0eb083ddd6b26a3b6b5f08/naw-core/src/main/java/naw/os/ProcessManager.java#L44
+	^^^ never called?
+
+	Both concrete. Super has some implementation. Sub overrides these with a
+	synchronized version that sets a instance var flag "mModified" & calls super
+
+ID:17 - WRONG CATEGORY
+out[] = OpenJunction/Openfire#getPublishedItem#LeafNode#NONE#BLOCK#!subhasmore
+Subclass: https://github.com/OpenJunction/Openfire/blob/545a1760ec70d4cd71202e002c6bfd17a26a273d/src/java/org/jivesoftware/openfire/pubsub/LeafNode.java#L364
+Superclass: https://github.com/OpenJunction/Openfire/blob/545a1760ec70d4cd71202e002c6bfd17a26a273d/src/java/org/jivesoftware/openfire/pubsub/Node.java#L2086
+
+Instantiation (as super): https://github.com/OpenJunction/Openfire/blob/545a1760ec70d4cd71202e002c6bfd17a26a273d/src/java/org/jivesoftware/openfire/pubsub/PubSubPersistenceManager.java#L575
+Instantiation (as sub): https://github.com/OpenJunction/Openfire/blob/545a1760ec70d4cd71202e002c6bfd17a26a273d/src/java/org/jivesoftware/openfire/pep/IQPEPHandler.java#L339
+Instantiation (as super): https://github.com/OpenJunction/Openfire/blob/545a1760ec70d4cd71202e002c6bfd17a26a273d/src/java/org/jivesoftware/openfire/pubsub/PubSubEngine.java#L1163
+
+	Super abstract, sub concrete. Super does no synchronization and does not
+	implement this particular method (just returns null). Sub does implement it
+	and synchronizes all access to a "itemsByID" and "publishedItems"
+	collection.
+
+ID:18
+out[] = SiteView/NNM_CSS#communicate#JMSCommunicationWorkQueueThread#!BOTH#!NONE#!sprhasmore#!hasBlock
+Subclass: https://github.com/SiteView/NNM_CSS/blob/d2f8e792bea6d6164bffb1eed8990c166dec5d1f/org.csstudio.alarm.beast/src/org/csstudio/alarm/beast/JMSCommunicationWorkQueueThread.java#L47
+Superclass: https://github.com/SiteView/NNM_CSS/blob/d2f8e792bea6d6164bffb1eed8990c166dec5d1f/org.csstudio.alarm.beast/src/org/csstudio/alarm/beast/JMSCommunicationThread.java#L168
+(no instantiations)
+
+	Both abstract. Super's implementation of the method is entirely synchronized
+	(to "this"). Sub has a "WorkQueue" that it calls with no synchronization.
+
+ID:19
+out[] = JonKjaersgaard/alt-ussr#runSimulation#OdinSandboxSimulation#!BOTH#!NONE#!sprhasmore#!hasBlock
+Subclass: https://github.com/JonKjaersgaard/alt-ussr/blob/3b5ffca59b4eed73cc9c35d7817bb9ab1734d3d8/src/ussr/samples/odin/simulations/OdinSandboxSimulation.java#L40
+Superclass: https://github.com/JonKjaersgaard/alt-ussr/blob/3b5ffca59b4eed73cc9c35d7817bb9ab1734d3d8/src/ussr/samples/GenericSimulation.java#L45
+
+Instantiation (for method call): https://github.com/JonKjaersgaard/alt-ussr/blob/3b5ffca59b4eed73cc9c35d7817bb9ab1734d3d8/src/ussr/samples/odin/simulations/OdinSandboxSimulation.java#L37
+
+	Super abstract, sub concrete. Super synchronizes on a class rather than
+	instance to call notifyAll on the class. Sub reimplements method and does
+	nothing like that.
+
+	Instantiation: sub is instantiated and the method is called, no further use
+
+ID:20
+out[] = inferiorhumanorgans/WayToGo#init#ACTransit#!BOTH#!NONE#!sprhasmore#!hasModifier
+Subclass: https://github.com/inferiorhumanorgans/WayToGo/blob/602ed574ad1ce98111227b6fc292f7afb97fd02e/src/com/inferiorhumanorgans/WayToGo/Agency/ACTransit.java#L53
+Superclass: https://github.com/inferiorhumanorgans/WayToGo/blob/602ed574ad1ce98111227b6fc292f7afb97fd02e/src/com/inferiorhumanorgans/WayToGo/Agency/NextBus/NextBusAgency.java#L54
+(no instantiations)
+
+	Both abstract. Much of the superclass methods are synchronized, though
+	seemingly at random. Subclass method calls super and then instantiates one
+	of the super's protected variables if it's null.
+
+ID:21
+out[] = wnt-zhp/zarlock-1.0#performQuery#QueriedProductBase#!BOTH#!NONE#!sprhasmore#!hasModifier
+Subclass: https://github.com/wnt-zhp/zarlock-1.0/blob/e1ed024e2617b4ba117da9fe357fc0fa93e186e0/zzProductBase/QueriedProductBase.java#L59
+Superclass: https://github.com/wnt-zhp/zarlock-1.0/blob/e1ed024e2617b4ba117da9fe357fc0fa93e186e0/zzProductBase/SimpleProductBase.java#L68
+
+Instantiation (see the submethod, only instantiation in codebase, unused object?)
+
+	Both concrete. Superclass has some synchronization. Subclass seems to
+	override many methods and adds no synchronization. Submethod implementation
+	is quite different from the supermethod.
+
+ID:22
+out[] = neelance/jre4ruby#implCloseSelectableChannel#InheritedDatagramChannelImpl#!BOTH#!NONE#!sprhasmore#!hasBlock
+Subclass: https://github.com/neelance/jre4ruby/blob/c140e4102416852c0492f73850418889eba6dac7/jre4ruby/src/solaris/sun/nio/ch/InheritedChannel.java#L119
+Superclass: https://github.com/neelance/jre4ruby/blob/c140e4102416852c0492f73850418889eba6dac7/jre4ruby/src/share/sun/nio/ch/DatagramChannelImpl.java#L587
+
+Instantiation (returned as super): https://github.com/neelance/jre4ruby/blob/c140e4102416852c0492f73850418889eba6dac7/jre4ruby/src/solaris/sun/nio/ch/InheritedChannel.java#L195
+	^^^ static method that doesn't appear to be called anywhere
+
+	Both concrete. Superclass has 3 different locks (read / write / state) and
+	applies the state one to this method. Submethod calls supermethod and
+	another (native) method.
+
+ID:23
+out[] = charlescearl/VirtualMesos#close#CompositeContext#!BOTH#!NONE#!sprhasmore#!hasModifier
+Subclass: https://github.com/charlescearl/VirtualMesos/blob/114c0e8f277d382ff69b98bb50d72b162733d3ef/frameworks/hadoop-0.20.2/src/core/org/apache/hadoop/metrics/spi/CompositeContext.java#L133
+Superclass: https://github.com/charlescearl/VirtualMesos/blob/114c0e8f277d382ff69b98bb50d72b162733d3ef/frameworks/hadoop-0.20.2/src/core/org/apache/hadoop/metrics/spi/AbstractMetricsContext.java#L186
+
+(no instantiations)
+
+	Super abstract, sub concrete. Super synchronized some of its methods
+	including close(). Sub calls close() on each in a set of superinterface
+	objects. Sub has no synchronization.
+
+ID:24
+out[] = guoliqiang/coding#start#ApplicationMasterService#!BOTH#!NONE#!sprhasmore#!hasModifier
+Subclass: https://github.com/guoliqiang/coding/blob/bb1a40636f2eb1bb66ba7d829444c3729756a38f/third_part/hadoop_src/hadoop-2.0.5-alpha-src/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/main/java/org/apache/hadoop/yarn/server/resourcemanager/ApplicationMasterService.java#L97
+Superclass: https://github.com/guoliqiang/coding/blob/bb1a40636f2eb1bb66ba7d829444c3729756a38f/third_part/hadoop_src/hadoop-2.0.5-alpha-src/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-common/src/main/java/org/apache/hadoop/yarn/service/AbstractService.java#L90
+
+Instantiations (returned as sub): https://github.com/guoliqiang/coding/blob/bb1a40636f2eb1bb66ba7d829444c3729756a38f/third_part/hadoop_src/hadoop-2.0.5-alpha-src/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/main/java/org/apache/hadoop/yarn/server/resourcemanager/ResourceManager.java#L639
+	^^^ called only in that code file, saves it to instance variable as sub
+
+	Super abstract, sub concrete. Supermethod synchronized. Submethod is not but
+	has some logic and then calls supermethod.
+
+
+ID:25
+out[] = concord-consortium/teemss#gotInfo#ProbeClient#!BOTH#!NONE#!sprhasmore#!hasBlock
+Subclass: https://github.com/concord-consortium/teemss/blob/23b9460f040a77bc6c40a63547fc79167daa5a59/Archive/ProbeSystem/source/ProbeClient.java#L77
+Superclass: https://github.com/concord-consortium/teemss/blob/23b9460f040a77bc6c40a63547fc79167daa5a59/Archive/ProbeSystem/source/ManagerWorker.java#L57
+
+Instantiation (local as sub): https://github.com/concord-consortium/teemss/blob/23b9460f040a77bc6c40a63547fc79167daa5a59/Archive/ProbeSystem/source/ProbeSystem.java#L95
+	^^^ sub is used to start a thread
+
+Super-instantiation (as super): https://github.com/concord-consortium/teemss/blob/23b9460f040a77bc6c40a63547fc79167daa5a59/Archive/ProbeSystem/source/ProbeSystem.java#L62
+Super-instantiation (as super): https://github.com/concord-consortium/teemss/blob/23b9460f040a77bc6c40a63547fc79167daa5a59/Archive/ProbeSystem/source/ProbeSystem.java#L70
+	^^^ both used to start threads
+
+	Both concrete. Submethod just returned "true" whereas supermethod does some
+	work and synchronizes on any access to a "probes" instance variable.
+
+
+ID:26
+out[] = tinalatif/odd#requestMove#OddBoardPanel#!BOTH#!NONE#!sprhasmore#!hasModifier
+Subclass: https://github.com/tinalatif/odd/blob/d9d98ccf3095e20296804ec1a00f197b31b68773/src/odd/OddBoardPanel.java#L39
+Superclass: https://github.com/tinalatif/odd/blob/d9d98ccf3095e20296804ec1a00f197b31b68773/src/boardgame/BoardPanel.java#L83
+
+Instantiated (as super): https://github.com/tinalatif/odd/blob/d9d98ccf3095e20296804ec1a00f197b31b68773/src/odd/OddBoard.java#L280
+
+Thread (sub used): https://github.com/tinalatif/odd/blob/master/src/boardgame/HumanPlayer.java#L13
+	^^^ sub is set up in constructor (thread A) and used later in event thread (thread B)
+
+Thread start: https://github.com/tinalatif/odd/blob/d9d98ccf3095e20296804ec1a00f197b31b68773/src/boardgame/ServerGUI.java#L174
+	^^^ The Client object seems to interact with the board, but use their own
+	=> no board sharing so no concurrency bugs
+
+	Both concrete. The 2 sync'd supermethods are pointlessly sync'd: one throws
+	a UOE exception the other does nothing. Submethod doesn't bother with
+	synchronization.
+
+	Super is never instantiated. Board is abstract and OddBoard is not but only
+	gives an OddBoardPanel.
+
+
+ID:27
+out[] = panbasten/BA#hasChanged#JobMeta#!BOTH#!NONE#!sprhasmore#!hasModifier
+Subclass: https://github.com/panbasten/BA/blob/ba58acf949af1249cc637ccf50702bb28462d8ad/kettle/kettle-base/src/main/java/org/pentaho/di/job/JobMeta.java#L531
+Superclass: https://github.com/panbasten/BA/blob/ba58acf949af1249cc637ccf50702bb28462d8ad/kettle/kettle-base/src/main/java/org/pentaho/di/core/changed/ChangedFlag.java#L81
+
+(lots of instantiations)
+
+Maybe related to threading?: https://github.com/panbasten/BA/blob/ba58acf949af1249cc637ccf50702bb28462d8ad/kettle/kettle-base/src/main/java/org/pentaho/di/www/AddExportServlet.java#L149
+
+	Both concrete. Super synchronizes all access - it's thread-safe. Sub does
+	not bother with thread-safety at all and is hugely more complicated.
+
+ID:28
+out[] = researchstudio-sat/ldspider4won#addABox#LinkFilterPrefix#!BOTH#!NONE#!sprhasmore#!hasModifier
+Subclass: https://github.com/researchstudio-sat/ldspider4won/blob/100e3c841760add557defd090a1f559ce89b0285/src/com/ontologycentral/ldspider/hooks/links/LinkFilterPrefix.java#L42
+Superclass: https://github.com/researchstudio-sat/ldspider4won/blob/100e3c841760add557defd090a1f559ce89b0285/src/com/ontologycentral/ldspider/hooks/links/LinkFilterDefault.java#L89
+
+(no nontest instantiations for subclass)
+
+Super-type used in multiple threads: https://github.com/researchstudio-sat/ldspider4won/blob/100e3c841760add557defd090a1f559ce89b0285/src/com/ontologycentral/ldspider/Crawler.java#L285
+
+	Both concrete. Super methods except for setters are synchronized. Sub
+	doesn't bother synchronizing anything. Possible problem if sub used by
+	multiple threads?
+
+ID:29
+Category: library
+out[] = andreamoruno/Mora-Ormj#addDropTarget#WFileDialogPeer#!BOTH#!NONE#!sprhasmore#!hasModifier
+Subclass: https://github.com/andreamoruno/Mora-Ormj/blob/14174b243926d3708c9733c23453bdb273f48e48/test/Mora/Ormj/java/openjdk-6-src-b27/jdk/src/windows/classes/sun/awt/windows/WFileDialogPeer.java#L225
+Superclass: https://github.com/andreamoruno/Mora-Ormj/blob/14174b243926d3708c9733c23453bdb273f48e48/test/Mora/Ormj/java/openjdk-6-src-b27/jdk/src/windows/classes/sun/awt/windows/WComponentPeer.java#L746
+
+(no nontest instantiations)
+
+	Note: This inheritance hierarchy is rather large. Superclass is several
+	levels above the subclass.
+
+	Super abstract, sub concrete. Supermethod synchronized with logic, submethod
+	has no synchronization and an empty method body. Sub has no synchronization.
+
+ID:30
+out[] = anbangr/trusted-mr#start#AuxServices#!BOTH#!NONE#!sprhasmore#!hasModifier
+Subclass: https://github.com/anbangr/trusted-mr/blob/efca1518be069e051e78614d1d71057cb79807ee/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/containermanager/AuxServices.java#L117
+Superclass: https://github.com/anbangr/trusted-mr/blob/efca1518be069e051e78614d1d71057cb79807ee/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-common/src/main/java/org/apache/hadoop/yarn/service/AbstractService.java#L90
+
+ID:31
+out[] = alm59321/ast#receive#SynchronizedChannel#!BOTH#!NONE#!sprhasmore#!hasModifier
+Subclass: https://github.com/albertomontesg/ast/blob/5dd83d80e0943c8d7c6e40f378c5f34f66ca3bd1/Monitors/Table/TSynchronousChannel.java#L43
+Superclass: https://github.com/albertomontesg/ast/blob/5dd83d80e0943c8d7c6e40f378c5f34f66ca3bd1/Monitors/Table/TSynchronousChannel.java#L26
+
+ID:32
+out[] = Rowanto/greenfoot-for-algorithm#reload#GCoreClass#!BOTH#!NONE#!sprhasmore#!hasModifier
+Subclass: https://github.com/Rowanto/greenfoot-for-algorithm/blob/4a4b7598f52dbc0b1e7d989eaaa3d01f07a36477/greenfoot/src/greenfoot/core/GCoreClass.java#L161
+Superclass: https://github.com/Rowanto/greenfoot-for-algorithm/blob/4a4b7598f52dbc0b1e7d989eaaa3d01f07a36477/greenfoot/src/greenfoot/core/GClass.java#L594
+
+ID:33
+out[] = ekirkilevics/Spring#doStart#SimpleMessageListenerContainer#!BOTH#!NONE#!sprhasmore#!hasBlock
+Subclass: https://github.com/ekirkilevics/Spring/blob/f911dd1f0f0b51148bb7c8344261d3cd8cdfa7b0/spring-jms/src/main/java/org/springframework/jms/listener/SimpleMessageListenerContainer.java#L223
+Superclass: https://github.com/ekirkilevics/Spring/blob/f911dd1f0f0b51148bb7c8344261d3cd8cdfa7b0/spring-jms/src/main/java/org/springframework/jms/listener/AbstractJmsListeningContainer.java#L277
+
+ID:34
+out[] = thoral/M223JavaOopDb#close#SuspendableXAConnection#!BOTH#!NONE#!sprhasmore#!hasModifier
+Subclass: https://github.com/wegnerthorsten/M223JavaOopDb/blob/40d39992a2c111c53f01d60ecf6ef827fc674a65/bibliotheken/mysql-connector-java-5.1.22/src/com/mysql/jdbc/jdbc2/optional/SuspendableXAConnection.java#L204
+Superclass: https://github.com/wegnerthorsten/M223JavaOopDb/blob/40d39992a2c111c53f01d60ecf6ef827fc674a65/bibliotheken/mysql-connector-java-5.1.22/src/com/mysql/jdbc/jdbc2/optional/MysqlPooledConnection.java#L202
+
+ID:35
+out[] = sdzahed/LBC#activeObject#ActivationSystemImpl#!BOTH#!NONE#!sprhasmore#!hasBlock
+Subclass: https://github.com/sdzahed/LBC/blob/49a69a8513ea412b49899f3b93c5015e16343535/gcc-4.6.2/libjava/classpath/tools/gnu/classpath/tools/rmid/ActivationSystemImpl.java#L128
+Superclass: https://github.com/sdzahed/LBC/blob/49a69a8513ea412b49899f3b93c5015e16343535/gcc-4.6.2/libjava/classpath/gnu/java/rmi/activation/ActivationSystemTransient.java#L338
+
+ID:36
+out[] = Morriar/ProxyJDK#paint#CellRendererPane#!BOTH#!NONE#!sprhasmore#!hasBlock
+Subclass: https://github.com/Morriar/ProxyJDK/blob/d79661361c323537953403799d0f04ba3ce45a23/jdk/src/share/classes/javax/swing/CellRendererPane.java#87
+Superclass: https://github.com/Morriar/ProxyJDK/blob/d79661361c323537953403799d0f04ba3ce45a23/jdk/src/share/classes/java/awt/Container.java#L1951
+
+ID:37
+out[] = jruyi/jruyi#stopInternal#ShortConn#!BOTH#!NONE#!sprhasmore#!hasLock
+Subclass: https://github.com/jruyi/jruyi/blob/88e45edb8c99246fd65401b5a1870530449e4b50/io/src/main/java/org/jruyi/io/tcpclient/ShortConn.java#L145
+Superclass: https://github.com/jruyi/jruyi/blob/88e45edb8c99246fd65401b5a1870530449e4b50/io/src/main/java/org/jruyi/io/tcpclient/AbstractTcpClient.java#L214
+
+	NOTE: Relying on previous version of repository. According to commit history
+	the locking was removed on the superclass.
+
+ID:38
+out[] = yvens47/Portfolio#setNCharacterStream#JDBC4ServerPreparedStatement#!BOTH#!NONE#!sprhasmore#!hasBlock
+Subclass: https://github.com/yvens47/Portfolio/blob/6758a4817944e136ef58a91d46bc2fb47fe93ed6/mysql-connector-java-5.1.22/src/com/mysql/jdbc/JDBC4ServerPreparedStatement.java#L52
+Superclass: https://github.com/yvens47/Portfolio/blob/6758a4817944e136ef58a91d46bc2fb47fe93ed6/mysql-connector-java-5.1.22/src/com/mysql/jdbc/PreparedStatement.java#L5472
+
+Subclass's checkClosed() reference: https://github.com/yvens47/Portfolio/blob/6758a4817944e136ef58a91d46bc2fb47fe93ed6/mysql-connector-java-5.1.22/src/com/mysql/jdbc/ServerPreparedStatement.java#L537
+	NOTE: Many other methods are overridden in this class too
+
+ID:39
+out[] = sethish-mirrors/MI424WR_GEN2_Rev_E-F#close#AlsaSequencerTransmitter#!BOTH#!NONE#!sprhasmore#!hasBlock
+Subclass: https://github.com/sethish-mirrors/MI424WR_GEN2_Rev_E-F/blob/3f8dc4b62000af1487961bfc9ee0eeb2f29c65e1/rg/pkg/kaffe/libraries/javalib/org/tritonus/midi/device/alsa/AlsaSequencer.java#L873
+Superclass: https://github.com/sethish-mirrors/MI424WR_GEN2_Rev_E-F/blob/3f8dc4b62000af1487961bfc9ee0eeb2f29c65e1/rg/pkg/kaffe/libraries/javalib/org/tritonus/share/midi/TMidiDevice.java#L498
+
+ID:40
+out[] = Scorpiion/Renux_cross_gcc#removeAll#JTabbedPane#!BOTH#!NONE#!sprhasmore#!hasBlock
+Subclass: https://github.com/Scorpiion/Renux_cross_gcc/blob/109c64a9f1386541d1636958a2462ab7578be031/gcc-4.5.0/libjava/classpath/javax/swing/JTabbedPane.java#L1303
+Superclass: https://github.com/Scorpiion/Renux_cross_gcc/blob/109c64a9f1386541d1636958a2462ab7578be031/gcc-4.5.0/libjava/classpath/java/awt/Container.java#L491
+
+Submethod first calls transitively model.getSelectedIndex() and model.setSelectedIndex().
+For each loop, calls tabs.size(), and removeTabAt(i).
+
+`model` appears to be: https://github.com/Scorpiion/Renux_cross_gcc/blob/109c64a9f1386541d1636958a2462ab7578be031/gcc-4.5.0/libjava/classpath/javax/swing/DefaultSingleSelectionModel.java#L54
+(note: not a thread-safe object)
+
+ID:41
+out[] = panfudonan/mx535#close#AutoCloseInputStream#!BOTH#!NONE#!sprhasmore#!hasBlock
+Subclass: https://github.com/panfudonan/mx535/blob/1ffc16ea2d332c8ff08063c54f59c46a4f23f6ed/frameworks/base/core/java/android/os/ParcelFileDescriptor.java#L212
+Superclass: https://github.com/panfudonan/mx535/blob/1ffc16ea2d332c8ff08063c54f59c46a4f23f6ed/libcore/luni/src/main/java/java/io/FileInputStream.java#L148
+
+ID:42
+out[] = awh/openjdk7#write#SignerOutputStream#!BOTH#!NONE#!sprhasmore#!hasModifier
+Subclass: https://github.com/awh/openjdk7/blob/3219421d4caa28991c1102bbcec18356ee006e4b/jdk/src/share/classes/org/jcp/xml/dsig/internal/SignerOutputStream.java#L69
+Superclass: https://github.com/awh/openjdk7/blob/3219421d4caa28991c1102bbcec18356ee006e4b/jdk/src/share/classes/java/io/ByteArrayOutputStream.java#L135
+
+ID:43
+out[] = awh/openjdk7#getEntry#JvmMemGCTableMetaImpl#!BOTH#!NONE#!sprhasmore#!hasModifier
+Subclass: https://github.com/awh/openjdk7/blob/3219421d4caa28991c1102bbcec18356ee006e4b/jdk/src/share/classes/sun/management/snmp/jvminstr/JvmMemGCTableMetaImpl.java#L277
+Superclass: https://github.com/awh/openjdk7/blob/3219421d4caa28991c1102bbcec18356ee006e4b/jdk/src/share/classes/com/sun/jmx/snmp/agent/SnmpMibTable.java#L679
+
+Note: in the codebase, `theMib` appears to only possibly be class `JVM_MANAGEMENT_MIB_IMPL`.
+The `getRegisteredTableMeta()` method is in its superclass accesses a final HashTable,
+which is synchronized.
+
+ID:44
+out[] = terraframe/Runway-SDK#hasAddedChildren#ThreadTransactionCache#!BOTH#!NONE#!sprhasmore#!hasLock
+Subclass: https://github.com/terraframe/Runway-SDK/blob/b9120bcf92a60d420d907a328479468f56de2d05/runwaysdk-server/src/main/java/com/runwaysdk/dataaccess/transaction/ThreadTransactionCache.java#L147
+Superclass: https://github.com/terraframe/Runway-SDK/blob/02864b931966a14006d350b7a3c45f35cfe4b15b/runwaysdk-server/src/main/java/com/runwaysdk/dataaccess/transaction/AbstractTransactionCache.java#L1076
+
+ID:45
+out[] = srisatish/openjdk#paint#DrawPanel#!BOTH#!NONE#!sprhasmore#!hasBlock
+Subclass: https://github.com/srisatish/openjdk/blob/6ffc2d129dbe05c358663364e705393c2d7322a1/jdk/src/share/demo/applets/DrawTest/DrawTest.java#L163
+Superclass: https://github.com/srisatish/openjdk/blob/6ffc2d129dbe05c358663364e705393c2d7322a1/jdk/src/share/classes/java/awt/Container.java#L1828
+
+ID:46
+out[] = sghr/iGeo#weight#IStraightenerCurve#!BOTH#!NONE#!sprhasmore#!hasModifier
+Subclass: https://github.com/sghr/iGeo/blob/112d6e73998bc6daf50dfffb567cf2e7dccc5383/IStraightenerCurve.java#L166
+Superclass: https://github.com/sghr/iGeo/blob/112d6e73998bc6daf50dfffb567cf2e7dccc5383/ICurve.java#L696
+
+ID:47
+out[] = Distrotech/apache-ant#setDir#ArchiveFileSet#!BOTH#!NONE#!sprhasmore#!hasModifier
+Subclass: https://github.com/Distrotech/apache-ant/blob/dc303c3c71349115b7c5b6a29dd22ba410597748/src/main/org/apache/tools/ant/types/ArchiveFileSet.java#L109
+Superclass: https://github.com/Distrotech/apache-ant/blob/dc303c3c71349115b7c5b6a29dd22ba410597748/src/main/org/apache/tools/ant/types/AbstractFileSet.java#L129
+
+ID:48
+out[] = JerryLead/Hadoop-0.20.2-LJX#addFetchFailedMap#ReduceTaskStatus#!BOTH#!NONE#!sprhasmore#!hasModifier
+Subclass: https://github.com/JerryLead/Hadoop-0.20.2-LJX/blob/96df6bb56921f7417fd0c458111476a266785f15/src/mapred/org/apache/hadoop/mapred/ReduceTaskStatus.java#L96
+Superclass: https://github.com/JerryLead/Hadoop-0.20.2-LJX/blob/96df6bb56921f7417fd0c458111476a266785f15/src/mapred/org/apache/hadoop/mapred/TaskStatus.java#L265
+
+ID:49
+out[] = miorel/lawu#remove#JInternalFrame#!BOTH#!NONE#!sprhasmore#!hasBlock
+Subclass: https://github.com/miorel/lawu/blob/aac0e4c0ecf9b19b181fecea8dc01ab5d3a16198/trunk/lib/openjdk/jdk/src/share/classes/javax/swing/JInternalFrame.java#L517
+Superclass: https://github.com/miorel/lawu/blob/aac0e4c0ecf9b19b181fecea8dc01ab5d3a16198/trunk/lib/openjdk/jdk/src/share/classes/java/awt/Container.java#L1239
+
+ID:50
+out[] = miorel/lawu#getActiveWindow#DelegatingDefaultFocusManager#!BOTH#!NONE#!sprhasmore#!hasBlock
+Subclass: https://github.com/miorel/lawu/blob/aac0e4c0ecf9b19b181fecea8dc01ab5d3a16198/trunk/lib/openjdk/jdk/src/share/classes/javax/swing/DelegatingDefaultFocusManager.java#L88
+Superclass: https://github.com/miorel/lawu/blob/aac0e4c0ecf9b19b181fecea8dc01ab5d3a16198/trunk/lib/openjdk/jdk/src/share/classes/java/awt/KeyboardFocusManager.java#L852
+
+ID:51
+out[] = westcripp/frameworks_base#surfaceChanged#RsRenderStatesView#!BOTH#!NONE#!sprhasmore#!hasBlock
+Subclass: https://github.com/westcripp/frameworks_base/blob/73b561e91d1f50f0b22d391b594b1c740978fe7f/tests/RenderScriptTests/MiscSamples/src/com/example/android/rs/miscsamples/RsRenderStatesView.java#L53
+Superclass: https://github.com/westcripp/frameworks_base/blob/73b561e91d1f50f0b22d391b594b1c740978fe7f/graphics/java/android/renderscript/RSSurfaceView.java#L105
+
+	NOTE: The directory of the subclass starts with "tests", but appears to be
+	samples rather than unit tests and the like.
+
+ID:52
+out[] = sbrissen/tsmpoolparty_frameworks_base#openRawResourceFd#BridgeResources#!BOTH#!NONE#!sprhasmore#!hasBlock
+Subclass: https://github.com/sbrissen/tsmpoolparty_frameworks_base/blob/b2b88dcd0bfbacc97bde4ae9182451202dd8be60/tools/layoutlib/bridge/src/com/android/layoutlib/bridge/android/BridgeResources.java#L615
+Superclass: https://github.com/sbrissen/tsmpoolparty_frameworks_base/blob/b2b88dcd0bfbacc97bde4ae9182451202dd8be60/core/java/android/content/res/Resources.java#L882
+
+ID:53
+out[] = guizmaii/SourceCodeAnalysis#mark#DeflaterInputStream#!BOTH#!NONE#!sprhasmore#!hasModifier
+Subclass: https://github.com/guizmaii/SourceCodeAnalysis/blob/073b7bda7316269b02ee4bd2e497147a6bcc88c5/src/main/resources/tools/dataset-src/java/util/zip/DeflaterInputStream.java#L265
+Superclass: https://github.com/guizmaii/SourceCodeAnalysis/blob/073b7bda7316269b02ee4bd2e497147a6bcc88c5/src/main/resources/tools/dataset-src/java/io/FilterInputStream.java#L174
+
+ID:54
+out[] = sstalin/AppBuilder#handleInternalException#CompilationUnitResolver#!BOTH#!NONE#!sprhasmore#!hasBlock
+Subclass: https://github.com/sstalin/AppBuilder/blob/71e4c63beadfa8477ba22a8241fcc9d0e60afb15/Groovy/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/CompilationUnitResolver.java#L360
+Superclass: https://github.com/sstalin/AppBuilder/blob/71e4c63beadfa8477ba22a8241fcc9d0e60afb15/Groovy/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/Compiler.java#L617
+
+ID:55
+out[] = zseymour/edu.iup.chem.inventory#callAppenders#NOPLogger#!BOTH#!NONE#!sprhasmore#!hasBlock
+Subclass: https://github.com/zseymour/edu.iup.chem.inventory/blob/107fa6ebde52ff5eaf91e00f97775f6306c5c1b4/ChemInventory/lib/log4j/src/main/java/org/apache/log4j/spi/NOPLogger.java#L55
+Superclass: https://github.com/zseymour/edu.iup.chem.inventory/blob/107fa6ebde52ff5eaf91e00f97775f6306c5c1b4/ChemInventory/lib/log4j/src/main/java/org/apache/log4j/Category.java#L199
+
+ID:56
+out[] = visad/visad#resample#FlatField#!BOTH#!NONE#!sprhasmore#!hasBlock
+Subclass: https://github.com/visad/visad/blob/2e1eee9a1d38580246f1c314454020adf8bc78e4/core/src/visad/FlatField.java#L4511
+Superclass: https://github.com/visad/visad/blob/2e1eee9a1d38580246f1c314454020adf8bc78e4/core/src/visad/FieldImpl.java#L2856
+
+ID:57
+out[] = packetpirate/Generic-Zombie-Shooter#resetAmmo#Handgun#!BOTH#!NONE#!sprhasmore#!hasBlock
+Subclass: https://github.com/packetpirate/Generic-Zombie-Shooter/blob/25425458901b6ad2c6f02bfba5e3c92a0bae47d8/GenericZombieShooter/src/genericzombieshooter/structures/weapons/Handgun.java#L66
+Superclass: https://github.com/packetpirate/Generic-Zombie-Shooter/blob/25425458901b6ad2c6f02bfba5e3c92a0bae47d8/GenericZombieShooter/src/genericzombieshooter/structures/weapons/Weapon.java#L80
+
+ID:58
+out[] = doslab/gcc-designated-initializer-support-cpp#getGraphicsConfiguration#Window#!BOTH#!NONE#!sprhasmore#!hasBlock
+Subclass: https://github.com/doslab/gcc-designated-initializer-support-cpp/blob/78015ede7b6a7e7d3fc216cc7482b7174fc263e0/libjava/classpath/java/awt/Window.java#L1065
+Superclass: https://github.com/doslab/gcc-designated-initializer-support-cpp/blob/78015ede7b6a7e7d3fc216cc7482b7174fc263e0/libjava/classpath/java/awt/Component.java#L729
+
+	NOTE: superclass defines `graphicsConfig` but does not assign it. Subclass
+	does assignment only in the constructor.
+
+ID:59
+out[] = Bajee11/Mms#onDeleteComplete#ThreadListQueryHandler#!BOTH#!NONE#!sprhasmore#!hasBlock
+Subclass: https://github.com/Bajee11/Mms/blob/a86b7c96f80d29b1972da85667c2fa6512359836/src/com/android/mms/ui/ConversationList.java#L830
+Superclass: https://github.com/Bajee11/Mms/blob/a86b7c96f80d29b1972da85667c2fa6512359836/src/com/android/mms/data/Conversation.java#L786
+
+ID:60
+out[] = NEXUS-EVO/frameworks_base#onDestroy#FrameworkPerfActivity#!BOTH#!NONE#!sprhasmore#!hasBlock
+Subclass: https://github.com/NEXUS-EVO/frameworks_base/blob/8371f5810b2037b59ad927cce264f8f30a51c324/tests/FrameworkPerf/src/com/android/frameworkperf/FrameworkPerfActivity.java#L241
+Superclass: https://github.com/NEXUS-EVO/frameworks_base/blob/8371f5810b2037b59ad927cce264f8f30a51c324/core/java/android/app/Activity.java#L1401
+
+ID:61
+out[] = xdtianyu/android-4.3#println#Stream#!BOTH#!NONE#!sprhasmore#!hasModifier
+Subclass: https://github.com/xdtianyu/android-4.3/blob/d035e0af4a5927f615a24780a547cf08a9f6f61e/libcore/luni/src/main/java/org/apache/harmony/xnet/provider/jsse/Logger.java#L56
+Superclass: https://github.com/xdtianyu/android-4.3/blob/d035e0af4a5927f615a24780a547cf08a9f6f61e/libcore/luni/src/main/java/java/io/PrintStream.java#L524
+
+ID:62
+out[] = akiellor/selenium#exists#JarResource#!BOTH#!NONE#!sprhasmore#!hasBlock
+Subclass: https://github.com/akiellor/selenium/blob/239490f9c5f3c7e7d4082bbe53c86eb5158d70a3/java/server/src/org/openqa/jetty/util/JarResource.java#L79
+Superclass: https://github.com/akiellor/selenium/blob/239490f9c5f3c7e7d4082bbe53c86eb5158d70a3/java/server/src/org/openqa/jetty/util/URLResource.java#L88
+
+ID:63
+out[] = deruelle/mobicents#invalidate#ClusteredSipSession#!BOTH#!NONE#!sprhasmore#!hasLock
+Subclass: https://github.com/deruelle/mobicents/blob/f2164e471d88ecebbb9253572b9f7bfa8ca2f58a/servers/sip-servlets/sip-servlets-jboss5/src/main/java/org/jboss/web/tomcat/service/session/ClusteredSipSession.java#L429
+Superclass: https://github.com/deruelle/mobicents/blob/f2164e471d88ecebbb9253572b9f7bfa8ca2f58a/servers/sip-servlets/sip-servlets-impl/src/main/java/org/mobicents/servlet/sip/core/session/SipSessionImpl.java#L650
+
+	NOTE: Now uses synchronized as opposed to lock objects.
+
+ID:64
+out[] = KeuleNCM/KeuleRepository#load#AntsForageWithUI#!BOTH#!NONE#!sprhasmore#!hasBlock
+Subclass: https://github.com/KeuleNCM/KeuleRepository/blob/071725bc2dc687cf5a6c1b9b3cdf50b55138ec2a/HiWi/src/sim/app/antsforage/AntsForageWithUI.java#L87
+Superclass: https://github.com/KeuleNCM/KeuleRepository/blob/071725bc2dc687cf5a6c1b9b3cdf50b55138ec2a/HiWi/src/sim/display/GUIState.java#L356

@@ -1,0 +1,11 @@
+Badge applied for: Reusable
+
+Reason for application:
+We include all relevant source files for producing our results, provide the raw
+Boa output that we analyzed, and provide our full case study including examples,
+analysis of examples, and categorizations. The artifact is consistent,
+well-structured, and complete. The code can be executed using the online Boa
+infrastructure, which allows the analyses to be easily repurposed and the
+results to be verified. The README and the case study files contain careful
+documentation that describes the data output, results, and the manual analysis
+and verification of the case study examples.

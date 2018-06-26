@@ -1,0 +1,1005 @@
+p: Project = input;
+
+# for outputting method pair information
+out: output collection of string;
+
+# for outputting aggregate values like number of method pairs
+stat: output sum[string] of int;
+
+
+########################################
+### Declarations ###
+########################################
+
+# maps the declaration name to its methods
+effects: map[string] of string;
+
+# maps the declaration to its superclass name
+supers: map[string] of string;
+
+# maps the declaration name to its static methods
+statics: map[string] of string;
+
+# (OUTDATED)
+# Format:
+# [decl name] =
+# methodName:(!n or !y calls super method):Exceptions,That,Are,Thrown:
+#     Arg,Type,Names:(!n or !y is abstract method)#nextMethodName
+#
+
+# When true, assumes that methods without branches do not throw exceptions
+IGNORE_NONBRANCHING_EXS := false;
+
+# when true, outputs places that seem to have superclass cycles
+OUTPUT_SUPER_CYCLES := false;
+
+OUTPUT_PAIR_INFO := true;
+
+INVALID_STR: string = "!INVALID!";
+UNKNOWN_TYPE_STR: string = "!UNKNOWN!";
+HAS_DUPES_STR: string = "!DUPLICATED!";
+
+MDX_NAME: int = 0;
+MDX_ARGTYPESTR: int = 1;
+MDX_PRIMARY_MODIFIER: int = 2;
+MDX_THROWS: int = 3;
+MDX_THROWSIG: int = 4;
+
+MOD_ABSTRACT: string = "A";
+MOD_PRIVATE:  string = "P";
+MOD_STATIC:   string = "S";
+MOD_CTOR:     string = "C";
+MOD_OTHER:    string = "O";
+
+
+########################################
+### Utility functions ###
+########################################
+safeSplit := function(str: string, reg: string) : array of string {
+	temp: array of string;
+
+	if (str == "") # empty string, empty list
+		return new(temp, 0, INVALID_STR);
+
+	return splitall(str, reg);
+};
+
+mergeStrArraySet :=
+	function(a1: array of string, a2: array of string):	array of string {
+
+	strMap: map[string] of bool;
+
+	foreach(i: int; def(a1[i])) {
+		strMap[a1[i]] = true;
+	}
+	foreach(i: int; def(a2[i])) {
+		strMap[a2[i]] = true;
+	}
+
+	return keys(strMap);
+};
+
+# assume each array has no duplicates
+isEq := function(ar1: array of string, ar2: array of string): bool {
+	if (len(ar1) != len(ar2)) {
+		return false;
+	}
+
+	foreach(i: int; def(ar1[i])) {
+		found: bool = false;
+		foreach(j: int; def(ar2[j])) {
+			if (ar1[i] == ar2[j]) {
+				found = true;
+				break;
+			}
+		}
+
+		if (!found) {
+			return false;
+		}
+	}
+
+	return true;
+};
+
+toList := function(arr: array of string): string {
+	outStr: string = "";
+	first: bool = true;
+
+	foreach(i: int; def(arr[i])) {
+		if (first) {
+			first = false;
+			outStr = outStr + arr[i];
+		} else {
+			outStr = outStr + "," + arr[i];
+		}
+	}
+
+	if (outStr == "") {
+		outStr = ",";
+	}
+
+	return outStr;
+};
+
+isConstructor := function (method: Method) : bool {
+	return method.name == "<init>";
+};
+
+isStatic := function (method: Method) : bool {
+	foreach(i: int; def(method.modifiers[i])) {
+		if (method.modifiers[i].kind == ModifierKind.STATIC) {
+			return true;
+		}
+	}
+	return false;
+};
+
+isAbstract := function(method: Method): bool {
+	foreach(i: int; def(method.modifiers[i])) {
+		if (method.modifiers[i].kind == ModifierKind.ABSTRACT) {
+			return true;
+		}
+	}
+	return false;
+};
+
+isPrivate := function(method: Method): bool {
+	foreach(i: int; def(method.modifiers[i])) {
+		mod := method.modifiers[i];
+		if (mod.kind == ModifierKind.VISIBILITY && mod.visibility == Visibility.PRIVATE) {
+			return true;
+		}
+	}
+	return false;
+};
+
+stripToTypeName := function(theType: string) : string {
+	loc := strrfind(".", theType); # note: the double r is intentional
+	if (loc != -1) {
+		return substring(theType, loc + 1); # +1 to ignore the dot
+	}
+	return theType;
+};
+
+XisSubsetY := function(sub: array of string, super: array of string) : bool {
+	# todo: replace with contains() if it works on arrays
+	# assume: super and sub are sets w/ no duplicates
+
+	foreach (i: int; def(sub[i])) {
+		found: bool = false;
+
+		foreach(j: int; def(super[j]))
+			if (sub[i] == super[j])
+				found = true;
+
+		if (!found) return false;
+	}
+
+	return true;
+};
+
+fileIsFilteredOut := function(root: ASTRoot) : bool {
+	found := false;
+	visit(root, visitor {
+		before _ -> if (found) stop;
+		before node: Modifier ->
+			if (node.kind == ModifierKind.ANNOTATION && node.annotation_name == "Test")
+				found = true;
+	});
+	return found;
+};
+
+########################################
+### New getsnapshot() ###
+########################################
+# getsnapshot - medium precision version
+# note: does not check AST hashes, and takes ~35mins on big dataset
+getsnapshot_mp := function(cr: CodeRepository, t: time)
+	: array of ChangedFile {
+
+	filter := "SOURCE_JAVA_JLS";
+	snapshot: map[string] of ChangedFile;
+	blacklist: set of string;
+
+	visit(cr, visitor {
+		before node: Revision -> {
+			if (node.commit_date > t) stop;
+
+			fKeys: map[ChangedFile] of string;
+			rFinal: map[string] of ChangedFile;
+
+			# apply filters and generate keys / hashes
+			foreach (i:int; def(node.files[i])) {
+				file := node.files[i];
+				if (!iskind(filter, file.kind)) continue;
+
+				ast: ASTRoot = getast(file);
+				if (len(ast.namespaces) != 1) continue;
+
+				parts := splitall(file.name, "/");
+				fileName := parts[len(parts) - 1];
+
+				fKeys[file] = ast.namespaces[0].name + "." + fileName;
+			}
+
+			# process each file
+			fList := keys(fKeys);
+			foreach (i: int; def(fList[i])) {
+				curr := fList[i];
+				if (def(rFinal[fKeys[curr]])) {
+					add(blacklist, fKeys[curr]);
+				} else {
+					rFinal[fKeys[curr]] = curr;
+				}
+			}
+
+			kList := keys(rFinal);
+			foreach(i: int; def(kList[i])) {
+				currKey := kList[i];
+				if (rFinal[currKey].change == ChangeKind.DELETED) {
+					remove(snapshot, currKey);
+				} else {
+					snapshot[currKey] = rFinal[currKey];
+				}
+			}
+		}
+	});
+
+	finalSnap: map[string] of ChangedFile;
+	finalKeys := keys(snapshot);
+	foreach (i:int; def(finalKeys[i])) {
+		k := finalKeys[i];
+		if (!contains(blacklist, k)) # not blacklisted
+			finalSnap[k] = snapshot[k];
+	}
+	return values(finalSnap);
+};
+
+
+########################################
+### Resolution code ###
+########################################
+resolvOut: output sum[string] of int;
+
+declImp: map[string] of string; # [decl] = {list of imports, # separated}
+declPkg: map[string] of string; # [decl] = {package}
+declNme: map[string] of string; # [decl] = {decl.namee}
+
+IMPORT_DELIM := "#";
+
+resolve := function(decl: string, ctx: string) : string {
+	if (!def(declPkg[ctx])) {
+		resolvOut["BAD_CONTEXT"] << 1;
+		return INVALID_STR; # no such context
+	}
+
+	# See if it's an inner class
+	inKey := ctx + "." + decl;
+	inName := declPkg[inKey];
+	if (def(inName) && inName != HAS_DUPES_STR) {
+		resolvOut["INNER_CLASS"] << 1;
+		return inKey;
+	}
+
+	# See if it's an outer class
+	oParts := safeSplit(ctx, "\\.");
+	oPkgParts := safeSplit(declPkg[ctx], "\\.");
+	oLB := len(oPkgParts); oUB := len(oParts) - 1; # oLB inclusive, oUB exclusive
+	for (i: int = oLB; i < oUB; i++) {
+		if (oParts[i] == decl) { # outer class, so try to reconstruct the key
+			outKey := declPkg[ctx];
+			for (k: int = oLB; k <= i; k++) {
+				outKey = outKey + "." + oParts[k];
+			}
+			outName := declPkg[outKey];
+			if (def(outName) && outName != HAS_DUPES_STR) {
+				resolvOut["OUTER_CLASS"] << 1;
+				return outKey;
+			} else {
+				resolvOut["OUTER_CLASS_FAILED_TO_RESOLVE"] << 1;
+				return INVALID_STR;
+			}
+		}
+	}
+
+	# set up to look at imports
+	imps := safeSplit(declImp[ctx], IMPORT_DELIM);
+	parts: array of string; # declaring it here prevents compiler breaking
+
+	# Fully qualified imports
+	foreach(i:int; def(imps[i])) {
+		if (strfind("*", imps[i]) != -1) continue;
+
+		parts = safeSplit(imps[i], "\\.");
+		if (parts[len(parts) - 1] == decl) {
+			if (def(declPkg[imps[i]]) && declPkg[imps[i]] != HAS_DUPES_STR) {
+				resolvOut["NORM_IMPORT"] << 1;
+				return imps[i];
+			} else {
+				resolvOut["NORM_IMPORT_FAILED_TO_RESOLVE"] << 1;
+				return INVALID_STR;
+			}
+		}
+	}
+
+	# Look for matches in the same package
+	pkgKey := declPkg[ctx] + "." + decl;
+	pkgName := declPkg[pkgKey];
+	if (def(pkgName) && pkgName != HAS_DUPES_STR) {
+		resolvOut["SAME_PACKAGE"] << 1;
+		return pkgKey;
+	}
+
+	# Finally look at wildcard imports
+	foreach(i:int; def(imps[i])) {
+		if (strfind("*", imps[i]) == -1) continue;
+
+		# strreplace appears to cause an error in an unknown situation
+		# working around that here
+		#newImp := strreplace(imps[i], "*", decl, false);
+		newImp := "";
+		parts = safeSplit(imps[i], "\\.");
+		foreach (x: int; def(parts[x])) {
+			toAdd := "";
+
+			if (parts[x] == "*") toAdd = decl;
+			else toAdd = parts[x];
+
+			if (newImp == "") newImp = toAdd;
+			else newImp = newImp + "." + toAdd;
+		}
+
+		newImpPkg := declPkg[newImp];
+		if (def(newImpPkg) && newImpPkg != HAS_DUPES_STR) {
+			resolvOut["STAR_IMPORT"] << 1;
+			return newImp;
+		}
+	}
+
+	resolvOut["NO_RESOLUTION"] << 1;
+	return INVALID_STR;
+};
+
+# returns the declaration key
+# outers must be empty or in the format of ".out1.out2"
+preprocessDecl := function(decl: Declaration, root: ASTRoot, outers: string)
+	: string {
+
+	if (len(root.namespaces) != 1) {
+		resolvOut["BAD_NAMESPACE"] << 1;
+		return INVALID_STR;
+	}
+
+	key: string = root.namespaces[0].name + outers + "." + decl.name;
+
+	if (def(declPkg[key])) {
+		if (declPkg[key] != HAS_DUPES_STR) {
+			resolvOut["DUPLICATED"] << 2;
+			declImp[key] = HAS_DUPES_STR;
+			declPkg[key] = HAS_DUPES_STR;
+			declNme[key] = HAS_DUPES_STR;
+		} else {
+			resolvOut["DUPLICATED"] << 1;
+		}
+		return INVALID_STR;
+	}
+
+	imps := "";
+	foreach(i:int; def(root.imports[i])) {
+		if (imps == "") imps = root.imports[i];
+		else imps = imps + IMPORT_DELIM + root.imports[i];
+	}
+	declImp[key] = imps;
+	declPkg[key] = root.namespaces[0].name;
+	declNme[key] = decl.name;
+
+	return key;
+};
+
+
+########################################
+### Throw analysis functions ###
+########################################
+STX_NAME:   int = 0;
+STX_RETURN: int = 1;
+STX_ARGNUM: int = 2;
+
+# takes the exception type and adds it to the typeMap properly
+addThrowType := function(typeMap: map[string] of bool, theType: string) {
+	list: map[string] of bool;
+
+	# handle multi types (i.e. "Ex | Ex2 | Ex3") from catch
+	if (strfind("|", theType) != -1) {
+		parts := splitall(theType, "\\|");
+		foreach(i: int; def(parts[i])) {
+			list[trim(parts[i])] = true;
+		}
+	}
+	else {
+		list[theType] = true;
+	}
+
+	# handle fully qualified (i.e. "java.lang.Ex" -> "Ex") and add to typeMap
+	listKeys := keys(list);
+	foreach(i: int; def(listKeys[i])) {
+		actual := stripToTypeName(listKeys[i]);
+		typeMap[actual] = true;
+	}
+};
+
+processThrowCall := function(typeMap: map[string] of bool, e: Expression,
+	decl: Declaration) {
+
+	mName := e.method;
+	argCount := len(e.method_args);
+
+	# case 1: local method
+	case1Found: bool = false;
+	localMethodVisitor := visitor {
+		before node: Method -> {
+			if (node.name == mName && len(node.arguments) == argCount) {
+				addThrowType(typeMap, node.return_type.name);
+				case1Found = true;
+			}
+
+			# don't go into declarations in the methods
+			stop;
+		}
+	};
+	visit(decl, localMethodVisitor);
+	if (case1Found) return;
+
+	# case 2: static method
+	# e.expression[0] exists = possible static method call
+	if (len(e.expressions) == 1
+	&& e.expressions[0].kind == ExpressionKind.VARACCESS) {
+
+		dName := e.expressions[0].variable;
+		if (def(statics[dName]) && statics[dName] != INVALID_STR) {
+			dParts := splitall(statics[dName], "#");
+			foreach (i: int; def(dParts[i])) {
+				sParts := splitall(dParts[i], ":");
+				if (sParts[STX_NAME] == mName
+				&& int(sParts[STX_ARGNUM]) == argCount) {
+
+					addThrowType(typeMap, sParts[STX_RETURN]);
+					return;
+				}
+			}
+		}
+	}
+
+	# case 3: dunno (hopefully not very common)
+	typeMap[UNKNOWN_TYPE_STR] = true;
+};
+
+isBranch := function(kind: StatementKind): bool {
+	if (kind == StatementKind.IF
+	 || kind == StatementKind.SWITCH
+	 || kind == StatementKind.TRY) {
+
+	 	return true;
+	 }
+
+	 return false;
+};
+
+# Note: Does not work well with nested catches. The assumption is that most
+# methods won't do something like that.
+getThrows := function(method: Method, decl: Declaration): array of string {
+	hasBranches: bool = false;
+
+	typeMap: map[string] of bool;
+	localMap: map[string] of string; #[name] = type
+	throwVarNames: map[string] of bool;
+
+	inCatch: bool = false;
+	catchType: string = INVALID_STR;
+	catchName: string = INVALID_STR;
+
+	methodVisitor := visitor {
+		before node: Statement -> {
+			if (node.kind == StatementKind.THROW) {
+				e: Expression = node.expression;
+
+				if (e.kind == ExpressionKind.NEW) {
+					addThrowType(typeMap, e.new_type.name);
+				} else if (e.kind == ExpressionKind.VARACCESS) {
+					if (inCatch && e.variable == catchName) {
+						addThrowType(typeMap, catchType);
+					} else {
+						# store for later
+						throwVarNames[e.variable] = true;
+					}
+				} else if (e.kind == ExpressionKind.METHODCALL) {
+					processThrowCall(typeMap, e, decl);
+				} else {
+					typeMap[UNKNOWN_TYPE_STR] = true;
+				}
+			} else if (node.kind == StatementKind.CATCH) { # enter catch block
+				inCatch = true;
+				catchVar: Variable = node.variable_declaration;
+				catchType = catchVar.variable_type.name;
+				catchName = catchVar.name;
+			} else if (isBranch(node.kind)) {
+				hasBranches = true;
+			}
+		}
+
+		after node: Statement -> {
+			# exit catch block
+			if (node.kind == StatementKind.CATCH) {
+				catchType = INVALID_STR;
+				catchName = INVALID_STR;
+				inCatch = false;
+			}
+		}
+
+		before node: Variable -> {
+			typeName: string = node.variable_type.name;
+
+			if (def(localMap[node.name]) && localMap[node.name] != typeName) {
+				localMap[node.name] = INVALID_STR;
+			} else {
+				localMap[node.name] = typeName;
+			}
+		}
+
+		before node: Declaration -> {
+			# stay at this one method's statements
+			stop;
+		}
+	};
+	visit(method, methodVisitor);
+
+	# let's see if there's any other VARACCESS throws we can deal with
+	varNameArray: array of string = keys(throwVarNames);
+	countAdded: int = 0;
+	foreach(i: int; def(varNameArray[i])) {
+		current: string = varNameArray[i];
+		if (def(localMap[current]) && localMap[current] != INVALID_STR) {
+			addThrowType(typeMap, localMap[current]);
+			countAdded++;
+		}
+	}
+
+	# not all "throw VARACCESS" are accounted for
+	if (countAdded != len(varNameArray)) {
+		typeMap[UNKNOWN_TYPE_STR] =  true;
+	}
+
+	if (IGNORE_NONBRANCHING_EXS && !hasBranches) {
+		clear(typeMap);
+	}
+
+	return keys(typeMap);
+};
+
+processStaticMethod := function (method: Method, decl: Declaration) {
+	if (!isStatic(method)) {
+		return;
+	}
+
+	finalStr: string = method.name;
+
+	# return type
+	finalStr = format("%s:%s", finalStr, method.return_type.name);
+
+	# number of arguments
+	finalStr = format("%s:%d", finalStr, len(method.arguments));
+
+	if (statics[decl.name] == "") {
+		statics[decl.name] = finalStr;
+	} else {
+		statics[decl.name] = format("%s#%s", statics[decl.name], finalStr);
+	}
+};
+
+processDeclStatics := function(decl: Declaration) {
+	# hard stop if we have multiple declarations of the same class name
+	if (def(statics[decl.name])) {
+		statics[decl.name] = HAS_DUPES_STR;
+		return;
+	}
+
+	# process static methods
+	statics[decl.name] = "";
+	foreach(i: int; def(decl.methods[i])) {
+		processStaticMethod(decl.methods[i], decl);
+	}
+};
+
+staticMethodVisitor := visitor {
+	before decl: Declaration -> {
+		if (decl.kind == TypeKind.CLASS) {
+			processDeclStatics(decl);
+		}
+	}
+
+	before node: Method -> {
+		# don't look at declarations in a method
+		stop;
+	}
+};
+
+
+########################################
+### Effect analysis functions ###
+########################################
+processOneMethod := function(method: Method, decl: Declaration, key: string) {
+	finalStr: string = method.name;
+
+	# argument types
+	argStr: string = "";
+	foreach(i: int; def(method.arguments[i])) {
+		tName: string = method.arguments[i].variable_type.name;
+		if (argStr == "") {
+			argStr = tName;
+		} else {
+			argStr = format("%s,%s", argStr, tName);
+		}
+	}
+	if (argStr == "")
+		argStr = ",";
+	finalStr = format("%s:%s", finalStr, argStr);
+
+	# add the primary access modifier with the following precedence
+	accessModifier: string = MOD_OTHER;
+	if (isAbstract(method)) {
+		accessModifier = MOD_ABSTRACT;
+	} else if (isPrivate(method)) {
+		accessModifier = MOD_PRIVATE;
+	} else if (isStatic(method)) {
+		accessModifier = MOD_STATIC;
+	} else if (isConstructor(method)) {
+		accessModifier = MOD_CTOR;
+	}
+	finalStr = format("%s:%s", finalStr, accessModifier);
+
+	# note method throws
+	throwsStr: string = "";
+	throws: array of string = getThrows(method, decl);
+	foreach(i: int; def(throws[i])) {
+		if (throwsStr == "") {
+			throwsStr = throws[i];
+		} else {
+			throwsStr = format("%s,%s", throwsStr, throws[i]);
+		}
+	}
+	if (throwsStr == "")
+		throwsStr = ",";
+	finalStr = format("%s:%s", finalStr, throwsStr);
+
+	# add signature throws (i.e. everything in "throws Ex1, Ex2")
+	sigThrowsStr: string = "";
+	foreach(i: int; def(method.exception_types[i])) {
+		stName: string = method.exception_types[i].name;
+		stName = stripToTypeName(stName);
+		if (sigThrowsStr == "")
+			sigThrowsStr = stName;
+		else
+			sigThrowsStr = format("%s,%s", sigThrowsStr, stName);
+	}
+	if (sigThrowsStr == "")
+		sigThrowsStr = ",";
+	finalStr = format("%s:%s", finalStr, sigThrowsStr);
+
+	# add the method for later processing after intra-project deduplication
+	if (effects[key] == "") {
+		effects[key] = finalStr;
+	} else {
+		effects[key] = format("%s#%s", effects[key], finalStr);
+	}
+};
+
+processDecl := function(decl: Declaration, key: string) {
+	# cache superclass if any
+	supers[key] = INVALID_STR;
+	foreach(i: int; def(decl.parents[i])) {
+		if (decl.parents[i].kind == TypeKind.CLASS) {
+			supers[key] = decl.parents[i].name;
+			break;
+		}
+	}
+
+	# process the methods
+	effects[key] = "";
+	foreach(i: int; def(decl.methods[i])) {
+		processOneMethod(decl.methods[i], decl, key);
+	}
+};
+
+# returns the overridden method info string if and only if it
+# 1. exists
+# 2. is not abstract, private, static, nor a constructor
+# otherwise returns INVALID_STR
+getOverridden := function(method: array of string, decl: string): string {
+	argTypes: string = method[MDX_ARGTYPESTR];
+	currDeclKey: string = resolve(supers[decl], decl);
+	prevSeen: set of string;
+	add(prevSeen, decl);
+
+	while (currDeclKey != INVALID_STR
+		&& !contains(prevSeen, currDeclKey)) {
+
+		add(prevSeen, currDeclKey);
+
+		if (effects[currDeclKey] == "") {
+			# no methods to examine, go to next
+			currDeclKey = resolve(supers[currDeclKey], currDeclKey);
+			continue;
+		}
+
+		# for all methods
+		methodList: array of string = splitall(effects[currDeclKey], "#");
+		foreach(i: int; def(methodList[i])) {
+			tempDat: array of string = splitall(methodList[i], ":");
+			tempMethodName: string = tempDat[MDX_NAME];
+			tempArgTypes: string = tempDat[MDX_ARGTYPESTR];
+			tempIsValidForPair: bool = tempDat[MDX_PRIMARY_MODIFIER] == MOD_OTHER;
+
+			# if method name and arguments match then return
+			if (tempMethodName == method[MDX_NAME] && tempArgTypes == argTypes) {
+				# overrides an abstract or similar method, so return no available overridden impl
+				if (!tempIsValidForPair) {
+					return INVALID_STR;
+				} else {
+					return methodList[i];
+				}
+			}
+		}
+
+		# no matching method, go to next
+		currDeclKey = resolve(supers[currDeclKey], currDeclKey);
+	}
+
+	if (OUTPUT_SUPER_CYCLES &&
+		currDeclKey != INVALID_STR && contains(prevSeen, currDeclKey)) {
+
+		out << "ERROR: Superclass cycle " + p.name + "#" + method[MDX_NAME]
+		        + "#" + decl + "#" + currDeclKey;
+	}
+
+	return INVALID_STR;
+};
+
+# matches the given method data with the method it overrides (if any) and then
+# outputs information on this pair in a single output line
+outputMethodResults := function(decl: string, mInfo: array of string) {
+	# method is abstract, static, ctor, or private then skip it
+	if (mInfo[MDX_PRIMARY_MODIFIER] != MOD_OTHER) {
+		return;
+	}
+
+	superInfoFull: string = getOverridden(mInfo, decl);
+	superInfo: array of string = splitall(superInfoFull, ":");
+
+	# no valid supermethod
+	if (superInfoFull == INVALID_STR) {
+		return;
+	}
+
+	stat["METHOD_PAIR_COUNT"] << 1;
+
+	# valid pair has no explicit exception effects
+	if (mInfo[MDX_THROWS] == "," && superInfo[MDX_THROWS] == ",") {
+		return;
+	}
+
+	stat["METHOD_PAIR_WITH_EFFECT_COUNTER"] << 1;
+
+	subThrows: array of string;
+	sprThrows: array of string;
+	diffInfo: string = "!y";
+
+	if (mInfo[MDX_THROWS] == ",") {
+		subThrows = new(subThrows, 0, "");
+	} else {
+		subThrows = splitall(mInfo[MDX_THROWS], ",");
+	}
+
+	if (superInfo[MDX_THROWS] == ",") {
+		sprThrows = new(sprThrows, 0, "");
+	} else {
+		sprThrows = splitall(superInfo[MDX_THROWS], ",");
+	}
+
+	if (isEq(subThrows, sprThrows)) {
+		diffInfo = "!n";
+	} else if (len(subThrows) > len(sprThrows)) {
+		if (XisSubsetY(sprThrows, subThrows)) {
+			diffInfo = "!subissuperset";
+		} else {
+			diffInfo = "!subhasmore";
+		}
+	} else if (len(subThrows) < len(sprThrows)) {
+		if (XisSubsetY(subThrows, sprThrows)) {
+			diffInfo = "!subissubset";
+		} else {
+			diffInfo = "!sprhasmore";
+		}
+	}
+
+	stat["DIFF=" + diffInfo] << 1;
+
+	if (OUTPUT_PAIR_INFO)
+		out << p.name + "#"
+		     + mInfo[MDX_NAME] + "#"
+		     + declNme[decl] + "#"
+		     + superInfo[MDX_THROWS] + "#" # super throws first
+		     + mInfo[MDX_THROWS] + "#" # then sub throws
+		     + diffInfo + "#"
+		     + superInfo[MDX_THROWSIG];
+};
+
+outputMethodStats := function(mInfo: array of string) {
+	stat["METHOD_COUNT"] << 1;
+
+	if (mInfo[MDX_PRIMARY_MODIFIER] == MOD_ABSTRACT) {
+		return;
+	}
+
+	throwCountStr: string = "";
+
+	mThrows: array of string;
+	if (mInfo[MDX_THROWS] == ",") {
+		mThrows = new(mThrows, 0, "");
+	} else {
+		mThrows = splitall(mInfo[MDX_THROWS], ",");
+	}
+
+	if (len(mThrows) == 0) {
+		throwCountStr = "THROWS=0";
+	} else if (len(mThrows) == 1) {
+		throwCountStr = "THROWS=1";
+	} else if (len(mThrows) == 2) {
+		throwCountStr = "THROWS=2";
+	} else {
+		throwCountStr = "THROWS=3+";
+	}
+
+	if (mInfo[MDX_PRIMARY_MODIFIER] == MOD_PRIVATE) {
+		stat[throwCountStr + ";PRIVATE"] << 1;
+		stat["METHOD_COUNT_PRIVATE"] << 1;
+	} else if (mInfo[MDX_PRIMARY_MODIFIER] == MOD_STATIC) {
+		stat[throwCountStr + ";STATIC"] << 1;
+		stat["METHOD_COUNT_STATIC"] << 1;
+	} else if (mInfo[MDX_PRIMARY_MODIFIER] == MOD_CTOR) {
+		stat[throwCountStr + ";CTOR"] << 1;
+		stat["METHOD_COUNT_CTOR"] << 1;
+	} else {
+		stat[throwCountStr + ";OTHER"] << 1;
+		stat["METHOD_COUNT_OTHER"] << 1;
+	}
+
+	stat["NON_ABSTRACT_METHOD_COUNT"] << 1;
+};
+
+outputResults := function() {
+	# also same for 'effects'
+	types: array of string = keys(declPkg);
+
+	foreach(i: int; def(types[i])) {
+		curr: string = types[i];
+
+		# if type is not duplicated, output results for each method
+		if (declPkg[curr] != HAS_DUPES_STR) {
+			stat["CLASS_COUNT"] << 1;
+
+			methods: array of string = safeSplit(effects[curr], "#");
+			foreach(j: int; def(methods[j])) {
+				mInfo: array of string = splitall(methods[j], ":");
+				outputMethodStats(mInfo);
+				outputMethodResults(curr, mInfo);
+			}
+		}
+	}
+};
+
+
+########################################
+### Resolution startup ###
+########################################
+produce := function(snapshot: array of ChangedFile, filterOutList: array of bool) {
+	file: ChangedFile;
+
+	numOut: int = 0; # current size of outers
+	OUTER_LEN: int = 3; # hard limit of "outer1.outer2.class"
+	outers: array of string;
+	outers = new(outers, OUTER_LEN, "");
+
+	prodVisit := visitor {
+		before decl: Declaration -> {
+			if (decl.kind == TypeKind.CLASS) {
+				resolvOut["DECLARATION"] << 1;
+
+				currOut: string = "";
+				for(i: int = 0; i < numOut && i < OUTER_LEN; i++)
+					currOut = currOut + "." + outers[i];
+
+				key: string = preprocessDecl(decl, getast(file), currOut);
+				if (key != INVALID_STR) processDecl(decl, key);
+			}
+
+			numOut++;
+			if (numOut <= OUTER_LEN) {
+				outers[numOut - 1] = decl.name;
+			}
+		}
+
+		after node: Declaration -> numOut--;
+
+		# don't look at declarations in a method
+		before node: Method -> stop;
+	};
+	foreach(i: int; def(snapshot[i])) {
+		file = snapshot[i];
+
+		if (filterOutList[i])
+			continue;
+
+		visit(snapshot[i], prodVisit);
+
+		if (numOut != 0) {
+			resolvOut["OUTER_NONZERO (bug?)"] << 1;
+			numOut = 0;
+		}
+	}
+};
+
+
+########################################
+### Startup ###
+########################################
+countNodes := function (snapshot: array of ChangedFile) {
+	currentNodeCountAST: int = 0;
+	counterAST := visitor {
+		before _ -> currentNodeCountAST++;
+	};
+	foreach(i:int; def(snapshot[i])) {
+		visit(snapshot[i], counterAST);
+	}
+	stat["PROJECT_LATEST_TOTAL_AST_NODES"] << currentNodeCountAST;
+};
+
+# All repositories are Java code repositories. <=1 per project on GitHub
+revisionVisitor := visitor {
+	before node: CodeRepository -> {
+		stat["CODE_REPOSITORY_COUNT"] << 1;
+
+		clear(declImp);
+		clear(declPkg);
+		clear(declNme);
+
+		clear(effects);
+		clear(supers);
+
+		clear(statics);
+
+		snapshot := getsnapshot_mp(node, now());
+		filterOutList: array of bool;
+		filterOutList = new(filterOutList, len(snapshot), false);
+
+		stat["CONSIDERED_SOURCE_FILES"] << len(snapshot);
+
+		# set up statics for throws analysis, check for JUnit prescence
+		foreach (i: int; def(snapshot[i])) {
+			root := getast(snapshot[i]);
+
+			if (fileIsFilteredOut(root))
+				filterOutList[i] = true;
+			else
+				visit(root, staticMethodVisitor);
+		}
+
+		# set up rest of the structures (for resolv and app)
+		produce(snapshot, filterOutList);
+
+		# count number of AST nodes
+		countNodes(snapshot);
+	}
+};
+
+visit(p, revisionVisitor);
+outputResults();

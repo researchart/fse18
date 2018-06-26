@@ -1,0 +1,135 @@
+Reference: substitutability-study.txt
+
+GOAL: for each substitutability violation, what kind of problem is it?
+Is it an intentional violation where the documentation or class name
+specifically calls out its purpose?
+Does the `throws Ex` clause hint that the exception may be thrown?
+
+Otherwise, it may indicate a code smell or bug in the application.
+
+########################################
+### Precondition examples ###
+########################################
+1. Intentional (from "strongest" to "weakest" indication)
+	a. The superclass's Javadoc says so
+		i. No exception mention
+
+		ii. Mentions exception
+			(ID:26,32,50,55)
+
+		iii. Mentioned exception, also in throws clause
+			(ID:31,42)
+
+	b. The subclass's Javadoc says so
+		i. No exception mention
+			(ID:15,25,27)
+
+		ii. Mentioned exception
+			(ID:04,34)
+
+	c. The subclass's exception message gives a reason
+		(ID:02,09,19,24,28,35,37,40,43,45,44,46,56)
+
+		i. counted elsewhere
+			(ID:10,16,33,37,41,51)
+
+	d. The subclass's name gives the idea (but Javadoc not necessarily there)
+		(ID:12,13,29,38)
+
+2. Unintentional
+	a. The superclass's Javadoc says 1 thing, subclass's says another
+		(ID:41)
+
+	b. Superclass may be missing a precondition the subclass has
+		(ID:16,51)
+
+	c. Subclass provides no explicit information as to why it has a certain precondition
+		(ID:20,21,39,49,52,53)
+
+	d. Subclass throws rather than returning null on null argument
+		(ID:10,33)
+
+
+########################################
+### Synchronized examples ###
+########################################
+1. Intentional
+	a. The `theDBHelper` variable not always guarded in superclass anyway
+		(bug? just a bad use of the `synchronized` keyword?)
+		(ID:20)
+
+	b. Java Swing is known to be unsafe, AWT is known to be thread-safe
+		(ID:40,49)
+
+2. Unintentional
+	a. Likely don't expect method to be used by multiple threads
+		(ID:24,34)
+
+	b. Subclass appears to use mostly thread-safe actions (w/o the sync keyword)
+		(ID:38)
+
+	c. May not expect class to be used by multiple threads despite what superclass does
+		(ID:27,28,42,51)
+
+		i. There is a single synchronized method in subclass though
+		(ID:47,48,62)
+
+	d. Likely don't expect the sequence that would cause race condition to occur
+		(ID:43)
+
+	e. Potental bug? Most of subclass appears to be thread-safe
+		(ID:58)
+
+Note: None/Few of the Javadocs of the sub and superclasses mention thread-safety
+
+
+########################################
+### I/O examples ###
+########################################
+1. Intentional ("strongest" to "weakest") -- crash difference
+	a. The superclass's Javadoc says so
+		i. Mentioned exception, also in throws clause
+			(ID:09,38)
+
+	b. The supermethod's throws clause says an exception can be thrown
+		(ID:07,12,22,32,35,48,49)
+
+1. Intentional ("strongest" to "weakest") -- output difference
+	a. Both sub/superclass use stdout/stderr the same way accross its methods
+		(ID:11)
+
+	b. Subclass part of console-based program, uses stdout/stderr
+		(ID:14,15,19)
+
+	c. Subclass used for printing (stdout,err, or some provided stream)
+		(ID:05,25,26,29,45,47)
+
+		i. Does conversions according to subclass Javadoc
+			(ID:10)
+
+		ii. Method name indicates intention
+			(ID:40)
+
+	d. Submethod uses stderr/stdout for problems / warnings
+		(note: ID:20 - done via Logger)
+		(ID:16,18,20,30,33,39)
+
+		i. Via settable debug flag
+			(ID:44)
+
+2. Unintentional -- output difference
+	a. Submethod uses stderr, no apparent error, though?
+		(o/w maybe intentional, looks like it's used for scripts that output to terminal)
+		(ID:03)
+
+		(o/w not intentional)
+		(ID:21)
+
+	b. Subclass is unsued and no apparent documentation or reason for stdout use
+		(ID:04)
+
+	c. Potentially leftover from debugging
+		(ID:23,28,37,42,46)
+
+	d. Outputs a "not yet impl'd" message
+		(ID:17)

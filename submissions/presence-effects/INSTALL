@@ -1,0 +1,43 @@
+We provide our analyses as a set of Boa programs located in the src/ directory
+and have the extension *.boa.
+Note that each file is a separate analysis, and they share some amount of code
+for convenience and output-consistency reasons.
+
+In general, running one of the analyses on the 2015 GitHub dataset will
+result in the exact same output as provided with the exception that some
+debugging-related output and the order of the resulting output file may be
+different.
+
+There are two options to run the Boa analyses:
+1. (Recommended) Use the http://boa.cs.iastate.edu website.
+	a. Sign up for an account on this website.
+
+	b. Log in once the account is created.
+
+	c. Click "Run Examples" to go to the Boa program editor.
+
+	d. Copy/paste the contents of ONE of the code files in the src/ directory
+	into the text box.
+
+	e. Scroll to bottom and choose the dataset to use.
+		i. Our work used the "2015 September/GitHub" dataset.
+		ii. Note that the "Small" datasets should be used for testing.
+
+	f. Click "Run Program" and wait for it to complete.
+		i. On large datasets, this may take up to 2.5 hours depending on server.
+		ii. Small datasets take around 3 to 15 minutes.
+
+		The program will be compiled and executed automatically, as detailed at
+		the bottom of the webpage. A status of "Running" means it is compiling
+		or running and "Finished" means that stage has successfully completed.
+
+		A status of "Error" means something went wrong at one of the stages, and
+		should not occur for any of the provided analyses.
+
+	g. Click "Download Job Output" at the top of the page to download the raw
+	output data.
+
+
+2. Set up the Boa compiler (See: https://github.com/boalang/compiler) and run
+the analyses through that.
+NOTE: This does not include the project dataset we used. For that please use #1.

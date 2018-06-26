@@ -1,0 +1,417 @@
+########################################
+### Sub has more UOE examples ###
+########################################
+# Note: Criteria for this section is the following:
+# 1. Category is !subissuperset or !subhasmore
+# 2. Submethod throws UnsupportedOperationException
+########################################
+
+
+ID:02
+out[] = bdunnagan/XModel#remove#FileCachingPolicy#,#UnsupportedOperationException#!subissuperset#CachingException
+Subclass: https://github.com/bdunnagan/XModel/blob/master/src/org/xmodel/caching/FileCachingPolicy.java#L128
+Superclass: https://github.com/bdunnagan/XModel/blob/master/src/org/xmodel/external/AbstractCachingPolicy.java#L357
+
+Instantiation (as subclass in instance var, passed as superinterface): https://github.com/bdunnagan/XModel/blob/720b4ec18b069493cdbcc1b7dd7ec98a6379b795/src/org/xmodel/caching/FolderCachingPolicy.java#L57
+Instantiation (as superinterface): https://github.com/bdunnagan/XModel/blob/720b4ec18b069493cdbcc1b7dd7ec98a6379b795/src/org/xmodel/xsd/Schema.java#L366
+
+	Super is abstract and implements the method. Subclass is concrete but throws
+	UOE.
+
+
+ID:06
+out[] = teiid/teiid#modelSupports#TransformationMetadata#,#UnsupportedOperationException#!subissuperset#TeiidComponentException,QueryMetadataException
+Subclass: https://github.com/teiid/teiid/blob/131a8d589339dee6d8ef2d40c0ff7223bd4f0ed2/engine/src/main/java/org/teiid/query/metadata/TransformationMetadata.java#L553
+Superclass: https://github.com/teiid/teiid/blob/131a8d589339dee6d8ef2d40c0ff7223bd4f0ed2/engine/src/main/java/org/teiid/query/metadata/BasicQueryMetadata.java#L264
+
+Instantiation (kept as sub): https://github.com/teiid/teiid/blob/131a8d589339dee6d8ef2d40c0ff7223bd4f0ed2/engine/src/main/java/org/teiid/dqp/internal/process/DataTierManagerImpl.java#L261
+Instantiation (kept as sub): https://github.com/teiid/teiid/blob/131a8d589339dee6d8ef2d40c0ff7223bd4f0ed2/engine/src/main/java/org/teiid/query/metadata/SystemMetadata.java
+Instantiation (exposed as sub): https://github.com/teiid/teiid/blob/131a8d589339dee6d8ef2d40c0ff7223bd4f0ed2/runtime/src/main/java/org/teiid/runtime/AbstractVDBDeployer.java#L274
+Instantiation (returned as sub): https://github.com/teiid/teiid/blob/131a8d589339dee6d8ef2d40c0ff7223bd4f0ed2/runtime/src/main/java/org/teiid/deployers/CompositeVDB.java#L131
+(there are other instantiations not listed, but are all similar to the above)
+
+	Subclass concrete and just throws UOE (as a default case of an empty switch)
+	Superclass is concrete and simply returns false rather than throwing UOE.
+
+
+ID:07
+out[] = franckfaust/InfoVis#addEdge#SpanningTree#,#UnsupportedOperationException#!subissuperset#,
+Subclass: https://github.com/franckfaust/InfoVis/blob/e8382338c58bfa45dab7ce23c671193f8b451e3e/prefuse-beta/src/prefuse/data/SpanningTree.java#L194
+Superclass: https://github.com/franckfaust/InfoVis/blob/e8382338c58bfa45dab7ce23c671193f8b451e3e/prefuse-beta/src/prefuse/data/Graph.java#L544
+
+Instantiation (returned as super): https://github.com/franckfaust/InfoVis/blob/e8382338c58bfa45dab7ce23c671193f8b451e3e/prefuse-beta/src/prefuse/data/Tree.java#L640
+Instantiation (returned as super): https://github.com/franckfaust/InfoVis/blob/e8382338c58bfa45dab7ce23c671193f8b451e3e/prefuse-beta/src/prefuse/data/Graph.java#L1202
+
+	The subclass is concrete and throws UOE (not supposed to be edited) whereas
+	superclass is concrete and provides an implementation.
+
+
+ID:10
+out[] = napile/napile.classpath#getData#ICC_ProfileStub#,#UnsupportedOperationException#!subissuperset#,
+Subclass: https://github.com/napile/napile.classpath/blob/1599cba24d751a75dceefdabda0cce384e672ed8/awt/src/main/java/java/awt/color/ICC_ProfileStub.java#L75
+Superclass: https://github.com/napile/napile.classpath/blob/1599cba24d751a75dceefdabda0cce384e672ed8/awt/src/main/java/java/awt/color/ICC_Profile.java#L409
+
+Instantiation (passed as superclass): https://github.com/napile/napile.classpath/blob/1599cba24d751a75dceefdabda0cce384e672ed8/awt/src/main/java/java/awt/color/ColorSpace.java#L158
+
+	Both classes concrete. The subclass acts as a "stub" (?) with more limited
+	features.
+
+
+ID:15
+out[] = J-VARO/linux#putAll#KeyRangeIntIntMap#,#UnsupportedOperationException#!subissuperset#,
+Subclass: https://github.com/J-VARO/linux/blob/master/J-VARO/20120810_regEfmtool_2.0/ch/javasoft/util/ints/KeyRangeIntIntMap.java#L221
+Superclass: https://github.com/J-VARO/linux/blob/master/J-VARO/20120810_regEfmtool_2.0/ch/javasoft/util/ints/AbstractIntIntMap.java#L335
+
+Instantiation (passed as superinterface): https://github.com/J-VARO/linux/blob/2ce863e28ee9aa0434e4765af866f5b833ef38a9/J-VARO/20120810_regEfmtool_2.0/ch/javasoft/metabolic/efm/util/ReactionMapping.java#L208
+Instantiation (passed as superinterface): https://github.com/J-VARO/linux/blob/2ce863e28ee9aa0434e4765af866f5b833ef38a9/J-VARO/20120810_regEfmtool_2.0/ch/javasoft/metabolic/efm/util/ReactionMapping.java#L228
+Instantiation (passed as superinterface): https://github.com/J-VARO/linux/blob/2ce863e28ee9aa0434e4765af866f5b833ef38a9/J-VARO/20120810_regEfmtool_2.0/ch/javasoft/metabolic/efm/util/ReactionMapping.java#L258
+
+	Superclass is abstract, but has implementations of various methods.
+	Subclass is concrete and throws UOE because it's immutable.
+
+	Each instantiation is straightforward and verified as correct.
+
+
+ID:19
+out[] = kirillcool/trident#playLoop#SwingRepaintTimeline#,#UnsupportedOperationException#!subissuperset#,
+Subclass: https://github.com/kirill-grouchnikov/trident/blob/7b48135e26278a6658c7026e1a7b580609ac7116/src/org/pushingpixels/trident/swing/SwingRepaintTimeline.java#L83
+Superclass: https://github.com/kirill-grouchnikov/trident/blob/7b48135e26278a6658c7026e1a7b580609ac7116/src/org/pushingpixels/trident/Timeline.java#L393
+
+(no non-test instantiations)
+
+	Super is a concrete class that redirects the call to a different method that
+	can throw IllegalArgumentException. Most likely IAE will never be thrown.
+	Sub is concrete and acts as a brittle parameter (based on the value, not
+	type).
+
+
+ID:20
+out[] = bluespark80/example#engineGenerateCertPath#MyCertificateFactorySpi#UnsupportedOperationException#IllegalArgumentException,CertificateException#!subhasmore#CertificateException
+Subclass: https://github.com/bluespark80/example/blob/bab348bd44303c97203ea65e169045754cede3dc/support/src/test/java/org/apache/harmony/security/tests/support/cert/MyCertificateFactorySpi.java#L111
+Superclass: https://github.com/bluespark80/example/blob/bab348bd44303c97203ea65e169045754cede3dc/security/src/main/java/java/security/cert/CertificateFactorySpi.java#L125
+
+(no non-test instantiations)
+
+	Super throws UOE, sub has a brittle parameter. Super is abstract, sub
+	concrete.
+
+
+ID:21
+out[] = Jintian/colourful-maven#setGroupId#AttachedArtifact#,#UnsupportedOperationException#!subissuperset#,
+Subclass: https://github.com/Jintian/colourful-maven/blob/4b211a2972be2dc748b9fc2da97f19ecbb3b7b79/maven-project/src/main/java/org/apache/maven/project/artifact/AttachedArtifact.java#L95
+Superclass: https://github.com/Jintian/colourful-maven/blob/4b211a2972be2dc748b9fc2da97f19ecbb3b7b79/maven-artifact/src/main/java/org/apache/maven/artifact/DefaultArtifact.java#L550
+
+Instantiated (passed as superclass): https://github.com/Jintian/colourful-maven/blob/4b211a2972be2dc748b9fc2da97f19ecbb3b7b79/maven-project/src/main/java/org/apache/maven/project/DefaultMavenProjectHelper.java#L53
+Instantiated (passed as superclass): https://github.com/Jintian/colourful-maven/blob/4b211a2972be2dc748b9fc2da97f19ecbb3b7b79/maven-project/src/main/java/org/apache/maven/project/DefaultMavenProjectHelper.java#L77
+
+	The subclass is meant to be immutable. Both are concrete.
+
+	Instantiations appear correct. They are passed to a method called
+	"addAttachedArtifact"
+
+
+ID: 22
+out[] = bleujin/ionframework#updateClob#H2Rows#,#UnsupportedOperationException#!subissuperset#SQLException
+Subclass: https://github.com/bleujin/ionframework/blob/98c9e145dba582d3a20a7890515c6a53dcdf8373/src/net/ion/framework/db/h2/H2Rows.java#L216
+Superclass: https://github.com/bleujin/ionframework/blob/98c9e145dba582d3a20a7890515c6a53dcdf8373/src/net/ion/framework/db/rowset/BaseRowSet.java#L477
+
+(no instantiations)
+
+	The subclass throws UOE whereas the superclass leaves it as a blank method.
+	Method is also designated to throw SQLException.
+
+
+ID: 23
+out[] = xamarin/XobotOS#mark#Base64InputStream#,#UnsupportedOperationException#!subissuperset#,
+Subclass: https://github.com/xamarin/XobotOS/blob/888ed3b8cc8d8e0a54b1858bfa5a3572545f4d2f/android/upstream/android/util/Base64InputStream.java#L79
+Superclass: https://github.com/xamarin/XobotOS/blob/888ed3b8cc8d8e0a54b1858bfa5a3572545f4d2f/android/upstream/java/io/FilterInputStream.java#L82
+
+(no instantiations)
+
+	Superclass is concrete and provides an implementation. Subclass is concrete
+	and throws UOE.
+
+
+ID:24
+out[] = eclipse/tycho.p2-fork#clear#UnmodifiableProperties#,#UnsupportedOperationException#!subissuperset#,
+Subclass: https://github.com/eclipse/tycho.p2-fork/blob/85fa30e969dba70b3e8fa7f648e503f7f091921b/bundles/org.eclipse.equinox.p2.core/src/org/eclipse/equinox/internal/p2/core/helpers/OrderedProperties.java#L217
+Superclass: https://github.com/eclipse/tycho.p2-fork/blob/85fa30e969dba70b3e8fa7f648e503f7f091921b/bundles/org.eclipse.equinox.p2.core/src/org/eclipse/equinox/internal/p2/core/helpers/OrderedProperties.java#L94
+
+Instantiated (returned as super): https://github.com/eclipse/tycho.p2-fork/blob/85fa30e969dba70b3e8fa7f648e503f7f091921b/bundles/org.eclipse.equinox.p2.core/src/org/eclipse/equinox/internal/p2/core/helpers/OrderedProperties.java#L34
+
+	Subclass is concrete and intended to be unmodifiable. Super is concrete and
+	implements the method.
+
+
+ID:25
+out[] = elka-projekt/cs-voltdb#getSerializedSize#LocalObjectMessage#,#UnsupportedOperationException#!subissuperset#,
+Subclass: https://github.com/kobronson/cs-voltdb/blob/e13f2d10e1dc12af0ff6d20734ca63c017d8ec5b/src/frontend/org/voltcore/messaging/LocalObjectMessage.java#L29
+Superclass: https://github.com/kobronson/cs-voltdb/blob/e13f2d10e1dc12af0ff6d20734ca63c017d8ec5b/src/frontend/org/voltcore/messaging/VoltMessage.java#L32
+
+Instantiated (passe as super): https://github.com/kobronson/cs-voltdb/blob/e13f2d10e1dc12af0ff6d20734ca63c017d8ec5b/src/frontend/org/voltdb/ClientInterface.java#L1537
+Instantiated (passed as super): https://github.com/kobronson/cs-voltdb/blob/e13f2d10e1dc12af0ff6d20734ca63c017d8ec5b/src/frontend/org/voltdb/ExecutionSite.java#L2231
+(multiple other similar instantiations)
+
+	Super is abstract and provides trivial implementation ("return 1;") while
+	sub is concrete and throws UOE.
+
+
+ID:26
+out[] = xiaoyangmie/IRrelated#clear#FixedSizeMap#,#UnsupportedOperationException#!subissuperset#,
+Subclass: https://github.com/xiaoyangmie/IRrelated/blob/9d3b03d3a9f56271607608eab97975b4efc02286/common/tmp/src/org/apache/commons/collections/map/FixedSizeMap.java#L130
+Superclass: https://github.com/xiaoyangmie/IRrelated/blob/9d3b03d3a9f56271607608eab97975b4efc02286/common/tmp/src/org/apache/commons/collections/map/AbstractMapDecorator.java#L78
+
+Instantiated (as superinterface): https://github.com/xiaoyangmie/IRrelated/blob/9d3b03d3a9f56271607608eab97975b4efc02286/common/tmp/src/org/apache/commons/collections/map/FixedSizeMap.java#L73
+
+	Super is abstract, sub is concrete. Super implements method, sub throws UOE
+	due to it being a "fixed size".
+
+
+ID:27
+out[] = ESHughes/UMLDiagramTool#getBounds#Double#,#UnsupportedOperationException#!subissuperset#,
+Subclass: https://github.com/ESHughes/UMLDiagramTool/blob/81fc4345c0a5b29b921fc75f0046834c11b829ba/src/org/jhotdraw/geom/Polygon2D.java#L543
+Superclass: https://github.com/ESHughes/UMLDiagramTool/blob/81fc4345c0a5b29b921fc75f0046834c11b829ba/src/org/jhotdraw/geom/Polygon2D.java#L134
+
+Instantiated (returned as sub): https://github.com/ESHughes/UMLDiagramTool/blob/81fc4345c0a5b29b921fc75f0046834c11b829ba/src/org/jhotdraw/geom/ConvexHull.java#L52
+Instantiated (returned as sub): https://github.com/ESHughes/UMLDiagramTool/blob/81fc4345c0a5b29b921fc75f0046834c11b829ba/src/org/jhotdraw/geom/ConvexHull.java#L88
+
+	Super is abstract, sub is concrete. Sub throws UOE because the operation is
+	"not supported yet" whereas super provides a default implementation that
+	simply calls an abstract method.
+
+
+ID:28
+out[] = norvigaward/naward09#defaultReturnValue#UnmodifiableMap#,#UnsupportedOperationException#!subissuperset#,
+Subclass: https://github.com/norvigaward/2012-naward09/blob/0653cf112f1c16dec4b16f4503feba6b100a7440/fastutil-6.4.6/src/it/unimi/dsi/fastutil/bytes/Byte2ObjectMaps.java#L274
+Superclass: https://github.com/norvigaward/2012-naward09/blob/0653cf112f1c16dec4b16f4503feba6b100a7440/fastutil-6.4.6/src/it/unimi/dsi/fastutil/bytes/Byte2ObjectFunctions.java#L215
+
+Instantiated (returned as super): https://github.com/norvigaward/2012-naward09/blob/0653cf112f1c16dec4b16f4503feba6b100a7440/fastutil-6.4.6/src/it/unimi/dsi/fastutil/bytes/Byte2ObjectMaps.java#L311
+
+	Note: There are a number of "UnmodifiableMap"s in this project. Super
+	effectively throws UOE since it just calls another method of the same name.
+
+
+ID:29
+out[] = johnste/TowerDefence#drawCentered#BigImage#,#UnsupportedOperationException#!subissuperset#,
+Subclass: https://github.com/johnste/TowerDefence/blob/7f13ca3bf236c461248ca24866855f50276585a8/lib/slick/src/org/newdawn/slick/BigImage.java#L735
+Superclass: https://github.com/johnste/TowerDefence/blob/7f13ca3bf236c461248ca24866855f50276585a8/lib/slick/src/org/newdawn/slick/Image.java#L535
+
+Instantiated (returned as super): https://github.com/johnste/TowerDefence/blob/7f13ca3bf236c461248ca24866855f50276585a8/lib/slick/src/org/newdawn/slick/BigImage.java#L498
+	(same kind of instantiation/return on lines 553 and 570 in that file)
+
+	Both concrete. Sub throws UOE whereas super implements.
+	Of interest: Note the Javadoc for the sub class. It comes with limitations
+	and apparently "needs revisiting with a comment stick". Odd that
+	"drawCenter" is unsupported though (no explanation).
+
+	Instantiations don't document BigImage as the result, but neither cause any
+	bugs.
+
+
+ID:30
+out[] = buckett/ews-java#getSetFieldXmlElementName#Conversation#,#UnsupportedOperationException#!subissuperset#,
+Subclass: https://github.com/buckett/ews-java/blob/8e814b4346b048d45971bbfc3c5ad53baf8ed86b/src/main/java/microsoft/exchange/webservices/data/Conversation.java#L115
+Superclass: https://github.com/buckett/ews-java/blob/8e814b4346b048d45971bbfc3c5ad53baf8ed86b/src/main/java/microsoft/exchange/webservices/data/ServiceObject.java#L135
+
+Instantiated (returned as Object): https://github.com/buckett/ews-java/blob/8e814b4346b048d45971bbfc3c5ad53baf8ed86b/src/main/java/microsoft/exchange/webservices/data/ServiceObjectInfo.java#L123
+
+	Super is abstract, sub is concrete. Super provides implementation where
+	sub throws UOE. Javadoc of sub says it's not supported but no explanation
+	why.
+
+
+ID:31
+out[] = geophile/erdo#isOpen#LevelOneMultiRecordCursor#,#UnsupportedOperationException#!subissuperset#,
+Subclass: https://github.com/geophile/erdo/blob/b712c2e036e3b44acc870e14bba254f997a90869/src/main/java/com/geophile/erdo/map/diskmap/tree/LevelOneMultiRecordCursor.java#L79
+Superclass: https://github.com/geophile/erdo/blob/b712c2e036e3b44acc870e14bba254f997a90869/src/main/java/com/geophile/erdo/map/MapCursor.java#L46
+
+Instantiations (of a concrete subclass as super): https://github.com/geophile/erdo/blob/b712c2e036e3b44acc870e14bba254f997a90869/src/main/java/com/geophile/erdo/map/diskmap/tree/LevelOneMultiRecordCursor.java#L88-L93
+	^^^ NOTE: Not a subclass instantiation but a subclass of subclass instantiation
+
+	Both abstract. Super provides implementation, sub throws UOE. No explanation.
+
+	The instantiation's methods indicate intention (i.e. return subcass which
+	throws the exception). The concrete subclasses of sub do not implement the
+	isOpen() method.
+
+	Instantiation methods doesn't appear to be called anywhere in the codebase.
+
+
+ID:32
+out[] = ACSOP/android_frameworks_base#clipRegion#GLES20Canvas#,#UnsupportedOperationException#!subissuperset#,
+Subclass: https://github.com/ACSOP/android_frameworks_base/blob/5d272e695d05550c68ce73adfb6b87e0d2f1fc7d/core/java/android/view/GLES20Canvas.java#L460
+Superclass: https://github.com/ACSOP/android_frameworks_base/blob/5d272e695d05550c68ce73adfb6b87e0d2f1fc7d/graphics/java/android/graphics/Canvas.java#L670
+
+Instantiated (as sub): https://github.com/ACSOP/android_frameworks_base/blob/5d272e695d05550c68ce73adfb6b87e0d2f1fc7d/core/java/android/view/HardwareRenderer.java#L977
+Instantiated (as sub): https://github.com/ACSOP/android_frameworks_base/blob/5d272e695d05550c68ce73adfb6b87e0d2f1fc7d/core/java/android/view/GLES20RenderLayer.java#L42
+
+	Both concrete. Super provides implementation, sub throws UOE. No explanation.
+
+
+ID:33
+out[] = DataLite/zk-dl#clear#Lovbox#,#UnsupportedOperationException#!subissuperset#,
+Subclass: https://github.com/DataLite/zk-dl/blob/87e512f605e4dc0c7efcddf7815661825c539767/Selenium/src/main/java/cz/datalite/webdriver/components/Lovbox.java#L158
+Superclass: https://github.com/DataLite/zk-dl/blob/87e512f605e4dc0c7efcddf7815661825c539767/Selenium/src/main/java/cz/datalite/webdriver/components/InputElement.java#L44
+
+Instantiated (returned as super): https://github.com/DataLite/zk-dl/blob/87e512f605e4dc0c7efcddf7815661825c539767/Selenium/src/main/java/cz/datalite/webdriver/ZkComponents.java#L70
+Instantiated (returned as sub): https://github.com/DataLite/zk-dl/blob/87e512f605e4dc0c7efcddf7815661825c539767/Selenium/src/main/java/cz/datalite/webdriver/components/ZkElement.java#L512
+
+	Super is abstract, sub is concrete. Sub throws UOE on a select few methods
+	whereas superhas a basic impleentation.
+
+ID:34
+out[] = jattenberg/MALLET#cloneEmptyInto#MultiInstanceList#,#UnsupportedOperationException#!subissuperset#,
+Subclass: https://github.com/jattenberg/MALLET/blob/4f2ff5190e87cedbc5df064f5c811c9a64ce4c42/src/cc/mallet/types/MultiInstanceList.java#L161
+Superclass: https://github.com/jattenberg/MALLET/blob/4f2ff5190e87cedbc5df064f5c811c9a64ce4c42/src/cc/mallet/types/InstanceList.java#L485
+
+
+########################################
+### Other UOE Examples ###
+########################################
+# Note: This section contains other randomly
+# chosen examples that fit into a different
+# category other than !subissuperset and
+# !subhasmore.
+#
+# These are not used in the other files.
+########################################
+
+ID:01
+out[] = jcai/corner2#constructSelectModel#AutoEvaluateModelAutocompleter#UnsupportedOperationException#,#!subissubset#,
+Subclass: https://github.com/jcai/corner2/blob/master/src/main/java/corner/orm/tapestry/component/prototype/autocompleter/AutoEvaluateModelAutocompleter.java#L73
+Superclass: https://github.com/jcai/corner2/blob/master/src/main/java/corner/orm/tapestry/component/prototype/autocompleter/BaseAutocompleter.java#L139
+(no instantiations for subclass)
+
+	Super is abstract, and the method only throws UOE. Sub also abstract but
+	implements the method.
+
+
+
+ID:03
+out[] = panbasten/BA#visitBooleanExpr#ExpressionPrinter#UnsupportedOperationException#,#!subissubset#,
+Subclass: https://github.com/panbasten/BA/blob/master/mondrian/mondrian-model/src/main/java/com/tonbeller/jpivot/olap/model/ExpressionPrinter.java#L52
+Superclass: https://github.com/panbasten/BA/blob/master/mondrian/mondrian-model/src/main/java/com/tonbeller/jpivot/olap/model/VisitorSupportStrict.java#L63
+Instantiation (as sub, passed as superinterface): https://github.com/panbasten/BA/blob/ba58acf949af1249cc637ccf50702bb28462d8ad/mondrian/mondrian-model/src/main/java/com/tonbeller/jpivot/olap/model/ExpressionPrinter.java#L62
+
+	Super is abstract class with many UOE methods. Subclass concrete, adds impl.
+
+
+ID:04
+out[] = jackbradshaw/MSc-Projct#printWelcome#ConvolutionSolver#UnsupportedOperationException#,#!subissubset#,
+Subclass: https://github.com/jackbradshaw/MSc-Projct/blob/master/CoMoM/src/QueuingNet/ConvolutionSolver.java#L97
+Superclass: https://github.com/jackbradshaw/MSc-Projct/blob/master/CoMoM/src/QueuingNet/QNSolver.java#L96
+Instantiation (as superclass): https://github.com/jackbradshaw/MSc-Projct/blob/e87c66b83e7f9838be56ae7187d3190939ee1ccb/CoMoM/src/Control/Main.java#L180
+
+	Concrete superclass that throws UOE. Concrete subclass just prints to stdout
+
+
+ID:05
+out[] = saruchi/prefuso#getDouble#Atan2Function#UnsupportedOperationException#,#!subissubset#,
+Subclass: https://github.com/saruchi/prefuso/blob/master/prefuse/src/prefuse/data/expression/FunctionExpression.java#L323
+Superclass: https://github.com/saruchi/prefuso/blob/master/prefuse/src/prefuse/data/expression/AbstractExpression.java#L124
+(no instantiations)
+
+	Superclass is abstract and only throws UOE in this method. Mentioned UOE in
+	method Javadoc. Subclass adds implementation.
+
+
+ID:08
+out[] = callmewa/android-dynamic-listview-picasa#getAsInt#JsonPrimitive#UnsupportedOperationException#,#!subissubset#,
+Subclass: https://github.com/callmewa/android-dynamic-listview-picasa/blob/762f33978797c04f5c99e57d25d9fadcb3cdd52d/src/com/google/gson/JsonPrimitive.java#L254
+Superclass: https://github.com/callmewa/android-dynamic-listview-picasa/blob/762f33978797c04f5c99e57d25d9fadcb3cdd52d/src/com/google/gson/JsonElement.java#L236
+Instantiation (returned as super): https://github.com/callmewa/android-dynamic-listview-picasa/blob/762f33978797c04f5c99e57d25d9fadcb3cdd52d/src/com/google/gson/internal/bind/TypeAdapters.java#L599
+Instantiation (stored as Object): https://github.com/callmewa/android-dynamic-listview-picasa/blob/762f33978797c04f5c99e57d25d9fadcb3cdd52d/src/com/google/gson/internal/bind/JsonTreeReader.java#L224
+Instantiation (returned as super): https://github.com/callmewa/android-dynamic-listview-picasa/blob/762f33978797c04f5c99e57d25d9fadcb3cdd52d/src/com/google/gson/JsonObject.java#L122
+(4 other instantiations, likewise all as the superclass JsonElement)
+
+	Superclass is abstract and throws UOE. Subclass is concrete and provides an
+	implementation.
+
+
+ID:09
+OLD: out[] = sai25590/SearchEngineOverWikipedia#setParams#DeleteByPercentTask#UnsupportedOperationException#UnsupportedOperationException#!n
+CORRECTED: out[] = sai25590/SearchEngineOverWikipedia#setParams#DeleteByPercentTask#UnsupportedOperationException#,#!subissubset#,
+Subclass: https://github.com/sai25590/SearchEngineOverWikipedia/blob/aa37c4b948545d5042506f7a1eae0c35ebbe9570/wiki_src/lucene/src/org/apache/lucene/benchmark/byTask/tasks/DeleteByPercentTask.java#L58
+Superclass: https://github.com/sai25590/SearchEngineOverWikipedia/blob/aa37c4b948545d5042506f7a1eae0c35ebbe9570/wiki_src/lucene/src/org/apache/lucene/benchmark/byTask/tasks/PerfTask.java#L288
+(no instantiations)
+
+	This is an odd example. Superclass is abstract, subclass is concrete. Super
+	throws UOE if supportsParams() returns false then does other work. This
+	supportsParams() method is intended to be overridden by subclasses. It
+	returns false in the super and true in sub.
+
+
+
+ID:11
+out[] = chbrown/nlp#pipe#ConllNer2003Sentence2TokenSequence#UnsupportedOperationException#IllegalArgumentException#!y#,
+Subclass: https://github.com/chbrown/nlp/blob/c74ca9f96ccab8b1db04e37d419682a057ba3f46/src/main/java/cc/mallet/share/casutton/ner/ConllNer2003Sentence2TokenSequence.java#L107
+Superclass: https://github.com/chbrown/nlp/blob/c74ca9f96ccab8b1db04e37d419682a057ba3f46/src/main/java/cc/mallet/pipe/Pipe.java#L127
+(no instantiations)
+
+	Superclass is abstract and throws UOE saying "use this other method" that
+	the superclass does implement. Subclass is concrete and implements the method.
+
+
+ID:12
+out[] = kjetilv/vanadis#getEntry#OSGiContext#UnsupportedOperationException#,#!subissubset#,
+Subclass: https://github.com/kjetilv/vanadis/blob/afddf01a112d5f9e8f4da81dd1ea628490a25f3e/osgi/src/main/java/vanadis/osgi/impl/OSGiContext.java#L210
+Superclass: https://github.com/kjetilv/vanadis/blob/afddf01a112d5f9e8f4da81dd1ea628490a25f3e/osgi/src/main/java/vanadis/osgi/ContextAdapter.java#L143
+Instantiated (returned as superinterface): https://github.com/kjetilv/vanadis/blob/afddf01a112d5f9e8f4da81dd1ea628490a25f3e/osgi/src/main/java/vanadis/osgi/Contexts.java#L35
+
+	Superclass is concrete and its methods throw UOE initially. Subclass is
+	concrete and provides implementations.
+
+
+ID:13
+out[] = bcleenders/norvig-award#clear#Long2CharOpenHashMap#UnsupportedOperationException#,#!subissubset#,
+Subclass: https://github.com/bcleenders/norvig-award/blob/0653cf112f1c16dec4b16f4503feba6b100a7440/fastutil-6.4.6/src/it/unimi/dsi/fastutil/longs/Long2CharOpenHashMap.java#L326
+Superclass: https://github.com/bcleenders/norvig-award/blob/0653cf112f1c16dec4b16f4503feba6b100a7440/fastutil-6.4.6/src/it/unimi/dsi/fastutil/longs/AbstractLong2CharFunction.java#L81
+(no instantiations)
+
+	Superclass is abstract and throws UOE in this and 2 other methods (of ~10)
+	Subclass is concrete and provides an implementation.
+
+
+ID:14
+out[] = TCM-ZJU/tcmSearch#getInt#RGBAFunction#UnsupportedOperationException#,#!subissubset#,
+Subclass: https://github.com/TCM-ZJU/tcmSearch/blob/3f801cc7c4362c330158c04f392ce97fd21fd052/dartie_src/dartie/prefuse/data/expression/FunctionExpression.java#L945
+Superclass: https://github.com/TCM-ZJU/tcmSearch/blob/3f801cc7c4362c330158c04f392ce97fd21fd052/dartie_src/dartie/prefuse/data/expression/AbstractExpression.java#L100
+(no instantiations)
+
+	Superclass is abstract and throws UOE in most of its methods.
+	Subclass is concrete and provides an implementation for just this method.
+	Other classes in between the sub and super implement other UOE methods.
+
+
+ID:16
+out[] = argus-authz/argus-pep-common#readNode#BurlapInput#UnsupportedOperationException#IOException#!y#IOException
+Subclass: https://github.com/argus-authz/argus-pep-common/blob/master/src/main/java/com/caucho/burlap/io/BurlapInput.java#L750
+Superclass: https://github.com/argus-authz/argus-pep-common/blob/master/src/main/java/com/caucho/hessian/io/AbstractHessianInput.java#L294
+Instantiated (returned as super): https://github.com/argus-authz/argus-pep-common/blob/6eb6603c9c2dcc7c5cd2502b7198d98f3082cb6d/src/main/java/com/caucho/burlap/client/BurlapProxyFactory.java#L268
+
+	The IOException is a method call to abstract away creating
+	BurlapProtocolException instanaces. The subclass implements features from
+	an abstract superclass. Most methods in the abstract superclass are simply
+	abstract as well, but this particular method isn't and throws the UnsupOpEx
+
+
+ID:17
+out[] = InsomniaAOSP/platform_libcore#engineGetKeySize#NullCipherSpi#UnsupportedOperationException#UnsupportedOperationException#!n#InvalidKeyException
+Subclass: https://github.com/InsomniaAOSP/platform_libcore/blob/master/luni/src/main/java/org/apache/harmony/crypto/internal/NullCipherSpi.java#L170
+Superclass: https://github.com/InsomniaAOSP/platform_libcore/blob/master/luni/src/main/java/javax/crypto/CipherSpi.java#L550
+Instantiated (passed as super): https://github.com/InsomniaAOSP/platform_libcore/blob/83b7e259cf417009795237b263e184e73e56db9b/luni/src/main/java/javax/crypto/NullCipher.java#L41
+
+	Method isn't implemented on either of the classes. Both throw UOE, super is
+	abstract and sub is concrete.
+
+	No uses of the method in the codebase.
+
+
+ID:18
+out[] = tg-endeavoru-jellybean/android_packages_apps_Gallery2#delete#FilterTypeSet#UnsupportedOperationException#,#!subissubset#,
+Subclass: https://github.com/tg-endeavoru-jellybean/android_packages_apps_Gallery2/blob/jb/src/com/android/gallery3d/data/FilterTypeSet.java#L125
+Superclass: https://github.com/tg-endeavoru-jellybean/android_packages_apps_Gallery2/blob/jb/src/com/android/gallery3d/data/MediaObject.java#L82
+Instantiated (returned as super): https://github.com/tg-endeavoru-jellybean/android_packages_apps_Gallery2/blob/ed2d073176e419552441b168b448b9c8c0250092/src/com/android/gallery3d/data/FilterSource.java#L49
+
+	Super throws exception, sub implements logic. Super is abstract whereas sub
+	is concrete.

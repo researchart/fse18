@@ -1,0 +1,77 @@
+Reference: substitutability-violation-kind.txt
+	the base of this file, if an example isn't here, look at this file instead
+
+Reference: substitutability-study-bug.txt
+	modifications may be made to this file from the results in this
+
+This file presents a cleaned-up version of `substitutability-study-bug.txt`
+without the analysis of each individual example.
+
+########################################
+### Precondition examples ###
+########################################
+1. Not a bug
+	a. Superclass Javadoc
+		i. Mentions exception
+			(ID:26,32,50)
+
+			1. Javadoc contradicts itself
+				(ID:55)
+
+		ii. Mentions exception + in supermethod throws clause
+			(ID:31,42)
+
+2. Potential code smell
+
+3. Bug
+	a. Subclass defies the Javadoc
+		(ID:10)
+
+########################################
+### Synchronized examples ###
+########################################
+1. Not a bug
+	a. Java Swing is known thread-unsafe, AWT known thread-safe
+		(ID:40,49)
+
+	b. Subclass is not used / referenced anywhere
+		(28,34)
+
+	c. Does not appear to ever be instantiated
+		(ID:43)
+
+	d. Appears to be used only in the thread it is created in
+		(ID:42)
+
+2. Probably not a bug
+	(ID:24,27,38)
+
+3. Potential bug
+	(ID:20)
+
+########################################
+### I/O examples ###
+########################################
+1. Not a bug - crash
+	a. Superclass Javadoc
+		i. Mentions exeption + in supermethod throws clause
+			(ID:09,38)
+
+		i. Same as above, but superclass Javadoc is external
+			(ID:07)
+
+	b. Supermethod throws clause
+		(ID:12,22,32,35,49)
+
+		i. But mentioned in superclass Javadoc in official repo
+			(ID:48)
+
+1. Not a bug - output
+	a. Console-based demo program
+		(ID:14,15,19)
+
+2. Potential code smell - output
+
+3. Bug - output
+	a. Produces bad output, but not found via effect inference
+		(ID:17)

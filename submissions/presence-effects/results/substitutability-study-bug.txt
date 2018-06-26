@@ -1,0 +1,243 @@
+Reference: substitutability-study.txt
+Also see: substitutability-violation-kind.txt
+
+The goal of this file is to take a more in-depth look at the violations, see
+whether it may be a bug or a code smell.
+
+########################################
+### Precondition examples ###
+########################################
+1. Not a bug
+	ID:13
+	// self-contained verifier program, likely intended
+
+	ID:26
+	// super javadoc says exceptions
+
+	ID:31
+	Official repo: https://github.com/google/gdata-java-client
+	// super javadoc says so + super throws (unchecked exception)
+
+	ID:32
+	Official repo: https://github.com/apache/tomcat
+	// super javadoc says exceptions
+
+	ID:42
+	Official repo: https://github.com/google/gdata-java-client
+	// super javadoc says so + super throws (unchecked exception)
+
+	ID:50
+	// super javadoc says exceptions
+
+	ID:55
+	Official repo: https://github.com/apache/tomcat
+	// super javadoc says exceptions
+	// but: javadoc contradicts itself!
+
+2. Potential code smell
+	ID:02
+	Subclass doc: https://developer.android.com/reference/android/widget/EditText.html#setEllipsize(android.text.TextUtils.TruncateAt)
+	Sprclass doc: https://developer.android.com/reference/android/widget/TextView.html#setEllipsize(android.text.TextUtils.TruncateAt)
+	// subclass docs refer to difference in official repo, but not in the repo examined
+
+	ID:04
+	Sprclass doc: https://docs.oracle.com/javase/7/docs/api/java/text/Format.html#formatToCharacterIterator(java.lang.Object)
+	// note official superclass doc says exception, but repo does not
+
+	ID:12
+	// The subclass name indicates its intention, but no Javadocs
+	// nor indicated in superclass
+
+	ID:14
+	// could not find official repository
+	// Superclass Javadoc does not mention any exception
+
+	ID:15
+	Subclass doc: https://docs.oracle.com/javase/7/docs/api/javax/swing/ComponentInputMap.html#setParent(javax.swing.InputMap)
+	Sprclass doc: https://docs.oracle.com/javase/7/docs/api/javax/swing/InputMap.html#setParent(javax.swing.InputMap)
+	// subclass docs refer to exception, super doesn't
+
+	ID:16
+	// difference suggests slightly different runtime exception
+	// not really a bug, but is code smell
+
+	ID:20
+	// official repo: https://github.com/apache/commons-bcel/
+	// still an undocumented exception on subclass
+
+	ID:21
+	// official repo: https://github.com/itext/itextpdf/
+	// undocumented exception, hence categorized as code smell
+
+3. Potential bug
+	ID:10
+	Official repo: https://github.com/jfree/jfreechart
+	// according to Javadoc, null dataset is permitted, but it's not on sub
+	// exists in official repo
+
+	ID:19
+	// TODO: re-check this
+	// but: appears that the class has been deleted in the latest version
+	// what does this indicate?
+
+	ID:41
+	Official repo: https://github.com/google/gdata-java-client
+	// superclass Javadoc says use IllegalArgumentEx, but sub can use NullPtrEx
+
+########################################
+### Synchronized examples ###
+########################################
+1. Not a bug with given repository code
+	ID:40
+	// Swing / AWT
+
+	ID:49
+	// Swing / AWT
+
+	ID:28
+	// Subclass does not appear to be used, nor in the project they mention in
+	// the repo README.
+	// Superclass used in multiple threads indirectly by `Main` and directly by
+	// `Crawler`.
+
+	ID:34
+	// subclass does not appear to be used (and classes are from a library)
+
+	ID:42
+	// Note: Library project (From OpenJDK7)
+	// Does not appear to be used in multiple threads anywhere, so not a bug.
+
+	ID:43
+	// Note: Code relates to OpenJDK7's garbage collection, but subclass does
+	// not appear to be used by any client code.
+	// It can be created by a related object, but that object itself does not
+	// appear to have instantiations / references.
+
+	ID:51
+	// This is a sample / example / test. No apparent multi-threading is used.
+
+	ID:58
+	// Part of AWT: appears to not be instantiated on its own, needs client
+	// code.
+	// Might be a bug, but no client example to demonstrate.
+
+2. Probably not a bug
+	ID:24
+	// start() called in synchronized method here:
+	// https://github.com/guoliqiang/coding/blob/bb1a40636f2eb1bb66ba7d829444c3729756a38f/third_part/hadoop_src/hadoop-2.0.5-alpha-src/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-common/src/main/java/org/apache/hadoop/yarn/service/CompositeService.java#L34
+	// Method doesn't appear to be called on the subclass anywhere else as far
+	// as can be found. Conclusion: no thread-safety concern.
+
+	ID:27
+	// Note: JobMeta is used for this class:
+	// https://github.com/panbasten/BA/blob/ba58acf949af1249cc637ccf50702bb28462d8ad/kettle/kettle-base/src/main/java/org/pentaho/di/job/Job.java#L384
+	// Seems to take and use the JobMeta object without synchronization.
+	// A Job instance is created here, also started later in the method:
+	// https://github.com/panbasten/BA/blob/ba58acf949af1249cc637ccf50702bb28462d8ad/kettle/kettle-base/src/main/java/org/pentaho/di/kitchen/Kitchen.java#L226
+	// Also notice here, hasChanged() is called a while after starting a Job:
+	// https://github.com/panbasten/BA/blob/ba58acf949af1249cc637ccf50702bb28462d8ad/kettle/kettle-ui/src/main/java/org/pentaho/di/ui/spoon/job/JobGraph.java#L3323
+	// Note: Job's JobMeta appears to not be used by the job starter once
+	// job.start() is called, and job.start() acts like a lock release, so there
+	// should be no visibility problems from this.
+	// Conclusion: Likely no thread-safety problems from what has been seen.
+
+	ID:38
+	// Note: Library project.
+	// Subclass does not appear to be used in multiple threads except for
+	// possibly here, as evidenced by `synchronized`:
+	// https://github.com/yvens47/Portfolio/blob/6758a4817944e136ef58a91d46bc2fb47fe93ed6/mysql-connector-java-5.1.22/src/com/mysql/jdbc/ConnectionImpl.java#L4280
+	// where it is used only in synchronized methods, so likely thread-safe
+	// Conclusion: Does not appear to be used in unsafe contexts though the
+	// library seems to make some use of threading.
+
+3. Potential bug
+	ID:20
+	// Note: none of the other subclasses have synchronization checks, only
+	// the abstract superclasses.
+	// No manual instantiations of any subclass, looks like Android uses xml
+	// files to decide which object is created? Unclear here.
+	// Further investigation: All android activity code seem to occur on UI/main
+	// thread, though AsyncTask will occur on different thread(s).
+	// init() called in background thread:
+	// https://github.com/inferiorhumanorgans/WayToGo/blob/602ed574ad1ce98111227b6fc292f7afb97fd02e/src/com/inferiorhumanorgans/WayToGo/MapView/OSMGetStopsTask.java#L82
+	// init() called in UI thread:
+	// https://github.com/inferiorhumanorgans/WayToGo/blob/602ed574ad1ce98111227b6fc292f7afb97fd02e/src/com/inferiorhumanorgans/WayToGo/Agency/NextBus/Activity/BaseNextBusActivity.java#L81
+	// Conclusion: potential for a thread visibility problem.
+
+4. Uncategorized
+	ID:47
+	// Note: subclass is an abstract class
+	// Subclass of subclass (ZipFileSet and TarFileSet) instantiated in:
+	// https://github.com/Distrotech/apache-ant/blob/dc303c3c71349115b7c5b6a29dd22ba410597748/src/main/org/apache/tools/ant/types/resources/Archives.java#L147
+	// But `Archives` doesn't appear to be referenced / instantiated anywhere
+	// > is part of Ant's API.
+	// Also here for TarFileSet, but method not referenced anywhere else:
+	// https://github.com/Distrotech/apache-ant/blob/dc303c3c71349115b7c5b6a29dd22ba410597748/src/main/org/apache/tools/ant/taskdefs/Tar.java#L123
+	// ZipFileSet mentioned in multiple classes (Ear, War, Zip, Jar).
+	// Looks like a class called Parallel is to be used to run multiple tasks
+	// concurrently, but not used by default.
+	// Conclusion: no threading usage by default (?), would be set up by the
+	// library client.
+
+	ID:48
+	// TODO
+
+	ID:62
+	// Used in a potentially large number of different classes due to the method
+	// `Resource.newResource`.
+
+########################################
+### I/O examples ###
+########################################
+1. Not a bug - crash
+	ID:38
+	// Official repo: https://cvs.savannah.gnu.org/viewvc/classpath/?hideattic=0
+	// can't find the files on it -- deleted for some reason?
+	// super javadoc says exceptions + generic Exception in super throws clause
+
+	ID:09
+	Official docs: https://tomcat.apache.org/tomcat-5.5-doc/jspapi/javax/servlet/jsp/tagext/TagSupport.html#doEndTag()
+	// super javadoc says exceptions + supermethod has throws clause
+
+	ID:07
+	Official docs: https://docs.oracle.com/javase/7/docs/api/java/nio/channels/FileChannel.html#tryLock()
+	// going by official documentation of the class the superclass extends, both
+	// javadoc + throws clause seem to cover all possible exceptions
+
+	ID:12
+	// throws IOException
+
+	ID:22
+	// throws IOException
+
+	ID:32
+	Official repo: https://github.com/apache/activemq
+	// throws IOEception
+
+	ID:35
+	// throws IOException
+
+	ID:48
+	Official repo: https://github.com/apache/sanselan
+	// note: official repo adds a Javadoc saying IOException can be thrown by
+	// subclasses.
+	// But in the sample repo it just throws IOException
+
+	ID:49
+	// Official repo seems to have been removed
+	// throws Exception
+
+1. Not a bug - output
+	ID:14
+	// console based program, main method in same file as subclass
+
+	ID:15
+	// console based program, main method in same file as subclass -- demo
+
+	ID:19
+	// console based program, main method in same file as subclass -- demo
+
+4. Unsure - output
+	ID:33
+	// Self-contained program so likely not a bug + outputs errors to stderr
+	// Possible code smell or just not a bug?

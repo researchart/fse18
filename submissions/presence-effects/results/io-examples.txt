@@ -1,0 +1,373 @@
+ID:01
+out[] = elka-projekt/cs-voltdb#close#TransferSQLText#NONE#OUT#!subhasmore#!hasBus
+Subclass: https://github.com/kobronson/cs-voltdb/blob/e13f2d10e1dc12af0ff6d20734ca63c017d8ec5b/src/hsqldb19b3/org/hsqldb_voltpatches/util/TransferSQLText.java#L142
+Superclass: https://github.com/kobronson/cs-voltdb/blob/e13f2d10e1dc12af0ff6d20734ca63c017d8ec5b/src/hsqldb19b3/org/hsqldb_voltpatches/util/DataAccessPoint.java#L112
+
+Instantiation (stored as super): https://github.com/kobronson/cs-voltdb/blob/e13f2d10e1dc12af0ff6d20734ca63c017d8ec5b/src/hsqldb19b3/org/hsqldb_voltpatches/util/Transfer.java#L449
+Instantiation (stored as super): https://github.com/kobronson/cs-voltdb/blob/e13f2d10e1dc12af0ff6d20734ca63c017d8ec5b/src/hsqldb19b3/org/hsqldb_voltpatches/util/Transfer.java#L478
+
+	Both concrete. Superclass close() method has an empty body. Superclass
+	doesn't really do anything (it's begin and end are basically no-ops).
+	Subclass behaves like one might expect: flushes an stread and then closes
+	it.
+
+
+ID:02
+out[] = Utacka/XperiaVofficialKernel#visitAnyInstruction#MyStackConsistencyFixer#NONE#OUT#!subhasmore#!hasConsole
+Subclass: https://github.com/Utacka/XperiaVofficialKernel/blob/8e138fb5105c67d914918747affde23c97c84048/external/proguard/src/proguard/optimize/evaluation/EvaluationShrinker.java#L671
+Superclass: https://github.com/Utacka/XperiaVofficialKernel/blob/8e138fb5105c67d914918747affde23c97c84048/external/proguard/src/proguard/classfile/util/SimplifiedVisitor.java#L473
+
+Instantiation (stored as sub): https://github.com/Utacka/XperiaVofficialKernel/blob/8e138fb5105c67d914918747affde23c97c84048/external/proguard/src/proguard/optimize/evaluation/EvaluationShrinker.java#L63
+
+	Super abstract, sub concrete. Superclass implements a bunch of methods that
+	either call other methods or throw UOE. Submethod has I/O in form of SOP
+	when a "DEBUG" instance variable is set to true.
+
+ID:03
+out[] = dasmoth/hts-scripts#post#WTDThreshold#NONE#OUT#!subhasmore#!hasConsole
+Subclass: https://github.com/dasmoth/hts-scripts/blob/331f3f05c91fffd91492b81155bf674a073225c2/src/hts/dmrcall/WTDThreshold.java#L100
+Superclass: https://github.com/dasmoth/hts-scripts/blob/331f3f05c91fffd91492b81155bf674a073225c2/src/utils/AbstractLineProcessor.java#L95
+
+(no instantiations)
+
+	Super abstract, sub concrete. Supermethod has empty body, whereas submethod
+	prints to stderr.
+
+ID:04
+out[] = cms-sw/hlt-confdb#toString#PythonUntrackedParameterWriter#NONE#OUT#!subhasmore#!hasConsole
+Subclass: https://github.com/cms-sw/hlt-confdb/blob/b35f411b6d64e427f7953d5f3409437eb2ed295a/src/confdb/converter/python/PythonUntrackedParameterWriter.java#L11
+Superclass: https://github.com/cms-sw/hlt-confdb/blob/7eaec74f374cd23c75287145b918aa1ed3286b5d/src/confdb/converter/python/PythonParameterWriter.java#L24
+
+(no instantiations)
+
+	Both concrete. Superclass toString seems to convert the object to a string
+	using some parameters whereas subclass more or less calls SOP once accross
+	program lifetime, updates an instance variable, and calls a supermethod.
+
+ID:05
+out[] = jgralab/jgralab#post#HTMLOutputWriter#NONE#OUT#!subhasmore#!hasBus
+Subclass: https://github.com/jgralab/jgralab/blob/998be571cd01298065b6fcda3f55166917007120/src/de/uni_koblenz/jgralab/greql/serialising/HTMLOutputWriter.java#L157
+Superclass: https://github.com/jgralab/jgralab/blob/998be571cd01298065b6fcda3f55166917007120/src/de/uni_koblenz/jgralab/greql/serialising/DefaultWriter.java#L484
+
+Instantiated (local stored as sub): https://github.com/jgralab/jgralab/blob/998be571cd01298065b6fcda3f55166917007120/src/de/uni_koblenz/jgralab/utilities/greqlgui/GreqlGui.java#L498
+Instantiated (local stored as super): https://github.com/jgralab/jgralab/blob/998be571cd01298065b6fcda3f55166917007120/src/de/uni_koblenz/jgralab/utilities/greqlserver/GReQLConsole.java#L184
+
+	Subclass abstract, sub concrete. Supermethod has empty body. Submethod
+	prints some text to a file.
+
+ID:06
+out[] = Jearil/cjw-robots#roundOver#Bee#NONE#OUT#!subhasmore#!hasConsole
+Subclass: https://github.com/Jearil/cjw-robots/blob/463f83315f3bb62a737f94805d9721a84bfa62b4/src/main/java/cjwrobot/pgun/Bee.java#L127
+Superclass: https://github.com/Jearil/cjw-robots/blob/463f83315f3bb62a737f94805d9721a84bfa62b4/src/main/java/cjwrobot/pgun/Stinger.java#L93
+
+Instantiated (stored as super): https://github.com/Jearil/cjw-robots/blob/463f83315f3bb62a737f94805d9721a84bfa62b4/src/main/java/cjwrobot/Hydra.java#L23
+
+	Super abstract, sub concrete. Supermethod has empty body and superclass
+	doesn't seem to have any I/O. Subclass's only I/O seems to be SOP
+	astatements in various methods.
+
+ID:07
+out[] = agueganno/h2geometry#tryLock#FileDisk#NONE#IN#!subhasmore#!hasFile
+Subclass: https://github.com/agueganno/h2geometry/blob/758d2d60b2f15268b414108658e98f4979bc7870/h2/src/main/org/h2/store/fs/FilePathDisk.java#L402
+Superclass: https://github.com/agueganno/h2geometry/blob/758d2d60b2f15268b414108658e98f4979bc7870/h2/src/main/org/h2/store/fs/FileBase.java#L79
+
+Instantiated (local stored as sub, returned as super): https://github.com/agueganno/h2geometry/blob/758d2d60b2f15268b414108658e98f4979bc7870/h2/src/main/org/h2/store/fs/FilePathDisk.java#L317-L322
+
+	Super abstract, sub concrete. Super's methods throw UOE. Sub delegates
+	tryLock to a RandomAccessFile's channel.
+
+ID:08
+out[] = codefireX/platform_libcore#write#RetryableOutputStream#NONE#OUT#!subhasmore#!hasBus
+Subclass: https://github.com/codefireX/platform_libcore/blob/c0d4ecddf2d90d25acb236c7d9fb7df759b0c53d/luni/src/main/java/libcore/net/http/RetryableOutputStream.java#L54
+Superclass: https://github.com/codefireX/platform_libcore/blob/c0d4ecddf2d90d25acb236c7d9fb7df759b0c53d/luni/src/main/java/java/io/OutputStream.java#L103
+
+Instantiated (stored as super): https://github.com/codefireX/platform_libcore/blob/c0d4ecddf2d90d25acb236c7d9fb7df759b0c53d/luni/src/main/java/libcore/net/http/HttpEngine.java#L354-L356
+
+	Super abstract, sub concrete. Supermethod delegates to an abstract method.
+	But sub implements this directly rather than delegating to another write
+	method.
+
+ID:09
+out[] = candelacfsp/GIT-REMOTO#doEndTag#ShowSource#NONE#IN#!subhasmore#!hasBus
+Subclass: https://github.com/candelacfsp/GIT-REMOTO/blob/c00b81eae08ec04735b6eebbe36b13042b00df93/apache731/webapps/examples/WEB-INF/classes/examples/ShowSource.java#L42
+Superclass: https://github.com/candelacfsp/GIT-REMOTO/blob/c00b81eae08ec04735b6eebbe36b13042b00df93/apache731/java/javax/servlet/jsp/tagext/TagSupport.java#L138
+
+(no instantiations)
+
+	Both concrete. Supermethod immediately returns a constant. Submethod appears
+	to read some information from a resource and then print some back out to
+	a class called JspWriter.
+
+ID:10
+out[] = StefanoSalsano/UPMT#write#SourceLineAudioOutputStream#OUT#BOTH#!subhasmore#!hasBus
+Subclass: https://github.com/StefanoSalsano/UPMT/blob/5b10cb6dff3c2ab3b25e4f07daa3f177412c35c3/java/upmt/src/org/zoolu/sound/SourceLineAudioOutputStream.java#L127
+Superclass: https://github.com/StefanoSalsano/UPMT/blob/5b10cb6dff3c2ab3b25e4f07daa3f177412c35c3/java/upmt/src/org/zoolu/sound/AudioOutputStream.java#L82
+
+Instantiated (stored as super): https://github.com/StefanoSalsano/UPMT/blob/5b10cb6dff3c2ab3b25e4f07daa3f177412c35c3/java/upmt/src/org/zoolu/sound/ExtendedAudioSystem.java#L250
+
+	Both concrete. Supermethod delegates to an OutputStream provided at
+	construction. Submethod writes the data to a stream, reads it from its
+	connected stream (presumably after some conversion happens), and then writes
+	the resulting data to a final destination stream.
+
+ID:11
+out[] = blickly/ptii#init#ShowRawDocumentApplet#NONE#BOTH#!subhasmore#!hasConsole
+Subclass: https://github.com/blickly/ptii/blob/7bf9d7dbe97fdab1c225e6dc5449f9df31363c72/ptolemy/gui/demo/ShowRawDocumentApplet.java#L73
+Superclass: https://github.com/blickly/ptii/blob/7bf9d7dbe97fdab1c225e6dc5449f9df31363c72/ptolemy/gui/BasicJApplet.java#L94
+
+(no instantiations)
+
+	Both concrete. Supermethod simply sets up the applet. Submethod opens a URL
+	and reads its contents as well as printing to stderr.
+
+ID:12
+out[] = zmughal/jlucidity_test#readItem#CIFieldref#NONE#IN#!subhasmore#!hasBus
+Subclass: https://github.com/oberth-manoeuvre/jlucidity/blob/1876900291b568fb56430eb8ba52b21c2332e6ea/src/jlucidity/bytecode/CIFieldref.java#L24
+Superclass: https://github.com/oberth-manoeuvre/jlucidity/blob/1876900291b568fb56430eb8ba52b21c2332e6ea/src/jlucidity/bytecode/ConstantInfo.java#L8
+
+Instantiated (local and returned as super): https://github.com/oberth-manoeuvre/jlucidity/blob/1876900291b568fb56430eb8ba52b21c2332e6ea/src/jlucidity/bytecode/CIFieldref.java#L19
+Instantiated (collection as super): https://github.com/oberth-manoeuvre/jlucidity/blob/1876900291b568fb56430eb8ba52b21c2332e6ea/src/jlucidity/bytecode/ConstantPoolReader.java#L12
+
+	Both concrete. Supermethod just returns 0. Submethod reads from the provided
+	stream.
+
+ID:13
+out[] = IAAS/oryx-editor#toJpdl#WireObjectType#NONE#OUT#!subhasmore#!hasBus
+Subclass: https://github.com/koppor/oryx-editor/blob/3b0891641e4e7691bc386401d4eeef4fa5fbb581/poem-jvm/src/java/org/b3mn/poem/jbpm/WireObjectType.java#L15
+Superclass: https://github.com/koppor/oryx-editor/blob/3b0891641e4e7691bc386401d4eeef4fa5fbb581/poem-jvm/src/java/org/b3mn/poem/jbpm/WireObjectGroup.java#L18
+
+Instantiated (stored as super): https://github.com/koppor/oryx-editor/blob/3b0891641e4e7691bc386401d4eeef4fa5fbb581/poem-jvm/src/java/org/b3mn/poem/jbpm/Arg.java#L20
+Instantiated (stored as super): https://github.com/koppor/oryx-editor/blob/3b0891641e4e7691bc386401d4eeef4fa5fbb581/poem-jvm/src/java/org/b3mn/poem/jbpm/Field.java#L25
+Instantiated (stored as super): https://github.com/koppor/oryx-editor/blob/3b0891641e4e7691bc386401d4eeef4fa5fbb581/poem-jvm/src/java/org/b3mn/poem/jbpm/Part.java#L30
+
+	Both concrete. Supermethod returns empty string (""). Submethod creates
+	a StringWriter which it writes its name to and returns its string.
+	No actual I/O happens here?
+
+ID:14
+out[] = karanjude/adbms#init#ApplicationCacheClient#NONE#OUT#!subhasmore#!hasConsole
+Subclass: https://github.com/karanjude/adbms/blob/f1ad2a42f9c2912f1520cb6a3b87377c8089a237/BG/db/jdbc/src/applicationCache/ApplicationCacheClient.java#L100
+Superclass: https://github.com/karanjude/adbms/blob/f1ad2a42f9c2912f1520cb6a3b87377c8089a237/BG/src/com/yahoo/ycsb/DB.java#L65
+
+Instantiated (local stored as sub): https://github.com/karanjude/adbms/blob/f1ad2a42f9c2912f1520cb6a3b87377c8089a237/BG/db/jdbc/src/applicationCache/ApplicationCacheClient.java#L1586
+
+	Super abstract, sub concrete. Super has empty method. Submethod uses stderr.
+
+ID:15
+out[] = bobtheblueberry/Runero#playbackFinished#InfoListener#NONE#OUT#!subhasmore#!hasConsole
+Subclass: https://github.com/bobtheblueberry/Runero/blob/09750db13b7a7db45228280a7bb93b0f0863794d/src/javazoom/jl/player/advanced/jlap.java#L110
+Superclass: https://github.com/bobtheblueberry/Runero/blob/09750db13b7a7db45228280a7bb93b0f0863794d/src/javazoom/jl/player/advanced/PlaybackListener.java#L29
+
+Instantiated (passed as super): https://github.com/bobtheblueberry/Runero/blob/09750db13b7a7db45228280a7bb93b0f0863794d/src/javazoom/jl/player/advanced/jlap.java#L60
+
+	Super abstract, sub concrete. Super has empty method. Submethod prints to
+	stderr and then calls System.exit(0).
+
+ID:16
+out[] = jankotek/asterope-kotlin-prototype#setInput#Clip#NONE#OUT#!subhasmore#!hasConsole
+Subclass: https://github.com/jankotek/asterope-kotlin-prototype/blob/5041b0f3436851511541f7b93f81899244bdc305/skyview/skyview/geometry/sampler/Clip.java#L129
+Superclass: https://github.com/jankotek/asterope-kotlin-prototype/blob/5041b0f3436851511541f7b93f81899244bdc305/skyview/skyview/geometry/Sampler.java#L72
+
+Instantiated (stored as sub): https://github.com/jankotek/asterope-kotlin-prototype/blob/5041b0f3436851511541f7b93f81899244bdc305/skyview/skyview/geometry/projecter/CarStraddle.java#L121
+
+	Super abstract, sub concrete. Supermethod updates some instance vars,
+	submethod calls super and does some additional work that may result in it
+	printing to stderr.
+
+ID:17
+out[] = bend/L-T#toSpim#NLIRAStore#NONE#OUT#!subhasmore#!hasBus
+Subclass: https://github.com/bend/L-T/blob/62c04114581489b74ac5235c4ad08cad8e6972b6/new/j--/src/jminusminus/NLIRInstruction.java#L879
+Superclass: https://github.com/bend/L-T/blob/62c04114581489b74ac5235c4ad08cad8e6972b6/new/j--/src/jminusminus/NLIRInstruction.java#L85
+
+Instantiated (stored as sub, returned as super): https://github.com/bend/L-T/blob/62c04114581489b74ac5235c4ad08cad8e6972b6/new/j--/src/jminusminus/NHIRInstruction.java#L981
+
+	Super abstract, sub concrete. Supermethod does nothing. Submethod writes a
+	"not implemented" method to the PrintWriter argument.
+
+ID:18
+out[] = bdombrow/CS-510-NiagaraST-Last-Known-Good#flushCurrentResults#PhysicalAccumulate#NONE#OUT#!subhasmore#!hasConsole
+Subclass: https://github.com/bdombrow/CS-510-NiagaraST-Last-Known-Good/blob/83893098002c0d9be267a0f33823cab480fd608d/src/niagara/physical/PhysicalAccumulate.java#L155
+Superclass: https://github.com/bdombrow/CS-510-NiagaraST-Last-Known-Good/blob/83893098002c0d9be267a0f33823cab480fd608d/src/niagara/physical/PhysicalOperator.java#L1244
+
+Instantiated (returned as super): https://github.com/bdombrow/CS-510-NiagaraST-Last-Known-Good/blob/83893098002c0d9be267a0f33823cab480fd608d/src/niagara/physical/PhysicalAccumulate.java#L263
+
+	Super abstract, sub concrete. Supermethod contains only an "assert false"
+	and submethod uses SOP.
+
+ID:19
+out[] = pcalcado/cmu-sphinx4#onEntry#WeatherNode#NONE#OUT#!subhasmore#!hasConsole
+Subclass: https://github.com/pcalcado/cmu-sphinx4/blob/8a7d7d242aecb190ae28fead68775da36e89e69e/src/apps/edu/cmu/sphinx/demo/jsapi/dialog/Dialog.java#L325
+Superclass: https://github.com/pcalcado/cmu-sphinx4/blob/8a7d7d242aecb190ae28fead68775da36e89e69e/src/apps/edu/cmu/sphinx/demo/jsapi/dialog/DialogManager.java#L384
+
+Instantiated (passed as super): https://github.com/pcalcado/cmu-sphinx4/blob/8a7d7d242aecb190ae28fead68775da36e89e69e/src/apps/edu/cmu/sphinx/demo/jsapi/dialog/Dialog.java#L73
+
+	Both concrete. Supermethod calls "trace" which ends up being an OUT effect.
+	Submethod uses SOP instead.
+
+ID:20
+out[] = fugazza/SerendipityTranslator#loadListOfPlugins#SvnHTMLRepository#NONE#IN#!subhasmore#!hasBus
+Subclass: https://github.com/fugazza/SerendipityTranslator/blob/2943ebbdabef4fd75d9e199eaa5932f0c148c17d/src/serendipitytranslator/repositories/SvnHTMLRepository.java#L32
+Superclass: https://github.com/fugazza/SerendipityTranslator/blob/2943ebbdabef4fd75d9e199eaa5932f0c148c17d/src/serendipitytranslator/repositories/SimpleFileRepository.java#L67
+
+Instantiated (stored as super): https://github.com/fugazza/SerendipityTranslator/blob/2943ebbdabef4fd75d9e199eaa5932f0c148c17d/src/serendipitytranslator/settings/SettingsDialog.java#L664
+
+	Both concrete. Supermethod does things with file and directory listings
+	(not I/O I guess). Submethod reads information from a URL and parases it to
+	get the plugin list. (i.e. supermethod looks at local file directories,
+	submethod looks at a plugin list from a website).
+
+ID:21
+out[] = StackFrame/sarariman#doPropfind#StaffAddressBookServlet#NONE#OUT#!subhasmore#!hasConsole
+Subclass: https://github.com/StackFrame/sarariman/blob/e547427c0616ee5c0a1f8459c94ff39e07fdaa53/src/java/com/stackframe/sarariman/StaffAddressBookServlet.java#L210
+Superclass: https://github.com/StackFrame/sarariman/blob/e547427c0616ee5c0a1f8459c94ff39e07fdaa53/src/java/com/stackframe/sarariman/WebDAVServlet.java#L21
+
+ID:22
+out[] = bedatadriven/appengine-export#openGlyphs#FontEmbedderType1#NONE#OUT#!subhasmore#!hasBus
+Subclass: https://github.com/bedatadriven/appengine-export/blob/6c8f5a2fd04e655676df623a08a75b2e5fc04d31/emf/src/main/java/org/freehep/graphicsio/font/FontEmbedderType1.java#L131
+Superclass: https://github.com/bedatadriven/appengine-export/blob/6c8f5a2fd04e655676df623a08a75b2e5fc04d31/emf/src/main/java/org/freehep/graphicsio/font/FontEmbedder.java#L62
+
+ID:23
+out[] = Tacohiman/Janty#actionPerformed#GuiTexturePacks#NONE#OUT#!subhasmore#!hasConsole
+Subclass: https://github.com/Tacohiman/Janty/blob/a5431abfeee141c8c021b3fed5f4c59c2c8c81d0/Janty/minecraft/net/minecraft/src/GuiTexturePacks.java#L44
+Superclass: https://github.com/Tacohiman/Janty/blob/a5431abfeee141c8c021b3fed5f4c59c2c8c81d0/Janty/minecraft/net/minecraft/src/GuiScreen.java#L143
+
+ID:24
+out[] = doslab/gcc-designated-initializer-support-cpp#write#FilterWriter#NONE#OUT#!subhasmore#!hasBus
+Subclass: https://github.com/doslab/gcc-designated-initializer-support-cpp/blob/78015ede7b6a7e7d3fc216cc7482b7174fc263e0/libjava/classpath/java/io/FilterWriter.java#L141
+Superclass: https://github.com/doslab/gcc-designated-initializer-support-cpp/blob/78015ede7b6a7e7d3fc216cc7482b7174fc263e0/libjava/classpath/java/io/Writer.java#L181
+
+ID:25
+out[] = cs-au-dk/XSLV#setOutputType#VerboseRunDecorator#NONE#OUT#!subhasmore#!hasBus
+Subclass: https://github.com/cs-au-dk/XSLV/blob/41e53c964d2cf797e2c2c77531156ec3e7dcd0ef/src/dongfang/xsltools/validation/VerboseRunDecorator.java#L37
+Superclass: https://github.com/cs-au-dk/XSLV/blob/41e53c964d2cf797e2c2c77531156ec3e7dcd0ef/src/dongfang/xsltools/validation/ValidationRunDecoratorBase.java#L42
+
+ID:26
+out[] = joliebig/featurehouse#visit#SlimPrintVisitor#NONE#OUT#!subhasmore#!hasBus
+Subclass: https://github.com/joliebig/featurehouse/blob/92b7024d55a79581533f22552eb50c51343c23c3/CIDE_generateAST/src/cide/astgen/nparser/visitor/SlimPrintVisitor.java#L21
+Superclass: https://github.com/joliebig/featurehouse/blob/92b7024d55a79581533f22552eb50c51343c23c3/CIDE_generateAST/src/cide/astgen/nparser/visitor/NVisitor.java#L15
+
+ID:27
+out[] = dscho/javamail#getContentStream#POP3Message#NONE#IN#!subhasmore#!hasBus
+Subclass: https://github.com/dscho/javamail/blob/d408943521ec2e098074c45d6b519ca54c1b1833/mail/src/main/java/com/sun/mail/pop3/POP3Message.java#L266
+Superclass: https://github.com/dscho/javamail/blob/d408943521ec2e098074c45d6b519ca54c1b1833/mail/src/main/java/javax/mail/internet/MimeMessage.java#L1354
+
+ID:28
+out[] = danieloeh/AntennaPod#onEndTag#ChapterReader#NONE#OUT#!subhasmore#!hasConsole
+Subclass: https://github.com/AntennaPod/AntennaPod/blob/4a1e728ac519d686f738aa1875802f6221b564c3/core/src/main/java/de/danoeh/antennapod/core/util/id3reader/ChapterReader.java#L99
+Superclass: https://github.com/AntennaPod/AntennaPod/blob/4a1e728ac519d686f738aa1875802f6221b564c3/core/src/main/java/de/danoeh/antennapod/core/util/id3reader/ID3Reader.java#L242
+
+ID:29
+out[] = Cbswe/CarlKompilatorn#caseAFormalrest#DepthFirstAdapter#NONE#OUT#!subhasmore#!hasConsole
+Subclass: https://github.com/Cbswe/CarlKompilatorn/blob/48e1ddb86e0501b4dafd6260a73e81d21bea7326/lexAndParse/analysis/DepthFirstAdapter.java#L407
+Superclass: https://github.com/Cbswe/CarlKompilatorn/blob/48e1ddb86e0501b4dafd6260a73e81d21bea7326/lexAndParse/analysis/AnalysisAdapter.java#L102
+
+ID:30
+out[] = ZornTaov/zornco#loadList#ClientProxy#NONE#BOTH#!subhasmore#!hasConsole
+Subclass: https://github.com/ZornTaov/ZornCo/blob/c8c6f2af7c9e40bcf43551ff969042ea5e693c12/java/zornco/fps/ClientProxy.java#L72
+Superclass: https://github.com/ZornTaov/ZornCo/blob/c8c6f2af7c9e40bcf43551ff969042ea5e693c12/java/zornco/fps/CommonProxy.java#L10
+
+ID:31
+out[] = jdkoftinoff/mb-linux-msli#read#SocketInputStream#NONE#IN#!subhasmore#!hasBus
+Subclass: https://github.com/jdkoftinoff/mb-linux-msli/blob/8adb103e34af9ff1d8d122e9ee2a1808836f0a14/uClinux-dist/lib/classpath/gnu/javax/net/ssl/provider/SSLSocketImpl.java#L145
+Superclass: https://github.com/jdkoftinoff/mb-linux-msli/blob/8adb103e34af9ff1d8d122e9ee2a1808836f0a14/uClinux-dist/lib/classpath/java/io/InputStream.java#L194
+
+For reference, compare ByteArrayInputStream: https://github.com/jdkoftinoff/mb-linux-msli/blob/8adb103e34af9ff1d8d122e9ee2a1808836f0a14/uClinux-dist/lib/classpath/java/io/ByteArrayInputStream.java#L181
+
+ID:32
+out[] = OpenMethods/Elements#tightUnmarshal#JournalTransactionMarshaller#NONE#IN#!subhasmore#!hasBus
+Subclass: https://github.com/OpenMethods/Elements/blob/87cfbfe4debc8e3b2f621d23f9e86f337790db8f/org.apache/activemq/plugins/org.apache.activemq.core_5.8.0/src/main/java/org/apache/activemq/openwire/v9/JournalTransactionMarshaller.java#L67
+Superclass: https://github.com/OpenMethods/Elements/blob/87cfbfe4debc8e3b2f621d23f9e86f337790db8f/org.apache/activemq/plugins/org.apache.activemq.core_5.8.0/src/main/java/org/apache/activemq/openwire/v9/BaseDataStreamMarshaller.java#L56
+
+ID:33
+out[] = kfc35/SpringGraphics#init#ProblemB4#NONE#OUT#!subhasmore#!hasConsole
+Subclass: https://github.com/kfc35/SpringGraphics/blob/40850be8c17ec7e240544b52ffc413e81d0d6f26/Proj3/src/cs4620/pa2/b4/ProblemB4.java#L30
+Superclass: https://github.com/kfc35/SpringGraphics/blob/40850be8c17ec7e240544b52ffc413e81d0d6f26/Proj3/src/cs4620/framework/GLFrame.java#L70
+
+ID:34
+out[] = benschi11/Alt_F4#getStatus#JobsPlugin#NONE#OUT#!subhasmore#!hasBus
+Subclass: https://github.com/benschi11/Alt_F4/blob/92687397dd19e1b648fe25ef3b0a722d0c01e709/framework/src/play/jobs/JobsPlugin.java#L31
+Superclass: https://github.com/benschi11/Alt_F4/blob/92687397dd19e1b648fe25ef3b0a722d0c01e709/framework/src/play/PlayPlugin.java#L55
+
+ID:35
+out[] = CleverCloud/Bianca#transfer#HttpPutRequest#NONE#OUT#!subhasmore#!hasBus
+Subclass: https://github.com/CleverCloud/Bianca/blob/8205626e92ff7761bcd19da370c9567be27e9e1f/bianca/src/main/java/com/clevercloud/bianca/lib/curl/HttpPutRequest.java#L68
+Superclass: https://github.com/CleverCloud/Bianca/blob/8205626e92ff7761bcd19da370c9567be27e9e1f/bianca/src/main/java/com/clevercloud/bianca/lib/curl/HttpRequest.java#L155
+
+ID:36
+out[] = xdtianyu/android_2.3.5#read#CloseShieldInputStream#NONE#IN#!subhasmore#!hasBus
+Subclass: https://github.com/xdtianyu/android_2.3.5/blob/9174053315321d0907059f5474038d0b23c879f1/packages/apps/Email/src/org/apache/james/mime4j/CloseShieldInputStream.java#L107
+Superclass: https://github.com/xdtianyu/android_2.3.5/blob/9174053315321d0907059f5474038d0b23c879f1/libcore/luni/src/main/java/java/io/InputStream.java#L153
+
+Compare with MockParserStream: https://github.com/xdtianyu/android_2.3.5/blob/9174053315321d0907059f5474038d0b23c879f1/packages/apps/Email/src/com/android/exchange/MockParserStream.java#L30
+
+ID:37
+out[] = martinloki/JavaGameSkeleton#endXPath#PatternHandler#NONE#OUT#!subhasmore#!hasConsole
+Subclass: https://github.com/martinloki/JavaGameSkeleton/blob/e02e2be3cd249068ea6f22c1c16c6322b3c843df/TWLStateBasedGameTestbed/library/TWL/xpp3-1.1.4c/src/java/xpath/org/xmlpull/v1/builder/xpath/jaxen/pattern/PatternHandler.java#L127
+Superclass: https://github.com/martinloki/JavaGameSkeleton/blob/e02e2be3cd249068ea6f22c1c16c6322b3c843df/TWLStateBasedGameTestbed/library/TWL/xpp3-1.1.4c/src/java/xpath/org/xmlpull/v1/builder/xpath/jaxen/JaxenHandler.java#L168
+
+ID:38
+out[] = chaoyingfu/gcc#start#ListCmd#NONE#OUT#!subhasmore#!hasBus
+Subclass: https://github.com/chaoyingfu/gcc/blob/ab81775ecf934b1a522fcd67ce8feff22c0e684f/gcc-4.6/libjava/classpath/tools/gnu/classpath/tools/keytool/ListCmd.java#L202
+Superclass: https://github.com/chaoyingfu/gcc/blob/ab81775ecf934b1a522fcd67ce8feff22c0e684f/gcc-4.6/libjava/classpath/tools/gnu/classpath/tools/keytool/Command.java#L304
+
+ID:39
+out[] = beandipper/weka#setDestination#AbstractFileSaver#NONE#OUT#!subhasmore#!hasConsole
+Subclass: https://github.com/beandipper/weka/blob/ad941d1545434c39ecabdc793eb3a8e2afc4029f/src/main/java/weka/core/converters/AbstractFileSaver.java#L340
+Superclass: https://github.com/beandipper/weka/blob/ad941d1545434c39ecabdc793eb3a8e2afc4029f/src/main/java/weka/core/converters/AbstractSaver.java#L159
+
+ID:40
+out[] = jgralab/jgralab#writeUndefined#HTMLOutputWriter#NONE#OUT#!subhasmore#!hasBus
+Subclass: https://github.com/jgralab/jgralab/blob/998be571cd01298065b6fcda3f55166917007120/src/de/uni_koblenz/jgralab/greql/serialising/HTMLOutputWriter.java#L444
+Superclass: https://github.com/jgralab/jgralab/blob/998be571cd01298065b6fcda3f55166917007120/src/de/uni_koblenz/jgralab/greql/serialising/DefaultWriter.java#L245
+
+ID:41
+out[] = awh/openjdk7#read#NoCloseInputStream#NONE#IN#!subhasmore#!hasBus
+Subclass: https://github.com/awh/openjdk7/blob/3219421d4caa28991c1102bbcec18356ee006e4b/jdk/src/share/classes/com/sun/media/sound/SunFileWriter.java#L198
+Superclass: https://github.com/awh/openjdk7/blob/3219421d4caa28991c1102bbcec18356ee006e4b/jdk/src/share/classes/java/io/InputStream.java#L162
+
+ID:42
+out[] = simmons/netlib#handlePacket#MDNSReceiverThread#NONE#OUT#!subhasmore#!hasConsole
+Subclass: https://github.com/simmons/netlib/blob/e3f78bd9f68bf681687279faf6e3206f8430a1bd/src/com/cafbit/netlib/MDNSReceiverThread.java#L41
+Superclass: https://github.com/simmons/netlib/blob/e3f78bd9f68bf681687279faf6e3206f8430a1bd/src/com/cafbit/netlib/MulticastReceiverThread.java#L115
+
+ID:43
+out[] = xdtianyu/android_2.3.5#visitCodeAttribute#VariableOptimizer#NONE#OUT#!subhasmore#!hasConsole
+Subclass: https://github.com/xdtianyu/android_2.3.5/blob/9174053315321d0907059f5474038d0b23c879f1/external/proguard/src/proguard/optimize/evaluation/VariableOptimizer.java#L92
+Superclass: https://github.com/xdtianyu/android_2.3.5/blob/9174053315321d0907059f5474038d0b23c879f1/external/proguard/src/proguard/classfile/util/SimplifiedVisitor.java#L342
+
+ID:44
+out[] = jahnje/delcyon-capo#open#ShellResourceDescriptor#NONE#OUT#!subhasmore#!hasConsole
+Subclass: https://github.com/jahnje/delcyon-capo/blob/84ebefd9c9db13cb4566fe8ee50dc2e49fd0e486/java/com/delcyon/capo/resourcemanager/types/ShellResourceDescriptor.java#L117
+Superclass: https://github.com/jahnje/delcyon-capo/blob/84ebefd9c9db13cb4566fe8ee50dc2e49fd0e486/java/com/delcyon/capo/resourcemanager/types/AbstractResourceDescriptor.java#L141
+
+ID:45
+out[] = codehaus/jbehave-core#notPerformed#StepMonitoringReporter#NONE#OUT#!subhasmore#!hasConsole
+Subclass: https://github.com/codehaus/jbehave-core/blob/acfa0a3fe8c66bab1f6b68a851a4ed0a70a9587f/examples/core/src/main/java/org/jbehave/examples/core/stories/StepMonitoring.java#L47
+Superclass: https://github.com/codehaus/jbehave-core/blob/acfa0a3fe8c66bab1f6b68a851a4ed0a70a9587f/jbehave-core/src/main/java/org/jbehave/core/reporters/NullStoryReporter.java#L37
+
+ID:46
+out[] = cboursnell/TVBO#setSupplyPoint#SCActionLand#NONE#OUT#!subhasmore#!hasConsole
+Subclass: https://github.com/cboursnell/TVBO/blob/de48e99e2aa7e575c72e3d86befdb97c2f8903dd/src/com/deranged/tvbo/SCActionLand.java#L50
+Superclass: https://github.com/cboursnell/TVBO/blob/de48e99e2aa7e575c72e3d86befdb97c2f8903dd/src/com/deranged/tvbo/SCAction.java#L155
+
+ID:47
+out[] = luciusluo/test#enterSubRule#TraceDebugEventListener#NONE#OUT#!subhasmore#!hasConsole
+Subclass: https://github.com/luciuscode/test/blob/8889d39d53442420803ae84ee8bce5b14a7cb46c/org.emftext.commons.antlr3_4_0/src/org/antlr/runtime3_4_0/debug/TraceDebugEventListener.java#L43
+Superclass: https://github.com/luciuscode/test/blob/8889d39d53442420803ae84ee8bce5b14a7cb46c/org.emftext.commons.antlr3_4_0/src/org/antlr/runtime3_4_0/debug/BlankDebugEventListener.java#L41
+
+	NOTE: There is a redirect from luciusluo to luciuscode.
+
+ID:48
+out[] = bedatadriven/appengine-export#writeImage#GifImageParser#NONE#OUT#!subhasmore#!hasConsole
+Subclass: https://github.com/bedatadriven/appengine-export/blob/6c8f5a2fd04e655676df623a08a75b2e5fc04d31/awt/src/main/java/org/apache/sanselan/formats/gif/GifImageParser.java#L835
+Superclass: https://github.com/bedatadriven/appengine-export/blob/6c8f5a2fd04e655676df623a08a75b2e5fc04d31/awt/src/main/java/org/apache/sanselan/ImageParser.java#L238
+
+ID:49
+out[] = srnsw/xena#createFont#TrueType#NONE#BOTH#!subhasmore#!hasBus
+Subclass: https://github.com/srnsw/xena/blob/03784b6574e8c6beab9b5604b8a0f7145015663d/plugins/pdf/ext/src/jpedal_lgpl-3.83b38/src/org/jpedal/fonts/TrueType.java#L280
+Superclass: https://github.com/srnsw/xena/blob/03784b6574e8c6beab9b5604b8a0f7145015663d/plugins/pdf/ext/src/jpedal_lgpl-3.83b38/src/org/jpedal/fonts/PdfFont.java#L84
+
+ID:50
+out[] = Dermenslof/Losan-Project#actionPerformed#GuiBeacon#NONE#OUT#!subhasmore#!hasBus
+Subclass: https://github.com/Dermenslof/Losan-Project/blob/03cf05e419a9688f11dfeccbb4e249cb63aeb60d/Losan%20Client/src/net/minecraft/src/GuiBeacon.java#L114
+Superclass: https://github.com/Dermenslof/Losan-Project/blob/03cf05e419a9688f11dfeccbb4e249cb63aeb60d/Losan%20Client/src/net/minecraft/src/GuiScreen.java#L142

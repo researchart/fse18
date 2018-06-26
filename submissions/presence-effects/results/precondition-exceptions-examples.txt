@@ -1,0 +1,770 @@
+# This file contains some examples of sub/super methods where the submethod has
+# more effects than the superclass and either of the methods throw a
+# precondition-related exception.
+#
+
+
+ID:01
+out[] = thisisvoa/hadoop-0.20#write#BlockCompressorStream#IOException,IndexOutOfBoundsException#IOException,IndexOutOfBoundsException,NullPointerException#!subissuperset#IOException
+Subclass: https://github.com/thisisvoa/hadoop-0.20/blob/master/src/core/org/apache/hadoop/io/compress/BlockCompressorStream.java#L76
+Superclass: https://github.com/thisisvoa/hadoop-0.20/blob/master/src/core/org/apache/hadoop/io/compress/CompressorStream.java#L58
+
+(no instantiations)
+
+	NullPointerException in the submethod caused by an instance variable being
+	null.
+
+	Usage pattern: Used the same as the superclass.
+	Category: Not a bug.
+
+note(2): essentially the same? because of the explicit nullness check vs implicit.
+
+ID:02
+out[] = WarpedRom/android_frameworks_base#setEllipsize#EditText#,#IllegalArgumentException#!subissuperset#,
+Subclass: https://github.com/WarpedRom/android_frameworks_base/blob/master/core/java/android/widget/EditText.java#L112
+Superclass: https://github.com/WarpedRom/android_frameworks_base/blob/master/core/java/android/widget/TextView.java#L6970
+
+Instantiated (as subclass): https://github.com/WarpedRom/android_frameworks_base/blob/a80b476c6d6727aa8f22f06f950c8bba3064a0b1/core/java/android/preference/EditTextPreference.java#L56
+	^^^ Only non test instantiation
+
+	Submethod requires enum argument to not have a specific value (MARQUEE).
+
+	Usage pattern: Method never called on a subclass instance with param MARQUEE
+	Category: Not a bug, probably not problematic. setEllipsize() seems like a
+	method that would be used right after object creation. Brittle parameter?
+
+AI(2): how could the caller ensure that the input is of specific type?
+
+ID:03 - JUNIT FILTERED OUT
+out[] = Android-Area51/platform_libcore#put#Mock_HashMap#,#IllegalArgumentException,UnsupportedOperationException,ClassCastException,NullPointerException#!subhasmore
+Subclass: https://github.com/Android-Area51/platform_libcore/blob/2.3.7/luni/src/test/java/org/apache/harmony/luni/tests/java/util/MapEntryTest.java#L74
+Superclass: https://github.com/Android-Area51/platform_libcore/blob/2.3.7/luni/src/main/java/java/util/HashMap.java#L389
+
+	Subclass extends Java's HashMap. The put() method has several different
+	exceptions that can be thrown based on its precondition whereas the
+	supermethod doesn't.
+
+	Usage pattern: N/A (it's a test where the method always throws an exception)
+	Category: N/A
+
+note(2): shall we exclude tests?
+
+
+ID:04
+out[] = axDev-toolchain/gcc#formatToCharacterIterator#DecimalFormat#,#IllegalArgumentException,NullPointerException#!subissuperset#,
+Subclass: https://github.com/axDev-toolchain/gcc/blob/master/gcc-linaro-4.6-2012.01/libjava/classpath/java/text/DecimalFormat.java#L419
+Superclass: https://github.com/axDev-toolchain/gcc/blob/master/gcc-linaro-4.6-2012.01/libjava/classpath/java/text/Format.java#L160
+
+(several instantiation kept as subclass type)
+
+	Submethod has 2 preconditions with which it throws 2 different exceptions.
+	Supermethod just returns a new object.
+
+	Usage pattern(s):
+		1) formatToCharacterIterator is never called on an instance of
+		DecimalFormat in the library
+		2) For other formatters, there is code that checks the type of the
+		object to be formatted via instanceof and creates an appropriate
+		formatter, but also may allow the formatter choice to be overridden by
+		the caller.
+	Category: Potentially problematic. Brittle parameter.
+
+note(2): This one is actually very interesting.
+see this comment: // TODO: don't know if this is correct
+https://github.com/axDev-toolchain/gcc/blob/b72e872826a37eb3ab69bb02e5b9045a894d68cb/gcc-linaro-4.6-2012.01/libjava/classpath/javax/swing/text/InternationalFormatter.java
+see also another subclass
+https://github.com/axDev-toolchain/gcc/blob/b72e872826a37eb3ab69bb02e5b9045a894d68cb/gcc-linaro-4.6-2012.01/libjava/classpath/java/text/SimpleDateFormat.java
+
+
+ID:05 - WRONG EXCEPTION
+out[] = svn2github/fleXive#visit#FindComparisonVisitor#,#!UNKNOWN!#!subissuperset#,
+Subclass: https://github.com/svn2github/fleXive/blob/master/src/framework/java/com/flexive/core/search/cmis/impl/sql/generic/mapper/condition/GenericContainsCondition.java#L107
+Superclass: https://github.com/svn2github/fleXive/blob/master/src/framework/java/com/flexive/core/search/cmis/model/NopConditionNodeVisitor.java#L59
+
+Sub assigned to Super: https://github.com/svn2github/fleXive/blob/master/src/framework/java/com/flexive/core/search/cmis/impl/sql/generic/mapper/condition/GenericContainsCondition.java#L89
+
+	Subclass has a precondition whereas superclass doesn't. Subclass is assigned
+	to an instance of its type, but used in a method call accept(subclassinst)
+	that takes an interface.
+
+	Usage pattern: Apply it to a tree to get either 0 or 1 conditions (?)
+	Category: Not a bug. Its only use is in a method that also throws the same
+	type of runtime exceptions that the subclass's visit() method throws.
+
+note(2): Some initial thoughts. Perhaps we should treat method with empty body as abstract
+method?
+
+ID:06 - WRONG CATEGORY
+out[] = simplegeo/erlang#extract_ulong#Term#java.lang.Exception#java.lang.Exception#!n
+Subclass: https://github.com/simplegeo/erlang/blob/master/lib/ic/java_src/com/ericsson/otp/ic/Term.java#L576
+Superclass: https://github.com/simplegeo/erlang/blob/master/lib/ic/java_src/com/ericsson/otp/ic/Any.java#L716
+
+	Subclass has a weaker precondition, not stronger* since it allows the tcV
+	instance variable to be null.
+
+	Usage pattern: Subclass can be used like superclass
+	Category: Not a bug (according to the subclass Javadoc).
+
+note(2): same effects.
+note(1): the superclass* can throw NullPointerException unlike subclass
+note(note): same effects in the sense of explicit throw
+
+
+ID:07 - JUNIT FILTERED OUT
+out[] = grepory/secdoop#renewDelegationToken#MyFS#,#InvalidToken#!subhasmore
+Subclass: https://github.com/grepory/secdoop/blob/master/hadoop/mapred/src/test/mapred/org/apache/hadoop/mapreduce/security/token/TestDelegationTokenRenewal.java#L140
+Superclass: https://github.com/grepory/secdoop/blob/master/hadoop/hdfs/src/java/org/apache/hadoop/hdfs/DistributedFileSystem.java#L682
+
+	Supermethod calls "dfs.renewDelegationToken(token)" whereas submethod
+	checks if the token is canceled and throws InvalidToken if so.
+
+	Usage pattern: Object creator only gives the correct parameter type.
+	Category: N/A (this is a test). Brittle parameter (needs to by MyToken in
+	subclass) and not canceled.
+
+AI(2): how could the caller ensure that the token has not been cancelled?
+
+
+ID:08 - WRONG EXCEPTION
+out[] = aaronpoweruser/android_libcore#read#Support_StringReader#,#IOException#!subissuperset#IOException
+Subclass: https://github.com/aaronpoweruser/android_libcore/blob/jellybean/support/src/test/java/tests/support/Support_StringReader.java#L118
+Superclass: https://github.com/aaronpoweruser/android_libcore/blob/jellybean/luni/src/main/java/java/io/Reader.java#L122
+
+Note another subclass: https://github.com/aaronpoweruser/android_libcore/blob/14bcc9a03365ea13db81bce02158a76721acc0e2/luni/src/main/java/java/io/PipedReader.java#L231
+
+(instantiated in constructor parameters as superclass in 3 locations)
+
+	The read() supermethod looks like it's intended to not be overridden and
+	use a second read() method made by the derived class. However, the subclass
+	here overrides that to add an "isOpen" check and throws IOException if it
+	fails.
+
+	Usage pattern: Subclass client will create a String object to construct the
+	subclass with.
+	Category: Not a bug. Seems to be fairly typical in Java I/O.
+
+AI(2): how could the subclass ensure that the str is not null?
+AI(1): I think "must be opened i.e. don't call close() before read()" is the precondtion
+whereas how this precondtion could be established is the pattern.
+For example, the subclass object creator will open the file before creating a subclass object is
+a pattern.
+
+ID:09
+out[] = SayCV/tools-SourceNavigator-NG#setUserBuffer#MultipleEntry#,#IllegalArgumentException#!subissuperset#,
+Subclass: https://github.com/SayCV/tools-SourceNavigator-NG/blob/master/db4/java/src/com/sleepycat/db/MultipleEntry.java#L41
+Superclass: https://github.com/SayCV/tools-SourceNavigator-NG/blob/master/db4/java/src/com/sleepycat/db/DatabaseEntry.java#L653
+
+(no instantiations)
+
+	The precondition in the subclass is that a boolean argument must be true,
+	where the superclass doesn't care. Seems like an odd condition though.
+
+	Usage pattern: Make the method's "usermem" parameter true.
+	(All references to this method in the codebase do the above. May be
+	different in production environments?)
+	Category: Code smell / possibly problematic for users expecting the
+	superclass.
+
+
+ID:10
+out[] = JSansalone/JFreeChart#findDomainBounds#VectorRenderer#,#IllegalArgumentException#!subissuperset#,
+Subclass: https://github.com/JSansalone/JFreeChart/blob/master/source/org/jfree/chart/renderer/xy/VectorRenderer.java#L102
+Superclass: https://github.com/JSansalone/JFreeChart/blob/master/source/org/jfree/chart/renderer/xy/AbstractXYItemRenderer.java#L668
+
+(no non-test instantiations)
+
+	Superclass method calls another method with the same name which returns null
+	if the dataset argument is null. The subclass on the other hand throws an
+	IllegalArgument exception when the dataset is null. (see also the
+	findRangeBounds method)
+
+	Note: There are many other subclasses of the superclass
+	Usage pattern: Don't call submethod with a null, fine on the supermethod...
+		14 other subclasses don't override findDomainBounds
+		3 override findDomainBounds but just return null like the supermethod
+	Category: Code smell / potentially problematic.
+
+ID:11
+out[] = koldaev/createindexesfromxml#search#ParallelMultiSearcher#,#NullPointerException#!subissuperset#IOException
+Subclass: https://github.com/koldaev/createindexesfromxml/blob/master/createindexesfromxml/src/org/apache/lucene/search/ParallelMultiSearcher.java#L127
+Superclass: https://github.com/koldaev/createindexesfromxml/blob/master/createindexesfromxml/src/org/apache/lucene/search/MultiSearcher.java#L230
+
+(no instantiations)
+
+	Sub throws a NullPointerException if the "sort" argument is null, but
+	doesn't check any of the other arguments. Superclass checks none of them.
+
+	Usage pattern: Don't call search() with a null "sort" parameter.
+	Category: Code smell / potentially problematic.
+
+note(2): the check for nonnullnees of "sort" is hoisted because
+the subclass uses multi-threading and the sorting logic is in the new
+threads.
+note(1): I'm not seeing where this check is hoisted to exactly?
+
+
+ID:12
+out[] = wholeplatform/whole#wSetValue#AbstractFilterScope#,#IllegalArgumentException#!subissuperset#,
+Subclass: https://github.com/wholeplatform/whole/blob/master/org.whole.lang/src/org/whole/lang/bindings/AbstractFilterScope.java#L125
+Superclass: https://github.com/wholeplatform/whole/blob/master/org.whole.lang/src/org/whole/lang/bindings/AbstractDelegatingScope.java#L112
+
+(no instantiations)
+
+	For many/most methods the subclass adds a single precondition that the
+	argument isn't "filtered" and then calls the superclass method.
+
+	Usage pattern: Looks like it's intended to be subclassed to a subclass for
+	specific filtering needs. The class is likely there to operate on a scope,
+	aborting if it finds something that's filtered out.
+	Category: Not a bug.
+
+
+ID:13
+out[] = rhuitl/uClinux#visitAttribute#CheckClassAdapter#,#IllegalArgumentException#!subissuperset#,
+Subclass: https://github.com/rhuitl/uClinux/blob/master/lib/classpath/tools/external/asm/org/objectweb/asm/util/CheckClassAdapter.java#L358
+Superclass: https://github.com/rhuitl/uClinux/blob/master/lib/classpath/tools/external/asm/org/objectweb/asm/ClassAdapter.java#L85
+
+Instantiated: https://github.com/rhuitl/uClinux/blob/master/lib/classpath/tools/external/asm/org/objectweb/asm/util/CheckClassAdapter.java#L121
+
+	Subclass calls checkState() which can throw IllegalState and is part of the
+	class precondition and then checks that the argument is non-null (else
+	throws IllegalArgument). Superclass does none of this.
+
+	Seems to be instantiated and passed as a ClassVisitor interface in one area.
+
+	Usage pattern: Seems intended to verify a class's methods are used properly
+	according to the Javadoc. Not sure what "class" is defined as, however.
+	Category: Not a bug.
+
+
+AI(2): Investigate the idea that the subclass has stronger checks to find bug.
+
+
+ID:14
+out[] = epiqsolutions/FMCGU#isLeaf#DefaultTreeTableModel#,#IllegalArgumentException#!subissuperset#,
+Subclass: https://github.com/epiqsolutions/FMCGU/blob/master/FMCGraphingUtility/lib/swingx-1.6.1/java/org/jdesktop/swingx/treetable/DefaultTreeTableModel.java#L304
+Superclass: https://github.com/epiqsolutions/FMCGU/blob/master/FMCGraphingUtility/lib/swingx-1.6.1/java/org/jdesktop/swingx/treetable/AbstractTreeTableModel.java#L141
+
+Instantiated: https://github.com/epiqsolutions/FMCGU/blob/master/FMCGraphingUtility/lib/swingx-1.6.1/java/org/jdesktop/swingx/JXTreeTable.java#L154
+
+	Superclass just looks at how many children that "node" has. Subclass first
+	calls a method and if it returns false throws an exception. This method
+	doesn't appear to change state, just do a lot of validation work. Then it
+	casts its "node" variable and calls its isLeaf().
+
+	Seems to be instantiated in only one place and used as a TreeTableModel.
+
+	Usage pattern: A valid tree root should be provided at subclass object
+	creation and only nodes from this tree should be used when calling isLeaf().
+	Category: Not a bug / potentially a code smell. Brittle parameter.
+
+note(2): Seems to have the same effects if we look at transitive calls.
+
+
+ID:15
+out[] = MIPS/mips-src#setParent#ComponentInputMap#,#IllegalArgumentException#!subissuperset#,
+Subclass: https://github.com/MIPS/mips-src/blob/master/gcc/gcc-4.4.3/libjava/classpath/javax/swing/ComponentInputMap.java#L115
+Superclass: https://github.com/MIPS/mips-src/blob/master/gcc/gcc-4.4.3/libjava/classpath/javax/swing/InputMap.java#L160
+
+Instantiated (as subclass): https://github.com/MIPS/mips-src/blob/master/gcc/gcc-4.4.3/libjava/classpath/javax/swing/JComponent.java#L2588
+
+	Superclass simply updates an instance variable, whereas subclass adds extra
+	argument validation logic.
+
+	Usage pattern: The main difference between the subclass and superclass is
+	the extra restrictions on the parent type, and that it's associating with a
+	specific component.
+	Category: Potentially problematic. Brittle parameter.
+
+
+ID:16
+out[] = TommyJay/psychometric#multiply#ImmutableVector#,#IllegalArgumentException#!subissuperset#,
+Subclass: https://github.com/TommyJay/psychometric/blob/master/src/cz/cuni/mff/jandeckt/psychometric/math/matrix/ImmutableVector.java#L31
+Superclass: https://github.com/TommyJay/psychometric/blob/master/src/cz/cuni/mff/jandeckt/psychometric/math/matrix/ImmutableMatrix.java#L107
+
+Instantiated: https://github.com/TommyJay/psychometric/blob/master/src/cz/cuni/mff/jandeckt/psychometric/math/function/LogisticMLEFunction.java#L36
+Instantiated: https://github.com/TommyJay/psychometric/blob/master/src/cz/cuni/mff/jandeckt/psychometric/math/matrix/ImmutableMatrix.java#L147
+
+	Superclass immediately does calculations and returns a new instance.
+	Subclass first checks that the argument is non-null before doing anything.
+
+	When it's instantiated, generally returned by method as a Vector. Oddly a
+	new ImmutableVector is returned from the multiply method in its superclass.
+
+	Further examination: Superclass will end up throwing NullPointerException
+	when "scalar" is null, sub will throw IllegalArgumentException.
+
+	Usage pattern: Don't call either method with a null parameter.
+	Category: Not a bug, but potential code smell. The exceptions the methods
+	throw when "scalar" is null differ.
+
+
+ID:17
+out[] = jbosstools/jbosstools-locus#atomize#SiblingEnumeration#,#NullPointerException#!subissuperset#XPathException
+Subclass: https://github.com/jbosstools/jbosstools-locus/blob/master/plugins/org.jboss.tools.locus.sf.saxon/9.2.1/src/net/sf/saxon/tinytree/SiblingEnumeration.java#L203
+Superclass: https://github.com/jbosstools/jbosstools-locus/blob/master/plugins/org.jboss.tools.locus.sf.saxon/9.2.1/src/net/sf/saxon/om/AxisIteratorImpl.java#L73
+
+Instantiated: https://github.com/jbosstools/jbosstools-locus/blob/master/plugins/org.jboss.tools.locus.sf.saxon/9.2.1/src/net/sf/saxon/tinytree/SiblingEnumeration.java#L262
+Instantiated: https://github.com/jbosstools/jbosstools-locus/blob/master/plugins/org.jboss.tools.locus.sf.saxon/9.2.1/src/net/sf/saxon/tinytree/TinyNodeImpl.java#L300
+
+	Superclass immediately returns an atomize version of a "current" variable.
+	Subclass throws a NullPointerException if there's no "current node", which
+	is only checked by catching an ArrayOutOfBoundsException. Perhaps not
+	strictly a precondition, but the subclass doesn't do any work before making
+	that check.
+
+	Both instantiations are returning the subclass from a method, either as a
+	SequenceIterator or an AxisIterator.
+
+	Usage pattern: The "nextNodeNr" instance variable needs to be a valid index
+	of "tree.nodeKind". "tree" is established at object creation time, but
+	"nextNodeNr" can change depending on what methods are called. Superclass may
+	implicitly throw NullPointerException if "current" is null.
+	Category: Not a bug. accessing "tree.nodeKind[nextNodeNr]" seems equivalent
+	to the instance variable "current".
+
+ID:18 - WRONG EXCEPTION
+out[] = Starlink/starjava#execute#Ejbc#,#BuildException#!subissuperset#BuildException
+Subclass: https://github.com/Starlink/starjava/blob/master/ant/src/main/org/apache/tools/ant/taskdefs/optional/ejb/Ejbc.java#L81
+Superclass: https://github.com/Starlink/starjava/blob/master/ant/src/main/org/apache/tools/ant/Task.java#L155
+
+(no instantiations)
+
+	Since BuildException is checked, all clients will be forced to catch
+	exception. Looks like execute() should have been asbtract in the superclass.
+	Though the superclass itself is abstract.
+
+	Usage pattern: Create class, call its methods, then execute().
+	Category: Not a bug. Subclass is supposed to override this method and throw
+	BuildException (which it does) on errors.
+
+note(2): Some initial thoughts. Perhaps we should treat method with empty body as abstract
+method?
+
+
+ID:19
+out[] = Root-Box/packages_apps_Browser#addChildTab#SnapshotTab#,#IllegalStateException#!subissuperset#,
+Subclass: https://github.com/Root-Box/packages_apps_Browser/blob/jb-mr1/src/com/android/browser/SnapshotTab.java#L88
+Superclass: https://github.com/Root-Box/packages_apps_Browser/blob/jb-mr1/src/com/android/browser/Tab.java#L1434
+
+Instantiated: https://github.com/Root-Box/packages_apps_Browser/blob/jb-mr1/src/com/android/browser/TabControl.java#L221
+
+	Subclass throws IllegalState if instance variable "mIsLive" is false.
+	Otherwise calls the supermethod's implementation.
+
+	Usage pattern: If subclass, don't add children w/o calling loadUrl() and
+	don't call goBack() afterwards too many times.
+	Category: Potentially problematic. "addChildTab" is called in only two
+	places: in TabControl (which it references a concrete "Tab" object) and in
+	Controller (unsure whether this second one may lead to a bug or not).
+
+note(2): The last statement may not be correct. See
+https://github.com/Root-Box/packages_apps_Browser/blob/b650a5c529203e61fd5ba69870195a4f8de0d2ec/src/com/android/browser/TabControl.java#L221
+An SnapshotTab instance is stored into an Array of Tabs.
+
+
+ID:20
+out[] = hkff/JInterfaceHack#toString#ConstantValue#,#IllegalStateException#!subissuperset#,
+Subclass: https://github.com/hkff/JInterfaceHack/blob/master/InterfaceHack/src/org/apache/bcel/classfile/ConstantValue.java#L152
+Superclass: https://github.com/hkff/JInterfaceHack/blob/master/InterfaceHack/src/org/apache/bcel/classfile/Attribute.java#L319
+
+Instantiated: https://github.com/hkff/JInterfaceHack/blob/master/InterfaceHack/src/org/apache/bcel/classfile/Attribute.java#L202
+Instantiated: https://github.com/hkff/JInterfaceHack/blob/master/InterfaceHack/src/org/apache/bcel/generic/FieldGen.java#L243
+
+	Throws an exception if some variable does not have a valid "tag".
+
+	Usage pattern: establish valid constantvalue_index at object construction
+	Category: Not a bug. Programmer establishes precondition of the subclass at
+	object creation time.
+
+AI(2): is toString useful?
+how could the caller ensure that the state is of certain tag?
+
+
+ID:21
+out[] = doooks/itext-as-in-free#getWidth#Type3Font#,#IllegalArgumentException#!subissuperset#,
+Subclass: https://github.com/doooks/itext-as-in-free/blob/master/src/core/com/lowagie/text/pdf/Type3Font.java#L297
+Superclass: https://github.com/doooks/itext-as-in-free/blob/master/src/core/com/lowagie/text/pdf/BaseFont.java#L860
+
+(no instantiations)
+
+	Project is a library, so we don't see instantiations. The subclass throws an
+	exception if a character isn't valid (not in the font).
+
+	Usage pattern: param is a valid character in font (req. for subclass only?)
+	Category: Potentially problematic. Two other subclasses of BaseFont do not
+	override getWidth(), and two others that do also do not throw IllegalArgEx.
+
+AI(2): how could the caller ensure that char input is defined?
+
+
+ID:22
+out[] = bleujin/ionframework#createUserProcedures#InterceptorRepositoryService#,#IllegalArgumentException#!subissuperset#,
+Subclass: https://github.com/bleujin/ionframework/blob/master/src/net/ion/framework/db/procedure/InterceptorRepositoryService.java#L20
+Superclass: https://github.com/bleujin/ionframework/blob/master/src/net/ion/framework/db/procedure/RepositoryService.java#L49
+
+Instantiated: https://github.com/bleujin/ionframework/blob/master/src/net/ion/framework/db/manager/InterceptorDBManger.java#L17
+
+	Fairly straightforward precondition. Instantiated only in
+	InterceptorDBManager as a RepositoryService object.
+
+	Usage pattern: call the method with a valid "sql" parameter
+	The precondition will never trigger from anything in the framework's
+	codebase (may be different for users of the framework?). Therefore, anything
+	is ok.
+	Category: Code smell? find() will always return true (see instantiation)
+
+AI(2): how could the caller ensure that sql is defined?
+
+
+ID:23
+out[] = yuanhy0055/OyO#write#CharArrayWriter#StringIndexOutOfBoundsException#StringIndexOutOfBoundsException,NullPointerException#!subissuperset#IOException
+Subclass: https://github.com/yuanhy0055/OyO/blob/master/dalvik/libcore/luni/src/main/java/java/io/CharArrayWriter.java#L225
+Superclass: https://github.com/yuanhy0055/OyO/blob/master/dalvik/libcore/luni/src/main/java/java/io/Writer.java#L171
+
+(no non-test instantiations)
+
+	From dalvik/Java standard library, so no instantiations. Subclass checks
+	that the first argument is non-null, superclass doesn't appear to. In either
+	case the methods will throw NullPointerException when string is null (since
+	superclass calls str.getChars(...))
+
+	Usage pattern: Don't call it with out of bounds param or null "str"
+	Category: Not a bug. The effects are essentially the same
+
+note(2): essentially the same because of the explicit null check.
+
+
+ID:24
+out[] = pooyaho/JavaMatrixCLi#mul#MatrixObject#,#IllegalArgumentException#!subissuperset#,
+Subclass: https://github.com/pooyaho/JavaMatrixCLi/blob/master/src/main/java/ir/pooyahfp/matrixcli/matrix/MatrixObject.java#L586
+Superclass: https://github.com/pooyaho/JavaMatrixCLi/blob/master/src/main/java/ir/pooyahfp/matrixcli/matrix/SimpleObject.java#L96
+
+Instantiated (stored as super passed as super): https://github.com/pooyaho/JavaMatrixCLi/blob/f3f96764724750e247646ab2f98faf9c1e5b0082/src/main/java/ir/pooyahfp/matrixcli/commands/MatrixCommand.java#L36-L38
+Instantiated (returned as sub): https://github.com/pooyaho/JavaMatrixCLi/blob/f3f96764724750e247646ab2f98faf9c1e5b0082/src/main/java/ir/pooyahfp/matrixcli/matrix/MatrixObject.java#L65
+
+	Superclass just returns a new object and multiplies the "doubleValue()" of
+	itself and the provided object. Subclass casts it to a matrix and does some
+	verification before doing anything.
+
+	Usage pattern: call with a non-matrix (treated as scalar) or with a matrix
+	with valid dimensions for multiplication
+	Category: Potentially problematic. A user given "SimpleObject" may expect
+	mult() to always work. That and a matrix isn't a number so the hierarchy
+	doesn't make sense.
+
+AI(2): how could the caller ensure that the inputs have the same dimension?
+
+
+ID:25
+out[] = Leandromaro/IA#drawItem#StackedXYBarRenderer#,#IllegalArgumentException#!subissuperset#,
+Subclass: https://github.com/Leandromaro/IA/blob/master/Inteligencia/jfreechart-1.0.14/source/org/jfree/chart/renderer/xy/StackedXYBarRenderer.java#L236
+Superclass: https://github.com/Leandromaro/IA/blob/master/Inteligencia/jfreechart-1.0.14/source/org/jfree/chart/renderer/xy/XYBarRenderer.java#L800
+
+isSeriesVisible method: https://github.com/Leandromaro/IA/blob/4d5e6213fd617c07552bdb2369dd6ae612232be1/Inteligencia/jfreechart-1.0.14/source/org/jfree/chart/renderer/AbstractRenderer.java#L502
+
+(no non-test instantiations)
+
+	Looks like the superclass requires a "dataset" variable to be an instance of
+	IntervalXYDataset, while the subclass requires that AND for it to also be
+	an instance of TableXYDataset.
+
+	Usage pattern: fulfill above precondition when calling the method and when
+	using related classes such as CategoryPlot.
+	Category: Potentially problematic. Brittle parameter.
+
+AI(2): essentially the same because of the explicit cast or
+how could the caller ensure that the input is of specific type?.
+
+
+ID:26
+out[] = miorel/lawu#drawChars#SunGraphics2D#,#ArrayIndexOutOfBoundsException,NullPointerException#!subissuperset#,
+Subclass: https://github.com/miorel/lawu/blob/master/trunk/lib/openjdk/jdk/src/share/classes/sun/java2d/SunGraphics2D.java#L2897
+Superclass: https://github.com/miorel/lawu/blob/master/trunk/lib/openjdk/jdk/src/share/classes/java/awt/Graphics.java#L821
+
+Instantiated (as super): https://github.com/miorel/lawu/blob/master/trunk/lib/openjdk/jdk/src/share/classes/sun/awt/image/OffScreenImage.java#L96
+Instantiated (as itself): https://github.com/miorel/lawu/blob/master/trunk/lib/openjdk/jdk/src/share/classes/sun/java2d/loops/BlitBg.java#L167
+Instantiated (as super): https://github.com/miorel/lawu/blob/master/trunk/lib/openjdk/jdk/src/share/classes/sun/awt/image/SunVolatileImage.java#L209
+Instantiated (as super): https://github.com/miorel/lawu/blob/master/trunk/lib/openjdk/jdk/src/share/classes/sun/java2d/SunGraphicsEnvironment.java#L165
+
+	It looks like the subclass throws NullPtrEx and ArrayIndxOOBEx. Superclass
+	most likely (via String's constructor) throws NullPtrEx and IndxOOBEx.
+
+	Usage pattern: Call drawChars() with valid arguments
+	Category: Not a bug. It looks like the effects of sub/superclass are
+	equivalent except for the difference between ArrayIndxOOBEx and IndxOOBEx.
+
+note(2): it seems that this is intended because the comment of the super class says so.
+
+
+ID:27
+out[] = colorzhang/mule-3.4.0-CXF27#setRoutes#OutboundPassThroughRouter#,#IllegalArgumentException#!subissuperset#MuleException
+Subclass: https://github.com/colorzhang/mule-3.4.0-CXF27/blob/master/core/src/main/java/org/mule/routing/outbound/OutboundPassThroughRouter.java#L48
+Superclass: https://github.com/colorzhang/mule-3.4.0-CXF27/blob/master/core/src/main/java/org/mule/routing/outbound/AbstractOutboundRouter.java#L302
+
+Instantiated (as super): https://github.com/colorzhang/mule-3.4.0-CXF27/blob/master/core/src/main/java/org/mule/component/DefaultInterfaceBinding.java#L91
+Instantiated (as super): https://github.com/colorzhang/mule-3.4.0-CXF27/blob/master/modules/annotations/src/main/java/org/mule/config/processors/DecoratingAnnotatedServiceProcessor.java#L248
+
+	Subclass limits the number of routes that can be set, abstract superclass
+	does not.
+
+	Usage pattern: only add a single route to the subclass after construction
+	Category: Not a bug. In both instantiations, addRoute() for a single route
+	is called at most once, while setRoutes() is not called.
+	(Note: the second instantiation may let the subclass object escape, so may
+	indirectly lead to a bug)
+
+AI(2): how could the caller ensure that endpoint is singleton?
+
+
+ID:28
+out[] = exxcellent/wings2#setParent#SFrameSet#,#IllegalArgumentException#!subissuperset#,
+Subclass: https://github.com/exxcellent/wings2/blob/master/wings/src/java/org/wings/frames/SFrameSet.java#L133
+Superclass: https://github.com/exxcellent/wings2/blob/master/wings/src/java/org/wings/SComponent.java#L273
+
+Instantiated (twice, sub): https://github.com/exxcellent/wings2/blob/master/wings/demo/frameset/src/java/frameset/FrameSet.java#L63-L67
+
+	Subclass requires the parent to be of a certain type.
+
+	Usage pattern: Object creator keeps it as subclass, and never adds it to
+	any non-SFrameSet component -> parent is never set to a non-SFrameSet object
+	Category: Potentially problematic. Brittle parameter.
+
+AI(2): how could the caller ensure that the input is of specific type?
+
+
+ID:29
+out[] = andrewchambers/mips-baremetal#visitIntInsn#CheckMethodAdapter#,#IllegalArgumentException#!subissuperset#,
+Subclass: https://github.com/andrewchambers/mips-baremetal/blob/master/gcc-4.8.1/libjava/classpath/tools/external/asm/org/objectweb/asm/util/CheckMethodAdapter.java#L361
+Superclass: https://github.com/andrewchambers/mips-baremetal/blob/master/gcc-4.8.1/libjava/classpath/tools/external/asm/org/objectweb/asm/MethodAdapter.java#L87
+
+Note other subclasses: https://github.com/andrewchambers/mips-baremetal/blob/5960549d2542d247754153a34ba981763181a5dd/gcc-4.8.1/libjava/classpath/tools/external/asm/org/objectweb/asm/xml/SAXCodeAdapter.java#L54
+	(addElement may throw RuntimeException)
+
+
+Instantiated (as super): https://github.com/andrewchambers/mips-baremetal/blob/master/gcc-4.8.1/libjava/classpath/tools/external/asm/org/objectweb/asm/util/CheckClassAdapter.java#L342
+
+	Not a canonical precondition. The subclass calls 3 methods that only verify
+	the object state, and then places the throw inside of the default block
+	of a switch statement. Other cases of the switch statement also act like
+	precondition checks. Superclass does no checking.
+
+	Usage pattern: Run it on an AST(?) to verify correctness
+	Category: Not a bug.
+
+AI(2): Investigate the idea that the subclass has stronger checks to find bug.
+
+
+ID:30
+out[] = carsomyr/shared#getAxisTitle#ProbabilityDistribution#IllegalArgumentException#IllegalArgumentException,IllegalStateException#!subissuperset#,
+Subclass: https://github.com/carsomyr/shared/blob/master/src/org/shared/stat/plot/ProbabilityDistribution.java#L144
+Superclass: https://github.com/carsomyr/shared/blob/master/src/org/shared/stat/plot/Histogram.java#L155
+
+(no non-test instantiations)
+
+	Subclass has a state precondition that the superclass does not. Code takes
+	the form of a switch statment. Project is a library, thus no instantiations
+	except in a test.
+
+	Usage pattern: use same as with superclass
+	Category: Not a bug. The IllegalStateException will never be thrown because
+	it's in a default case that will never be reached (enum-based switch).
+
+
+ID:31
+out[] = ermh/Gdata-mavenized#validate#GphotoWeight#,#IllegalStateException#!subissuperset#IllegalStateException
+Subclass: https://github.com/ermh/Gdata-mavenized/blob/master/java/src/com/google/gdata/data/photos/GphotoWeight.java#L89
+Superclass: https://github.com/ermh/Gdata-mavenized/blob/master/java/src/com/google/gdata/data/AbstractExtension.java#L131
+
+Instantiated (as sub passed as super): https://github.com/ermh/Gdata-mavenized/blob/master/java/src/com/google/gdata/data/photos/impl/TagDataImpl.java#L65
+Instantiated (as sub passed as super) : https://github.com/ermh/Gdata-mavenized/blob/master/java/src/com/google/gdata/data/photos/TagEntry.java#L122
+
+	This instance is explicitly documented to throw exceptions if there's a
+	validation error, so definitely not a bug.
+
+	Usage pattern: Call validate() to tell whether the object is valid, and
+	expect an IllegalStateException (see superclass's Javadoc)
+	Category: Not a bug.
+
+note(2): Some initial thoughts. Perhaps we should treat method with empty body as abstract
+method?
+
+
+ID:32
+out[] = shalin94/RenalDrug-Backend#addChild#StandardContext#,#IllegalArgumentException#!subissuperset#,
+Subclass: https://github.com/shalin94/RenalDrug-Backend/blob/master/thirdparty/apache-tomcat-7.0.42/java/org/apache/catalina/core/StandardContext.java#L2858
+Superclass: https://github.com/shalin94/RenalDrug-Backend/blob/master/thirdparty/apache-tomcat-7.0.42/java/org/apache/catalina/core/ContainerBase.java#L871
+
+Instantiated (as super, returned): https://github.com/shalin94/RenalDrug-Backend/blob/master/thirdparty/apache-tomcat-7.0.42/java/org/apache/catalina/startup/Tomcat.java#L505
+Instantiated (as super, returned): https://github.com/shalin94/RenalDrug-Backend/blob/master/thirdparty/apache-tomcat-7.0.42/java/org/apache/catalina/startup/Tomcat.java#L526
+Instantiated (as sub, returned as super): https://github.com/shalin94/RenalDrug-Backend/blob/master/thirdparty/apache-tomcat-7.0.42/java/org/apache/catalina/startup/Embedded.java#L473
+
+	Subclass requires the argument to be a certain subtype.
+
+	Usage pattern: Object creator doesn't call addChild() on subclass at all,
+	but does expose the subclass to clients of the creator.
+	Category: Potentially problematic / bug. This class is instantiated in
+	several places as a superclass, and a quick search indicates addChild() is
+	referenced in several places accross the codebase. Brittle parameter.
+
+note(2): This may be related to the bugs talked about in this paper.
+http://mp.binaervarianz.de/issta2012.pdf
+
+ID:33
+out[] = andreamoruno/Mora-Ormj#getBaseline#TitledBorder#IllegalArgumentException#IllegalArgumentException,NullPointerException#!subissuperset#,
+Subclass: https://github.com/andreamoruno/Mora-Ormj/blob/14174b243926d3708c9733c23453bdb273f48e48/test/Mora/Ormj/java/openjdk-6-src-b27/jdk/src/share/classes/javax/swing/border/TitledBorder.java#L673
+Superclass: https://github.com/andreamoruno/Mora-Ormj/blob/14174b243926d3708c9733c23453bdb273f48e48/test/Mora/Ormj/java/openjdk-6-src-b27/jdk/src/share/classes/javax/swing/border/AbstractBorder.java#L150
+
+
+ID:34
+out[] = martinrosstmc/closure-compiler#setType#KeywordLiteral#,#IllegalArgumentException#!subissuperset#,
+Subclass: https://github.com/martinrosstmc/closure-compiler/blob/9b0a0602ac52f69f42120d9856ce8b80364f2378/lib/rhino/src/org/mozilla/javascript/ast/KeywordLiteral.java#L48
+Superclass: https://github.com/martinrosstmc/closure-compiler/blob/9b0a0602ac52f69f42120d9856ce8b80364f2378/lib/rhino/src/org/mozilla/javascript/Node.java#L166
+
+
+ID:35
+out[] = mubeenh/wave#startAsyncRead#WebSocketClientChannel#,#IllegalStateException#!subissuperset#,
+Subclass: https://github.com/mubeenh/wave/blob/7fbde4b598f4fffd7e71d27f28f0e641897236cd/src/org/waveprotocol/box/server/rpc/WebSocketClientChannel.java#L71
+Superclass: https://github.com/mubeenh/wave/blob/7fbde4b598f4fffd7e71d27f28f0e641897236cd/src/org/waveprotocol/box/server/rpc/MessageExpectingChannel.java#L69
+
+
+ID:36
+out[] = mugglmenzel/CumulusGeniusOnMahout#assign#DenseDoubleMatrix2D#,#IllegalStateException#!subissuperset#,
+Subclass: https://github.com/mugglmenzel/CumulusGeniusOnMahout/blob/1c70bec023c6a12764706ee96a98dacb40eddaa5/math/src/main/java/org/apache/mahout/math/matrix/impl/DenseDoubleMatrix2D.java#L137
+Superclass: https://github.com/mugglmenzel/CumulusGeniusOnMahout/blob/1c70bec023c6a12764706ee96a98dacb40eddaa5/math/src/main/java/org/apache/mahout/math/matrix/DoubleMatrix2D.java#L176
+
+
+ID:37
+out[] = anbangr/trusted-mr#mkdirs#RawLocalFileSystem#,#IllegalArgumentException,FileAlreadyExistsException#!subissuperset#IOException
+Subclass: https://github.com/anbangr/trusted-mr/blob/efca1518be069e051e78614d1d71057cb79807ee/hadoop-common-project/hadoop-common/src/main/java/org/apache/hadoop/fs/RawLocalFileSystem.java#L361
+Superclass: https://github.com/anbangr/trusted-mr/blob/efca1518be069e051e78614d1d71057cb79807ee/hadoop-common-project/hadoop-common/src/main/java/org/apache/hadoop/fs/FileSystem.java#L1865
+
+Note this subclass: https://github.com/anbangr/trusted-mr/blob/efca1518be069e051e78614d1d71057cb79807ee/hadoop-common-project/hadoop-common/src/main/java/org/apache/hadoop/fs/s3/S3FileSystem.java#L141
+	(Calls mkdir(Path path) which make throw IOException)
+
+https://github.com/anbangr/trusted-mr/blob/efca1518be069e051e78614d1d71057cb79807ee/hadoop-tools/hadoop-gridmix/src/main/java/org/apache/hadoop/mapred/gridmix/PseudoLocalFs.java#L47
+	(Throws UnsupportedOperationException)
+
+https://github.com/anbangr/trusted-mr/blob/efca1518be069e051e78614d1d71057cb79807ee/hadoop-common-project/hadoop-common/src/main/java/org/apache/hadoop/fs/viewfs/ViewFileSystem.java#L707
+	(Shows FileAlreadyExists is not unique to submethod)
+
+ID:38
+out[] = rsbotsource/code#visitClassType#CheckSignatureAdapter#,#IllegalStateException#!subissuperset#,
+Subclass: https://github.com/rsbotsource/code/blob/4933f47005d6182178be495788cc74f78c796ac9/org/objectweb/asm/util/CheckSignatureAdapter.java#L275
+Superclass: https://github.com/rsbotsource/code/blob/4933f47005d6182178be495788cc74f78c796ac9/org/objectweb/asm/signature/SignatureVisitor.java#L195
+
+
+ID:39
+out[] = macromania/OST#writeDouble#FastStorage#,#NotWritableException,RuntimeException#!subissuperset#IllegalArgumentException
+Subclass: https://github.com/macromania/OST/blob/7254df8958ea5d906f1892f5305b28ec2328a164/src/de/uniluebeck/itm/tcpip/FastStorage.java#L272
+Superclass: https://github.com/macromania/OST/blob/7254df8958ea5d906f1892f5305b28ec2328a164/src/de/uniluebeck/itm/tcpip/Storage.java#L318
+
+
+ID:40
+out[] = groldan/geotools_trunk#getFeatures#JoiningNestedAttributeMapping#UnsupportedOperationException#IllegalArgumentException,UnsupportedOperationException#!subissuperset#IOException
+Subclass: https://github.com/groldan/geotools_trunk/blob/bcb8957d07e1e98347d25b83703223bb5be560e8/modules/extension/app-schema/app-schema/src/main/java/org/geotools/data/joining/JoiningNestedAttributeMapping.java#L340
+Superclass: https://github.com/groldan/geotools_trunk/blob/bcb8957d07e1e98347d25b83703223bb5be560e8/modules/extension/app-schema/app-schema/src/main/java/org/geotools/data/complex/NestedAttributeMapping.java#L355
+
+
+ID:41
+out[] = sebastiangraf/gdata-java-mavenized#setValue#BoolValueConstruct#,#IllegalArgumentException,NullPointerException#!subissuperset#,
+Subclass: https://github.com/sebastiangraf/gdata-java-mavenized/blob/cba719ac5bde56c6a7b311b0f6ca894a2c01766b/src/main/java/com/google/gdata/data/webmastertools/BoolValueConstruct.java#L73
+Superclass: https://github.com/sebastiangraf/gdata-java-mavenized/blob/cba719ac5bde56c6a7b311b0f6ca894a2c01766b/src/main/java/com/google/gdata/data/ValueConstruct.java#L154
+
+setImmutable from: https://github.com/sebastiangraf/gdata-java-mavenized/blob/cba719ac5bde56c6a7b311b0f6ca894a2c01766b/src/main/java/com/google/gdata/data/AbstractExtension.java#L73
+(along with throwExceptionIfMutable)
+
+
+ID:42
+out[] = Thanatos21/Agix#validate#ArchiveComplete#,#IllegalStateException#!subissuperset#IllegalStateException
+Subclass: https://github.com/Thanatos21/Agix/blob/86be14cc73ced3f51e0237f8093542ed09cd9cc2/lib/gdata/java/src/com/google/gdata/data/docs/ArchiveComplete.java#L90
+Superclass: https://github.com/Thanatos21/Agix/blob/86be14cc73ced3f51e0237f8093542ed09cd9cc2/lib/gdata/java/src/com/google/gdata/data/AbstractExtension.java#L131
+
+
+ID:43
+out[] = krukow/clj-ds#invoke#TransientVector#,#IllegalArgumentException#!subissuperset#,
+Subclass: https://github.com/krukow/clj-ds/blob/6a45a1ddb253516088c3480ee8ee7796bd72b094/src/main/java/com/github/krukow/clj_lang/PersistentVector.java#L706
+Superclass: https://github.com/krukow/clj-ds/blob/6a45a1ddb253516088c3480ee8ee7796bd72b094/src/main/java/com/github/krukow/clj_lang/AFn.java#L38
+
+
+ID:44
+out[] = florhaf/ravent#handleLocal#FileClientHelper#,#IllegalArgumentException#!subissuperset#,
+Subclass: https://github.com/florhaf/ravent/blob/394c9b71fed9e400ca4c33176108c61aa40a86e0/service/lib/restlet-gae-2.0.14/src/org.restlet/org/restlet/engine/local/FileClientHelper.java#L193
+Superclass: https://github.com/florhaf/ravent/blob/394c9b71fed9e400ca4c33176108c61aa40a86e0/service/lib/restlet-gae-2.0.14/src/org.restlet/org/restlet/engine/local/EntityClientHelper.java#L306
+
+Protocol class: https://github.com/florhaf/ravent/blob/394c9b71fed9e400ca4c33176108c61aa40a86e0/service/lib/restlet-gae-2.0.14/src/org.restlet/org/restlet/data/Protocol.java#L80
+	(scheme name is "file")
+
+
+ID:45
+out[] = panfudonan/mx535#close#ShortcutCursor#,#IllegalStateException#!subissuperset#,
+Subclass: https://github.com/panfudonan/mx535/blob/1ffc16ea2d332c8ff08063c54f59c46a4f23f6ed/packages/apps/QuickSearchBox/src/com/android/quicksearchbox/ShortcutCursor.java#L132
+Superclass: https://github.com/panfudonan/mx535/blob/1ffc16ea2d332c8ff08063c54f59c46a4f23f6ed/packages/apps/QuickSearchBox/src/com/android/quicksearchbox/ListSuggestionCursor.java#L66
+
+
+ID:46
+out[] = xdtianyu/android_gingerbread_msm7627a#getSystemService#Activity#,#IllegalStateException#!subissuperset#,
+Subclass: https://github.com/xdtianyu/android_gingerbread_msm7627a/blob/80269edd6df74514e37d87cfabd3570123cd80f1/frameworks/base/core/java/android/app/Activity.java#L3534
+Superclass: https://github.com/xdtianyu/android_gingerbread_msm7627a/blob/80269edd6df74514e37d87cfabd3570123cd80f1/frameworks/base/core/java/android/view/ContextThemeWrapper.java#L66
+
+
+ID:47
+out[] = musi/GitHubRecommender#beforeInsert#FloatArrayList#,#IndexOutOfBoundsException#!subissuperset#,
+Subclass: https://github.com/musi/GitHubRecommender/blob/8446b99269f312a63eb2c7855a034885a938547d/netflix/netflix/some%20libraries/colt/src/cern/colt/list/FloatArrayList.java#L69
+Superclass: https://github.com/musi/GitHubRecommender/blob/8446b99269f312a63eb2c7855a034885a938547d/netflix/netflix/some%20libraries/colt/src/cern/colt/list/AbstractFloatList.java#L57
+
+
+ID:48
+out[] = PeyloW/gcc-4.6.4#getMinimumSpan#BlockView#,#IllegalArgumentException#!subissuperset#,
+Subclass: https://github.com/PeyloW/gcc-4.6.4/blob/6ac0b2e27f65b64579f346b731fbf2468511080a/libjava/classpath/javax/swing/text/html/BlockView.java#L586
+Superclass: https://github.com/PeyloW/gcc-4.6.4/blob/6ac0b2e27f65b64579f346b731fbf2468511080a/libjava/classpath/javax/swing/text/BoxView.java#L351
+
+
+ID:49
+out[] = sefirot/androidStuff#query#WeatherInfoProvider#,#IllegalArgumentException#!subissuperset#,
+Subclass: https://github.com/sefirot/androidStuff/blob/bc4084500ea61eaf23b8801f866f2ade4aa95107/Berichtsheft/src/com/applang/provider/WeatherInfoProvider.java#L115
+Superclass: https://github.com/sefirot/androidStuff/blob/bc4084500ea61eaf23b8801f866f2ade4aa95107/BerichtsheftApp/src/android/content/ContentProvider.java#L110
+
+UriMatcher.match: https://github.com/sefirot/androidStuff/blob/bc4084500ea61eaf23b8801f866f2ade4aa95107/BerichtsheftApp/src/android/content/UriMatcher.java#L202
+Uri object they use: https://developer.android.com/reference/android/net/Uri.html
+
+ID:50
+out[] = miorel/lawu#writeToSequence#JPEGImageWriter#,#IllegalStateException#!subissuperset#IOException
+Subclass: https://github.com/miorel/lawu/blob/aac0e4c0ecf9b19b181fecea8dc01ab5d3a16198/trunk/lib/openjdk/jdk/src/share/classes/com/sun/imageio/plugins/jpeg/JPEGImageWriter.java#L1169
+Superclass: https://github.com/miorel/lawu/blob/aac0e4c0ecf9b19b181fecea8dc01ab5d3a16198/trunk/lib/openjdk/jdk/src/share/classes/javax/imageio/ImageWriter.java#L748
+
+
+ID:51
+out[] = SDX2000/gcc#getDataElements#BandedSampleModel#,#ClassCastException,ArrayIndexOutOfBoundsException#!subissuperset#,
+Subclass: https://github.com/sandeep-datta/gcc/blob/a04d75df9fb0dc8a8ed4da3ed1a14eccacc24034/gcc-4.6.2/libjava/classpath/java/awt/image/BandedSampleModel.java#L194
+Superclass: https://github.com/sandeep-datta/gcc/blob/a04d75df9fb0dc8a8ed4da3ed1a14eccacc24034/gcc-4.6.2/libjava/classpath/java/awt/image/ComponentSampleModel.java#L425
+
+
+ID:52
+out[] = AL-WUHC2/n3r-core#call#SeqCountFunction#,#IllegalArgumentException,NullPointerException#!subissuperset#,
+Subclass: https://github.com/AL-WUHC2/n3r-core/blob/85a0c214d3656414528d5ab624dad19d87ddcc07/src/main/java/com/googlecode/aviator/runtime/function/seq/SeqCountFunction.java#L39
+Superclass: https://github.com/AL-WUHC2/n3r-core/blob/85a0c214d3656414528d5ab624dad19d87ddcc07/src/main/java/com/googlecode/aviator/runtime/function/AbstractFunction.java#L28
+
+
+ID:53
+out[] = lveci/nest#getPixelDataField#Virtual#,#IllegalStateException#!subissuperset#,
+Subclass: https://github.com/lveci/nest/blob/2db021f3cf0604061b8dbe31ff56157a4f77015d/beam/beam-envisat-reader/src/main/java/org/esa/beam/dataio/envisat/BandLineReader.java#L104
+Superclass: https://github.com/lveci/nest/blob/2db021f3cf0604061b8dbe31ff56157a4f77015d/beam/beam-envisat-reader/src/main/java/org/esa/beam/dataio/envisat/BandLineReader.java#L181
+
+
+ID:54
+out[] = frugs/dungeon-crawler#setLodLevel#Geometry#,#IllegalArgumentException,IllegalStateException#!subissuperset#,
+Subclass: https://github.com/frugs/dungeon-crawler/blob/eaab2ec67f161b060aca4788fdb08d658ec9bd1e/jme3/source/com/jme3/scene/Geometry.java#L150
+Superclass: https://github.com/frugs/dungeon-crawler/blob/eaab2ec67f161b060aca4788fdb08d658ec9bd1e/jme3/source/com/jme3/scene/Spatial.java#L1109
+
+
+ID:55
+out[] = aoliong/javacode#createSession#StandardManager#,#IllegalStateException#!subissuperset#,
+Subclass: https://github.com/aoliong/javacode/blob/db81c8f1beb63c9f0b71b8c605e397bc59470edc/server/src/org/apache/catalina/session/StandardManager.java#L323
+Superclass: https://github.com/aoliong/javacode/blob/db81c8f1beb63c9f0b71b8c605e397bc59470edc/server/src/org/apache/catalina/session/ManagerBase.java#L560
+
+
+ID:56
+out[] = nelsonsilva/vaadin#paintContent#CustomComponent#,#IllegalStateException#!subissuperset#PaintException
+Subclass: https://github.com/nelsonsilva/vaadin/blob/e96c9c784114c7d71db56e3dca2740fc425d9d45/src/com/vaadin/ui/CustomComponent.java#L106
+Superclass: https://github.com/nelsonsilva/vaadin/blob/e96c9c784114c7d71db56e3dca2740fc425d9d45/src/com/vaadin/ui/AbstractComponent.java#L842
