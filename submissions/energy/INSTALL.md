@@ -1,16 +1,22 @@
 # Installation Guide
 
 This is the procedures to run the experiment in the paper. Detailed
-description can be found in the `README.md` file in each sub-folder.
+descriptions can be found in the `README.md` file in each sub-folder.
 We have run all the experiments in advance. All results are included
 in the artifact.
 
 ## Download
 
+There are two parts of the artifact:
+
+1. fse18.tar.xz (implementation and watch faces with leaks, 1.3GB);
+2. fse18-benchmark.tar (all 1490 benchmarks described in the paper, 16GB).
 
 ```
 wget http://web.cse.ohio-state.edu/presto/software/aptwear/downloads/fse18.tar.xz
-tar xvfz fse18.tar.xz
+tar xvfJ fse18.tar.xz
+wget http://web.cse.ohio-state.edu/presto/software/aptwear/downloads/fse18-benchmark.tar
+tar xvf fse18-benchmark.tar --directory hailongzhang-aptwear-fse18-paper-163/
 ```
  
  
@@ -30,8 +36,8 @@ $ npm install google-play-scraper
 $ pip install scrapy wordcloud beautifulsoup4
 ```
 
-To fetch the list of Wear apps and watch faces from [Android Wear Center]
-(http://www.androidwearcenter.com/)  and [Goko Store](https://goko.me/):
+To fetch the list of Wear apps and watch faces from [Android Wear Center](http://www.androidwearcenter.com/)
+and [Goko Store](https://goko.me/):
 
 ```bash
 $ ./run_spider.sh
@@ -185,7 +191,7 @@ $ test_display.py
 
 to automatically install and take screenshots for watch faces that are reported
 by static analysis to have potential display-related energy inefficiencies.
-`screenshots` contains the pre-generated screenshots.
+`screenshots` contains the pre-fetched screenshots.
 
 Run
 
@@ -195,7 +201,7 @@ $ check_ambient_screenshots.py
 
 to get final reports of display-related inefficiencies. It crops the square shaped
 screenshots and analyze the pixels in them. `crop` contains the cropped images. The
-reports will be displayed with color in the output. *Green* means the watch fase is
+reports will be displayed with colors in terminal. *Green* means the watch fase is
 OK. *Red* means the watch face indeed contains an energy inefficiency.
 
 To run tests for sensor-related energy inefficiencies, copy & paste the test cases
