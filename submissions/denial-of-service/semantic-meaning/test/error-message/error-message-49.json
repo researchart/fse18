@@ -1,0 +1,1 @@
+{"pattern":"createStore has unexpected type of \"Number\".*keys: \"foo\", \"baz\""}

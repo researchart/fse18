@@ -1,0 +1,1 @@
+{"pattern":"([-+])(\\d*)\\s*(minutes|minute|min|Min|Minute|Minutes|hr|Hr|hours|hour|Hour|Hours|days|day|Days|Day|weeks|week|Week|Weeks|months|month|mon|Month|Months|years|year|Year|Years|Quarters|Quarter|seconds|second|Seconds|Second|sec|s|m|h|d|D|M|y|Y|q|Q|Qr|qr|ms|w|wk|Wk)"}

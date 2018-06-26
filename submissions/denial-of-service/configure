@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+
+echo "Configuring repo. I hope you use Ubuntu..."
+
+set -x
+set -e
+
+## Packages
+echo "Installing various required packages"
+MISC_PACKAGES='zip unzip make git python-tk python-pip cpanminus'
+
+RXXR2_PACKAGES='ocaml'
+WUESTHOLZ_PACKAGES='default-jdk'
+DETECTOR_PACKAGES="$RXXR2_PACKAGES $WUESTHOLZ_PACKAGES"
+
+sudo apt-get install -y $MISC_PACKAGES $DETECTOR_PACKAGES $DYNAMIC_ANALYSIS_PACKAGES
+
+# Need this for the vuln-regex-detector installation
+echo "Installing nvm"
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash
+# Source so nvm is in path now
+touch ~/.bashrc && . ~/.bashrc
+
+echo "Installing and using node v8.9.3. The code works at this level, so insulate against future breaking changes."
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+nvm install v8.9.3
+nvm alias default v8.9.3
+
+## Submodules
+echo "Initializing/updating submodules"
+git submodule update --init --recursive
+
+# Checkout the appropriate version for the artifact.
+# Backup: https://github.com/davisjam/redos-detector-backup
+echo "Configuring submodule: vuln-regex-detector"
+pushd vuln-regex-detector
+git checkout FSE18-Artifact
+./configure
+popd
+
+## Other dependencies
+echo "Installing other dependencies"
+
+### Regexp extraction
+echo "Dependencies for regexp extraction"
+
+## npm install
+echo "Running 'npm install' for node scripts"
+for npmInstallDir in structural-analysis/ structural-analysis/regexp-features/;
+do
+  cd $npmInstallDir
+  npm install
+  cd -
+done
+
+# REDOS curve analyses
+echo "Installing pip modules for REDOS curve analysis"
+pip install --user -r degree-of-vuln/requirements.txt
+
+# Visualization
+echo "Installing pip modules for visualization"
+pip install --user -r visualization/requirements.txt
+
+# Data
+echo "Unpacking the data for your viewing pleasure"
+pushd data
+tar -xzvf uniquePatterns.tgz
+popd
+
+echo "Configuration complete. I hope everything works!"

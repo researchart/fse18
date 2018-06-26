@@ -1,0 +1,1 @@
+{"pattern":"^otpauth:\\/\\/([ht]otp)\\/(.+)\\?((?:&?(?:issuer|label|secret|algorithm|digits|counter|period)=[^&]+)+)$"}

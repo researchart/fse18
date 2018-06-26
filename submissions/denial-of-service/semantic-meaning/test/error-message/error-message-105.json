@@ -1,0 +1,1 @@
+{"pattern":"^abort multipart upload status code is (\\d+)$"}

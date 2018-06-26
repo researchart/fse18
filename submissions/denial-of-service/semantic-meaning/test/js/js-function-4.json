@@ -1,0 +1,1 @@
+{"pattern":"^[\\s\\S]+?function runInContext[\\s\\S]+?context *= *context.+| *return lodash[\\s\\S]+$"}

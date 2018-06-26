@@ -1,0 +1,1 @@
+{"pattern":"(^( )?(if|for|else|switch|case|continue|break|{|}))(.*)?"}

@@ -1,0 +1,3 @@
+[submodule "vuln-regex-detector"]
+	path = vuln-regex-detector
+	url = https://github.com/davisjam/vuln-regex-detector

@@ -1,0 +1,7 @@
+We are applying for the badge "Available" for the following reasons.
+
+1. We meet the criteria for "Functional": each of our analyses is documented with a README.md and header documentation, uses consistent input and output, and comes with a test suite that demonstrates its effectiveness; and
+
+2. We further meet the criteria for "Reusable": our artifact is Functional and we believe our documentation and directory structure facilitates reuse and repurposing; and
+
+3. We further meet the criteria for "Available": our artifact is available under MIT License on GitHub and archived at XXX.

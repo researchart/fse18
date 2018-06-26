@@ -1,0 +1,10 @@
+{
+  "name": "report-regexp-features",
+  "version": "1.0.0",
+  "description": "Report features of this regexp",
+  "main": "report-regexp-features.js",
+  "dependencies": {
+    "regexp-tree": "*"
+  },
+  "author": "James C. Davis"
+}

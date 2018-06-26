@@ -1,0 +1,1 @@
+{"pattern":"-----BEGIN RSA PRIVATE KEY-----\\n(.{64}\\n)+(.{1,64}\\n)?-----END RSA PRIVATE KEY-----"}

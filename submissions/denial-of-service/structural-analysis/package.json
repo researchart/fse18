@@ -1,0 +1,21 @@
+{
+  "name": "structural-analysis",
+  "version": "1.0.0",
+  "description": "Various structural analyses of a regex",
+  "main": "run-analysis.js",
+  "dependencies": {
+    "regexp-tree": "*"
+  },
+  "devDependencies": {
+    "jasmine": "^3.1.0"
+  },
+  "scripts": {
+    "test": "jasmine --config=jasmine.json",
+    "test:intersect": "jasmine test/regexp-tree-any-groups-intersect-spec.js",
+    "test:qod": "jasmine test/quantified-overlapping-disjunction-spec.js",
+    "test:qoa": "jasmine test/quantified-overlapping-adjacent-spec.js",
+    "test:rtagi": "jasmine test/regexp-tree-any-groups-intersect-spec.js",
+    "test:starHeight": "jasmine test/count-star-height-spec.js"
+  },
+  "author": "James C. Davis"
+}

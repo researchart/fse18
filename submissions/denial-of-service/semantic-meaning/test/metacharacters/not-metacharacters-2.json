@@ -1,0 +1,1 @@
+{"pattern":"^[(var)(\\/\\/)(\\/\\*.*\\*\\/)]", "desc": "* appears a few times"}

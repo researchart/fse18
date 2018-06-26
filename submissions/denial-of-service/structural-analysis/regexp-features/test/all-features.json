@@ -1,0 +1,1 @@
+{"pattern":"^z+(caught)(?:notcaught).*[aeiou].[a-z][^:]\\s(a|b|[cde].*?(f|g)h)\\d\\wz?z+?ac(?<name>x)z{8}\\Sz{3,8}(?!yz)a\\b\\Wz{15,}a(?=bc)yz(?<=a)bc\\Z\\1\\D\\k<name>\\v\\B[\\b]\\cA\\t\\0\\x25\\u1234$"}

@@ -1,0 +1,1 @@
+{"pattern":"^(\\s*)?(if|else|for|while|break|continue|switch|case|default|var\\s+\\$|})"}

@@ -1,0 +1,2 @@
+See instructions in `README.md` under the heading "Installation".
+Afterward, use `full-analysis/analyze-regexp.pl` to confirm that everything is working.

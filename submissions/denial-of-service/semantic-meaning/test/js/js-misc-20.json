@@ -1,0 +1,1 @@
+{"pattern":"^(true|false|null|NaN|undefined|\\d+)$"}

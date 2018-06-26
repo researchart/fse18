@@ -1,0 +1,1 @@
+{"pattern":"REPORT RequestId: .{36}\tDuration: (\\d+\\.\\d+)"}

@@ -1,0 +1,1 @@
+{"pattern":"-----BEGIN\\sPRIVATE\\sKEY-----\\s+([a-zA-Z0-9+\\/=\\r\\n]+)\\s+-----END\\sPRIVATE\\sKEY-----"}

@@ -1,0 +1,1 @@
+{"pattern":"<(img|link|script).*(src|href)=['\"](?!(http|https):\\/\\/|\\/).+['\"].*(>)"}
