@@ -1,0 +1,9 @@
+bad.traces.txt
+good.traces.txt
+dataset.txt
+err-traces-shuf.txt
+vectors-gensim.txt
+__pycache__/
+*.pyc
+conv.1.model_weights.hdf5
+conv.1.tokenizer.pkl
