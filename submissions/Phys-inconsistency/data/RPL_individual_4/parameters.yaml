@@ -1,0 +1,11 @@
+# Parameters for particle filter
+
+number_of_particle: 800
+
+alpha1: 0.0005
+alpha2: 0.2
+alpha3: 0.5
+alpha4: 0.00001
+frequency: 10
+robot_radius: 0.08
+

@@ -1,0 +1,13 @@
+<launch>
+
+  <arg name="pi" value="3.14159265"/>
+  <arg name="pi_2" value="1.57079633"/>
+
+  <node pkg="particle_filter" type="particle_filter" name="particle_filter" clear_params="true" output="screen"/>	
+    	<rosparam file="$(find particle_filter)/parameters.yaml"/>	
+
+  <node pkg="rviz" type="rviz" name="rviz" />	
+
+
+
+ </launch>

@@ -1,0 +1,37 @@
+<package>
+  <name>cpr_robots_driver</name>
+  <version>0.0.1</version>
+
+  <description>
+  	This stack contains hardware drivers, urdf files and keyboard teleop for the Commonplace Robotics robots: robot arm Mover4 and mobile platform Slider, see: <a href="http://www.cpr-robots.com">www.cpr-robots.com</a>. 
+	
+	Specifically, it provides in package cpr_robots_hwinterface:
+	<ul>
+  		<li>node CPRKinSlider to connect with the Slider hardware</li>
+	</ul>
+
+  	The package cpr_robots_teleop contains:
+  	<ul>
+  		<li> node CPRTeleopKeyboard to allow testing the robot</li>
+  	</ul>
+  </description>
+
+  <license>GPL</license>
+
+  <url type="website">http://github.com/emiliofidalgo/cpr_robots_driver</url>
+
+  <author email="christian.meyer@cpr-robots.com">Christian Meyer</author>
+
+  <maintainer email="christian.meyer@cpr-robots.com">Christian Meyer</maintainer>
+  <maintainer email="emilio.garcia@uib.es">Emilio Garcia-Fidalgo</maintainer>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <run_depend>cpr_robots_comm_rs232</run_depend>
+  <run_depend>cpr_robots_hwinterface</run_depend>
+  <run_depend>cpr_robots_teleop</run_depend>
+
+  <export>
+    <metapackage/>
+  </export>
+</package>

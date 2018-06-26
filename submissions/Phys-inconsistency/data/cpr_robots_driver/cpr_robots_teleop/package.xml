@@ -1,0 +1,26 @@
+<package>
+  <name>cpr_robots_teleop</name>
+  <version>0.0.1</version>
+  <description>
+  	This node reads the keyboard and generates Twist and/or JointState messeges in a 10 Hz loop. For the slider the keys are ws for forward/backward, ad for turn left/right and qe for lateral motion which is possible due to the mecanum drive. This node is inteded to be a test environment for the hardware interface to the CPR robots, cpr_robots_hwinterface.
+  </description> 
+  <maintainer email="christian.meyer@cpr-robots.com">Christian Meyer</maintainer>
+  <maintainer email="emilio.garcia@uib.es">Emilio Garcia-Fidalgo</maintainer>
+  
+  <license>BSD</license>
+
+  <url type="website">http://ros.org/wiki/cpr_robots_hwinterface</url>
+
+  <author>christian.meyer@cpr-robots.com</author>
+  
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>roscpp</build_depend> 
+  <build_depend>geometry_msgs</build_depend> 
+  
+  <run_depend>roscpp</run_depend> 
+  <run_depend>geometry_msgs</run_depend>
+
+  <export>
+  </export>
+</package>

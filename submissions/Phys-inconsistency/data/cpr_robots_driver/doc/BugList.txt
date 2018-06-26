@@ -1,0 +1,14 @@
+Bugs & To be done:
+Jan 21st, 2013
+
+
+Package Teleop:
+* check for thread safety
+
+
+Package hwinterface:
+* check for thread safety
+* include check for velocities and accelerations
+* updatePosition: Could be more precise e.g. by measuring the exakt time
+* odometry message: The orientations part is not used correctly, up till now the rz roation is just stored in orientation.z. Should be quaternions.
+

@@ -1,0 +1,7 @@
+<launch>
+	<node name="cpr_slider" pkg="cpr_robots_hwinterface" type="CPRSlider_node" output="screen" />
+	
+	<node name="cpr_teleopkb" pkg="cpr_robots_teleop" type="CPRTeleopKeyboard" output="screen">
+		<remap from="twistSlider" to="/cpr_slider/cmd_vel" />
+	</node>
+</launch>

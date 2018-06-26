@@ -1,0 +1,25 @@
+Jan 21st, 2013
+christian.meyer@cpr-robots.com
+
+How to set up the ROS stack cpr_robots_driver
+---------------------------------------------
+
+1. Download from gitHub:
+https://github.com/CPR-Robots/cpr_robots_driver
+
+2. Connect the USB2CAN bridge to your USB port
+
+3. Start the teleoperation scenario:
+First get into the directory:	roscd cpr_robots_teleop
+Then start the launch file:	roslaunch teleop.launch
+
+4. Drive the robot with the keys w/s, a/s and e/q
+
+When ist does not work:
+* Recompile with make clean and make? Are all necessary dependencies available?
+* Is the boost library installed?
+* When there is no connection to the USB2CAN bridge:
+	- the preset for the port is /dev/ttyUSB0
+	- check with "dmesg | grep USB" if the bridge is connected there
+	- change this port in cpr_comm_rs232.cpp if your bridge connected to another port
+	- do you have the permission to open ttyUSB0? Try changing permissions: "sudo chmod 0777 /dev/ttyUSB0"
