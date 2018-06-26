@@ -5,6 +5,16 @@ description can be found in the `README.md` file in each sub-folder.
 We have run all the experiments in advance. All results are included
 in the artifact.
 
+## Download
+
+
+```
+wget http://web.cse.ohio-state.edu/presto/software/aptwear/downloads/fse18.tar.xz
+tar xvfz fse18.tar.xz
+```
+ 
+ 
+
 ## App Market Study
 
 Node.js and Python 3 built with Tk are required. We recommend to download the 
