@@ -1,0 +1,27 @@
+https://bugzilla.mozilla.org/show_bug.cgi?id=1363325
+
+Steps to reproduce:
+
+1. Open attached example.html in Firefox 53.0 or Firefox Developer Edition 54.0a2 (both affected).
+2. Open Developer Tools, go to Debugger.
+3. Set breakpoints in lines 8, 12, 19, 27, and 37 (all the for loops).
+4. Reload to hit first breakpoint.
+5. Click "Step In" until past the for-loop.
+6. Click "Resume" to hit next for-loop breakpoint.
+7. Repeat 5. and 6. until through all loops.
+
+
+Actual results:
+
+- Depending on the whitespace, one needs to click step in 1, 7, 10, 11, or 12 times to get through a 3-iteration for-loop.
+- In particular line 8 in example: For-loop on single line can only be "stepped" once until reaching next statement past the loop.
+- In particular line 37 in example: Debugger allows to set breakpoint and pauses at "for (" line (without any initialization, condition, or increment substatement).
+
+
+Expected results:
+
+- Most confusing: single-line loop, line 8 in example: At least 3 steps should be needed for this 3-iteration loop. Otherwise, developers could think the loop did not execute all iterations.
+- "for (" line without any substatement: Setting breakpoint at line 37 doesn't make sense, since there is no statement in this line. Debugger should slide breakpoint to loop-variable initialization statement in next line. This way, the third testcase in the example (line 27) and this (line 37) would need the same number of steps and be consistent.
+- (Subjective:) In general, number of steps needed to get past a statement should not depend on its formatting. The debugger should pause at each substatement, even if they are on the same line. For for-loops this means potentially pausing three times at the loop header line, once for initialization ("let i = 0"), once for condition statement ("i < 3"), once for increment ("i++").
+
+Note: Chrome needs the same number of steps for all 4 cases. It pauses at initialization, at the condition, at the increment, and the statement in the loop body.

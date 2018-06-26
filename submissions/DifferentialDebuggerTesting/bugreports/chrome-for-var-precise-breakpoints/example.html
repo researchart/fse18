@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <script>
+      // three markers: init, condition, increment
+      // when setting breakpoint in next line
+      for (let i = 0; i < 3; i++) {
+        console.log(i);
+      }
+
+      // only two markers! init, condition, but increment missing
+      // when setting breakpoint in next line (var instead of let)
+      for (var i = 0; i < 3; i++) {
+      	console.log(i);
+      }
+    </script>
+  </head>
+  <body>See script</body>
+</html>

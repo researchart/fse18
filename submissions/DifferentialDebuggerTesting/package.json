@@ -1,0 +1,45 @@
+{
+  "name": "differential-debugger-testing",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sola-da/DifferentialDebuggerTesting.git"
+  },
+  "main": "build/eval/run-tests.js",
+  "author": "Daniel Lehmann <daniel.lehmann@crisp-da.de>",
+  "license": "MIT",
+  "engines": {
+    "node": ">=6.9.2"
+  },
+  "devDependencies": {
+    "@types/node": "^7.0.3",
+    "typescript": "^2.1.5"
+  },
+  "dependencies": {
+    "ast-types": "^0.9.6",
+    "chrome-remote-interface": "^0.17.1",
+    "escodegen": "^1.8.1",
+    "esmangle": "^1.0.1",
+    "esmorph": "^0.0.1",
+    "esprima": "^3.1.3",
+    "estraverse": "^4.2.0",
+    "fs-extra": "^2.0.0",
+    "line-column": "^1.0.2",
+    "prompt-promise": "^1.0.3",
+    "recast": "^0.12.0",
+    "seedrandom": "^2.4.2",
+    "set2": "^1.0.0",
+    "source-map": "^0.5.6",
+    "sprintf-js": "^1.0.3",
+    "uglify-js": "^2.8.16",
+    "uglify-js2": "^2.1.11",
+    "uglifyjs": "^2.4.10",
+    "winston": "^2.3.1",
+    "ws": "^1.1.1"
+  },
+  "scripts": {
+    "build": "tsc",
+    "chrome": "browsers/chromium-59/chrome --temp-profile --remote-debugging-port=9222 --no-first-run --no-default-browser-check about:blank",
+    "firefox": "browsers/firefox-54/firefox -profile browsers/firefox-profile --start-debugger-server ws:6080 -no-remote -url about:blank"
+  }
+}

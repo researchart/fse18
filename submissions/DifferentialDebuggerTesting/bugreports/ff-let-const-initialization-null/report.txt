@@ -1,0 +1,24 @@
+https://bugzilla.mozilla.org/show_bug.cgi?id=1362451
+
+
+Steps to reproduce:
+
+1. Open attached example.html in Firefox 53.0 or Firefox Developer Edition 54.0a2 (both affected, new and old debugger).
+2. Open Developer Tools, go to Debugger.
+3. Set breakpoint in line 8 (first statement in block).
+4. Look at debugger Variables/Scopes view.
+5. Click "step over".
+6. Look at debugger Variables/Scopes view again.
+
+
+Actual results:
+
+- At step 4: letBlock/constBlock variables (bound via let/const) are shown as undefined in debugger (in Firefox 53.0 or Firefox Developer Edition 54.0a2)
+- At step 6, in Firefox 53.0 (old debugger): letBlock/constBlock shown as "(uninitialized)"
+- At step 6, in Firefox Developer Edition 54.0a2 (debugger.html): letBlock/constBlock shown as null
+
+
+Expected results:
+
+- Block scoped variables should not visibly change their value when an unrelated statement is executed. Should either stay at undefined or shown "(uninitialized)" all the time (until declaration statement is actually reaced).
+- Firefox Developer Edition 54.0a2 / debugger.html behavior is especially confusing, since "null" indicates explicit intent by the programmer, unlike undefined which is more sensible.

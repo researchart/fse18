@@ -1,0 +1,6 @@
+/chromium-59.zip
+/chromium-59
+/firefox-54.tar.bz2
+/firefox-54
+/firefox-profile/**
+!/firefox-profile/prefs.js

@@ -1,0 +1,23 @@
+https://bugzilla.mozilla.org/show_bug.cgi?id=1362416
+
+
+Steps to reproduce:
+
+1. Open attached example.html in Firefox 53.0 or Firefox Developer Edition 54.0a2 (both affected, new and old debugger!).
+2. Open Developer Tools, go to Debugger.
+3. Reload once to enable breakpoint sliding.
+3. Click on gutter to set breakpoints in line 13 and 21.
+
+
+Actual results:
+
+- Breakpoint in line 13 is removed and one in line 16 added instead (due to sliding).
+- Breakpoint in line 21 is removed and one in line 24 added instead (due to sliding).
+
+
+Expected results:
+
+- Breakpoint in line 13 should stay and not slide somewhere else.
+- Breakpoint in line 21 should stay and not slide somewhere else.
+- Note: Chrome 58.0 allows setting breakpoints in lines 13 and 21.
+- Note: In both cases (line 13 in a for...in loop, line 21 in a for...of loop) the loop header does not contain a declaration with "var" keyword. In the loops with a "var" declaration, setting breakpoints works (lines 9 and 17).

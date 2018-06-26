@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <script>
+
+      for (let i = 0; i < 3; i++) { // set breakpoint here: i is shown as undefined, OK :)
+        // do sth...
+      }
+
+      for (let k = 4; k < 7; k++) { // set breakpoint here: k is shown with value 3, which it never has! :(
+        // do sth...
+      }
+
+      for (let a = ""; a.length < 5; a = a + "." ) { // set breakpoint here: a is shown with value 7, which is not even the right type!
+        // do sth...
+      }
+
+    </script>
+  </head>
+  <body>See script</body>
+</html>

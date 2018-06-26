@@ -1,0 +1,23 @@
+https://bugzilla.mozilla.org/show_bug.cgi?id=1370655
+
+
+Steps to reproduce:
+
+1. Open attached example.html in Firefox 53.0 or Firefox Developer Edition 54.0 beta12 (both affected).
+2. Open Developer Tools, go to Debugger.
+3. Set breakpoints in line 7 and line 12 (while loops)
+4. Reload to hit first breakpoint.
+5. Click "Step In" once.
+
+
+Actual results:
+
+- Debugger pauses at line 9 (past while loop) after only one step in.
+- Confusing, not clear whether all iterations of loop were executed.
+
+
+Expected results:
+
+- Debugger should pause again at line 7 (where the loop is), at least once per iteration (that is, three times in this case).
+- NOTE: How many steps are necessary to get past loop depends on whitespace/formatting. The while-loop in line 12 can be "stepped in" seven times before execution pauses after the loop. See attached screencapture.
+- Possibly related bug with for-loops: https://bugzilla.mozilla.org/show_bug.cgi?id=1363325

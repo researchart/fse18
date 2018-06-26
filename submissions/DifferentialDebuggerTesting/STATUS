@@ -1,0 +1,9 @@
+We are applying for artifact badges: Available + Reusable (independent from each other as per https://www.acm.org/publications/policies/artifact-review-badging)
+
+Reasons why we think our artifact deserves these badges:
+- The repository is publicly accessible on a well known repository hosting service (https://github.com/sola-da/DifferentialDebuggerTesting).
+- It is lincensed under the MIT license, a permissive open-source license that allows private and commercial use and modification by third parties (see LICENSE.txt).
+- The tool is bundled as an NPM package (see package.json) and can be easily installed with standard JavaScript package managers such as yarn or NPM. The few dependencies for building and running are readily available on Linux (git, curl, Node.js). Simple step-by-step instructions for installing and running the tool are provided (see INSTALL.md).
+- The repository includes all inputs necessary for running the automatic parts of the evaluation as described in the paper. In particular, this includes the set of programs-to-debug (see programs-to-debug/ directory) and the exact versions of the browsers that were evaluated (see browsers/ directory).
+- The repository includes a list of all bugs that were found in the debuggers of Firefox and Chromium (see bugreports/ directory) and mentioned in the paper. Apart from a link to each bug tracker entry (see bugreports/README.md), a short description, and the current status, this directory also contains minimal examples for reproducing the bugs in the appropriate versions of Firefox and Chromium, as well as screen capture videos that demonstrate the bugs.
+- The tool is accompanied by high-level documentation in the form of a README.md that gives an overview on how the tool works, on the directory structure of the repository, and over the source code files. It also gives some pointers on how to modify, e.g., the testing parameters and how the results/ directory is structured.

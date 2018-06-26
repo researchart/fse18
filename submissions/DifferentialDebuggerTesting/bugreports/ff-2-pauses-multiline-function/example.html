@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <script>
+    function someFun(param) { }
+
+    someFun(1);  // set breakpoint here, resume when paused
+    console.log("output after one resume, expected");
+    
+    someFun(     // set breakpoint here, resume when paused
+      1
+    );
+    console.log("output after two resumes! Why?");
+    
+    </script>
+  </head>
+  <body>See script</body>
+</html>

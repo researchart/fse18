@@ -1,0 +1,24 @@
+https://bugs.chromium.org/p/chromium/issues/detail?id=718827
+
+Steps to reproduce the problem:
+1. Open attached poc.html in Chrome.
+2. Open DevTools debugger.
+3. Set breakpoints in lines 8, 14, and 18.
+4. Reload to hit first breakpoint; resume twice to reach the others.
+
+What is the expected behavior?
+- Top-level variables bound with ES6 let/const (in poc.html: letGlobal/constGlobal) should be shown as "undefined" before reaching their declaration statements in the debugger.
+- This would be consistent with let/const in blocks and functions.
+
+What went wrong?
+- Top-level variables bound with ES6 let/const are not shown in the debugger (under Scope) until the declaration statement is executed, see screenshot global-let-not-shown-png. Let/const-bound variables in function and block scopes are shown in the debugger as undefined, see block-let-undefined.png
+
+Did this work before? N/A 
+
+Chrome version: 58.0.3029.81 (Developer Build)  Channel: stable
+OS Version: Ubuntu 16.10 (64-bit)
+Flash Version: Shockwave Flash 25.0 r0
+
+- The behavior of let/const bindings in function/block scopes, namely showing the variables as undefined in "Scope", is useful for developers. One can quickly see all bindings made in the function/block.
+- It is also consistent with http://www.ecma-international.org/ecma-262/6.0/#sec-let-and-const-declarations: "let and const declarations define variables that are scoped to the running execution context’s LexicalEnvironment. The variables are created when their containing Lexical Environment is instantiated [...]"
+- According to http://www.ecma-international.org/ecma-262/6.0/#sec-lexical-environments "A global environment is a Lexical Environment [...]", so I expected the debugger to behave the same for let/const in the global scope as in functions/blocks.

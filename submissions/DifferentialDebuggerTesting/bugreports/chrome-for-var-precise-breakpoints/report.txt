@@ -1,0 +1,20 @@
+https://bugs.chromium.org/p/chromium/issues/detail?id=752443
+Precise/column breakpoint marker at for-loop increment substatement missing
+
+1. Open attached example.html
+2. Open Developer Tools -> Debugger
+3. Set breakpoints in line 8 and 14 (the for loops)
+4. Reload
+
+
+- the for loops only differ in the declaration of the loop variable (one with let, other with var)
+- precise/column/inline breakpoint markers should appear in the same way for both loops
+- in particular, there should be a inline breakpoint marker at the i++ increment statement in both loops
+
+
+- the first loop (where the loop variable is declared with let) gives us an inline breakpoint marker at i++ (correct!)
+- the second does not (wrong).
+- why is there a difference between let and var-declared loop variables?
+
+
+see also the attached screencapture for demonstration

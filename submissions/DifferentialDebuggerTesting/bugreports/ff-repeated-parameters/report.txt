@@ -1,0 +1,22 @@
+https://bugzilla.mozilla.org/show_bug.cgi?id=1362432
+
+
+Steps to reproduce:
+
+1. Open attached example.html in Firefox 53.0 or Firefox Developer Edition 54.0a2 (both affected, new and old debugger!).
+2. Open Developer Tools, go to Debugger.
+3. Set breakpoint in line 10 (first line in function).
+4. Reload to hit breakpoint.
+5. Look at Scopes/Variables in debugger.
+6. Click "resume".
+
+
+Actual results:
+
+- At step 5: Scopes/Variables window shows repeatedParameter with value "first" (wrong)
+- After resume: Console shows output of "second" (correct)
+
+
+Expected results:
+
+- Debugger Scopes/Variables view should be consistent with runtime behavior: Show repeatedParameter with value "second"

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <script>
+
+      // set breakpoint in next line, then stepIn through loop
+      for (let i = 0; i < 3; i++) console.log("i: " + i);
+      console.log("for-loop on one line: only 1 stepIn, then debugger is past the loop")
+
+      // set breakpoint in next line, then stepIn through loop
+      for (let i = 0; i < 3; i++) {
+        console.log("i: " + i);
+      }
+      console.log("'typical' for-loop whitespace: 7 stepIn to get past the loop")
+      console.log("pauses 4 times at loop-header line, 3 times at body statement")
+
+      // set breakpoint in next line, then stepIn through loop
+      for (let i = 0; i < 3; 
+        i++) {
+        console.log("i: " + i);
+      }
+      console.log("condition and increment on seperate lines: 10 stepIn to get past loop")
+      console.log("pauses 4 times at first line of loop (init and condition), 3 times at increment, 3 times at body statement")
+
+      // set breakpoint in next line, then stepIn through loop
+      for (let i = 0; 
+        i < 3; 
+        i++
+      ) {
+        console.log("i: " + i);
+      }
+      console.log("init, condition, and increment on seperate lines: 11 stepIn to get past loop")
+      console.log("pauses once at init, 4 times at condition, 3 times at increment, 3 times at body statement")
+
+      // set breakpoint in next line, then stepIn through loop
+      for (
+        let i = 0; 
+        i < 3; 
+        i++
+      ) {
+        console.log("i: " + i);
+      }
+      console.log("for-loop header distributed over 4 lines: 12 stepIn to get past loop")
+      console.log("pauses once at 'for'-line, once at init, 4 times at condition, 3 times at increment, 3 times at body statement")
+
+    </script>
+  </head>
+  <body>See script</body>
+</html>

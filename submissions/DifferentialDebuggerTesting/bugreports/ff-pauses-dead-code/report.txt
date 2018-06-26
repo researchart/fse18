@@ -1,0 +1,21 @@
+https://bugzilla.mozilla.org/show_bug.cgi?id=1370648
+
+Steps to reproduce:
+
+1. Open attached example.html in Firefox 53.0 or Firefox Developer Edition 54.0 beta12 (both affected, new and old debugger!).
+2. Open Developer Tools, go to Debugger.
+3. Set breakpoints in line 7.
+4. Reload.
+
+
+
+Actual results:
+
+- Debugger pauses and indicates that the breakpoint in line 7 is hit
+
+
+Expected results:
+
+- The breakpoint should not be hit!
+- NOTE: The if condition is always false (1 !== 1) so the statement in line 7 is never executed. This can also be verified by looking at the console: There is no output, as expected.
+- NOTE: adding another statement after the if, e.g. a console.log("blabla"); fixes the issue, then line 7 is no longer hit.

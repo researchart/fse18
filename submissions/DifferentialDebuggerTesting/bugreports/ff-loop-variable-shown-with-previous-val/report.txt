@@ -1,0 +1,27 @@
+https://bugzilla.mozilla.org/show_bug.cgi?id=1363328
+
+Steps to reproduce:
+
+1. Open attached example.html in Firefox 53.0 or Firefox Developer Edition 54.0a2 (both affected).
+2. Open Developer Tools, go to Debugger.
+3. Set breakpoints in lines 7, 11, and 15 (for loops).
+4. Reload to hit first breakpoint.
+5. See debugger Variables/Scopes view.
+6. Resume to hit next loop, see debugger Variables/Scopes view again.
+7. Resume to hit last loop, see debugger Variables/Scopes view again.
+
+
+Actual results:
+
+- Variable k of second loop is shown with value 3 in debugger.
+- Variable a of third loop is shown with value 7 in debugger.
+
+
+Expected results:
+
+- k should be either undefined in debugger (like in first loop) or show value after initialization with let k = 4
+- a should be either undefined in debugger (like in first loop) or show value after initialization with let a = ""
+
+Note: It seems the value shown in the Debugger is the last value of the previous for loop's variable.
+Note: This bug appears even when the loop variables have different names (compare "i" of first loop with "k" of second).
+Note: This bug appears even when the loop variable have different types (compare typeof k === number with typeof a === string)
