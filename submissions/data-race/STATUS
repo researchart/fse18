@@ -1,0 +1,12 @@
+Paper Title: Data Race Detection on Compressed Traces
+Applying for: Reusable and Available badges.
+Reason:
+	1. Reusable : The code is well structured, documented and easy-to-understand.
+	The code follows simple object-oriented style.
+	The README and INSTALL files provide step-by-step instructions for installing and using the tool(s).
+
+	2. Available: The code is publicly available on GitHub:
+	(a) ZipTrack : https://github.com/umangm/ziptrack
+	(b) RAPID : https://github.com/umangm/rapid
+	(c) Sequitur : https://github.com/craignm/sequitur
+	(d) RVPredict : https://runtimeverification.com/predict/ (academic license allows free use)

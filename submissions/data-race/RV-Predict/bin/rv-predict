@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+ulimit -s `ulimit -H -s`
+
+if "$(dirname "$0")/checkJava"; then
+  java -ea -jar "$(dirname "$0")/../rv-predict.jar" "$@"
+else
+  exit 1
+fi
