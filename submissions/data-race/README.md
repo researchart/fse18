@@ -1,3 +1,8 @@
+** Paper ** : [Data Race Detection on Compressed Traces](paper.pdf), FSE 2018, to appear  
+** Authors ** : Dileep Kini, Umang Mathur, Mahesh Viswanathan  
+** Applying for ** : Reusable and Available badges.  
+___
+
 # Artifact for "Data Race Detection on Compressed Traces"
 
 The artifact implements algorithms for analyzing traces of
@@ -253,3 +258,14 @@ java -Xmx30000m -Xms30000m -classpath ${rapid}/bin:${rapid}/lib/* MetaInfo -f=rv
 
 This step creates directory `logs/MetaInfo/<benchmark>` or `logs/MetaInfo/<test_name>`.
 This directory contains files `MetaInfo.txt`, describing the output from the analysis and `MetaInfo.err`, describing the error produced if any.
+
+___
+
+Please contact the following author for questions:
+```
+Umang Mathur
+Department of Computer Science
+University of Illinois, Urbana Champaign, USA
+umathur3@illinois.edu
+```
+___

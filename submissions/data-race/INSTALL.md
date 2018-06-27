@@ -1,9 +1,16 @@
+** Paper ** : [Data Race Detection on Compressed Traces](paper.pdf), FSE 2018, to appear  
+** Authors ** : Dileep Kini, Umang Mathur, Mahesh Viswanathan  
+** Applying for ** : Reusable and Available badges.  
+___
+
 # TL;DR
 
-Run the following commands on your Unix based machine:
+1. Download `dacapo-9.12-bach.jar` from https://uofi.box.com/v/dacapojar and put it in the folder [`jar/`](jar) . 
+
+2. Run the following commands on your Unix based machine:
 
 ```
-export export rvpredict=`pwd`/RV-Predict
+export rvpredict=`pwd`/RV-Predict
 
 cd sequitur; make sequitur; cd ..
 export sequitur=`pwd`/sequitur
@@ -14,8 +21,7 @@ export rapid=`pwd`/rapid
 cd ziptrack; ant; cd ..
 export ziptrack=`pwd`/ziptrack
 ```
-
-Download `dacapo-9.12-bach.jar` from `https://uofi.box.com/v/dacapojar` and put it in the folder `jar` . 
+___
 
 # Longer version:
 
@@ -30,11 +36,19 @@ Download `dacapo-9.12-bach.jar` from `https://uofi.box.com/v/dacapojar` and put 
 
 The installation steps can be briefly outlined below:
 	
-	1. Obtain RVPredict
-	2. Obtain and compile Sequitur
-	3. Obtain and compile ZipTrack
-	4. Obtain and compile RAPID
-	5. Obtain `dacapo-9.12-bach.jar`.
+	1. Obtain `dacapo-9.12-bach.jar`.
+	2. Obtain RVPredict
+	3. Obtain and compile Sequitur
+	4. Obtain and compile ZipTrack
+	5. Obtain and compile RAPID
+	
+
+### Dacapo Jar
+
+The dacapo jar file `dacapo-9.12-bach.jar` is a large file (more than 150 MB) and the FSE Artifact Evaluation Trak Chairs recommended that it be removed from the package.
+
+The jar file can be downloaded from [this link](https://uofi.box.com/v/dacapojar).
+After it has been downloaded, it should be moved to the [`jar/`](jar/) directory.
 
 ### RVPredict
 
@@ -112,9 +126,12 @@ Also export ZipTrack's path:
 export ziptrack=`pwd`/ziptrack
 ```
 
-### Dacapo Jar
-
-The dacapo jar file `dacapo-9.12-bach.jar` is a large file (more than 150 MB) and the FSE Artifact Evaluation Trak Chairs recommended that it be removed from the package.
-
-The jar file can be downloaded from [this link](https://uofi.box.com/v/dacapojar).
-After it has been downloaded, it should be moved to the `jar` directory.
+___
+Please contact the following author for questions:
+```
+Umang Mathur
+Department of Computer Science
+University of Illinois, Urbana Champaign, USA
+umathur3@illinois.edu
+```
+___
