@@ -1,0 +1,27 @@
+https://bugzilla.mozilla.org/show_bug.cgi?id=1362439
+
+
+Steps to reproduce:
+
+1. Open attached example.html in Firefox 53.0 or Firefox Developer Edition 54.0a2 (both affected, new and old debugger!).
+2. Open Developer Tools, go to Debugger.
+3. Reload to enable breakpoint sliding.
+3. Set breakpoints and directly remove them again in line 7, 8, 10, and 11.
+
+
+
+Actual results:
+
+- Breakpoint in line 7 slides to line 8. Can be removed by clicking on line 8 (expected, correct)
+- Breakpoints in line 8 and 10 stay there and can be removed by clicking the line again (expected, correct)
+- Breakpoint in line 11 stays in that line. Can neither be removed by clicking on the gutter nor clicking on the "x" in the Breakpoints pane.
+
+
+Expected results:
+
+- Breakpoint in line 11 should either
+a) not be set at all (since there is no valid statement following that it could slide to)
+b) be removable.
+- Note: Breakpoint in line 12 can be removed again, but I don't know why.
+
+Possibly related: "Cannot remove breakpoint when it's set at non-script area" (https://bugzilla.mozilla.org/show_bug.cgi?id=1333219). Although in the other bug a breakpoint is set at a non-script area, not inside the script past the last statement. Can someone reproduce this bug with nightly (where Bug 1333219 is apparently fixed)?

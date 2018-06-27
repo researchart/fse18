@@ -1,0 +1,26 @@
+https://bugzilla.mozilla.org/show_bug.cgi?id=1362428
+
+
+Steps to reproduce:
+
+1. Open attached example.html in Firefox 53.0 or Firefox Developer Edition 54.0a2 (both affected, new and old debugger!).
+2. Open Developer Tools, go to Debugger.
+3. Set breakpoint in line 10 (first line in function).
+4. Reload to hit breakpoint.
+5. Click "step out".
+
+
+
+Actual results:
+
+- "Scopes" in debugger shows function scope with "someVar" variable, not a block scope with "someLet" and "someConst" variables.
+- This seems inconsistent since execution after the "step out" pauses before leaving the function (and thus its scope): Why are let/const bound variables no longer visible, but var bound ones are?
+
+
+Expected results:
+
+- "Scopes" in debugger should also show block scope with "someLet" and "someConst" variables.
+- This is also the behavior when setting a breakpoint at the closing brace and hitting that breakpoint (see screen capture video): "someLet", "someConst", and "someVar" are all visible as expected.
+
+
+Possibly related: https://bugzilla.mozilla.org/show_bug.cgi?id=923975 ("Having to step out of a function twice so we can inspect its return value is confusing")

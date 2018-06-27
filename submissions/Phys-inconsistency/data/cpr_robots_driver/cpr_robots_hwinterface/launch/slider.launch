@@ -1,0 +1,3 @@
+<launch>
+	<node pkg="cpr_robots_hwinterface" type="CPRSlider_node" name="cpr_slider" output="screen" />
+</launch>

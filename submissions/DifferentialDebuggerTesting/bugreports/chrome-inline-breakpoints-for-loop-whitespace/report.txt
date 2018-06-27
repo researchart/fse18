@@ -1,0 +1,24 @@
+https://bugs.chromium.org/p/chromium/issues/detail?id=719912&q=component%3APlatform%3EDevTools
+
+Steps to reproduce the problem:
+1. Open example.html in Chromium 58 with new "more preicse"/inline breakpoints feature
+2. Open DevTools > Debugger
+3. Set breakpoint in line 7 by clicking on gutter
+4. Set breakpoint in line 11 by clicking on gutter
+5. Set breakpoint in line 17 by clicking on gutter
+
+What is the expected behavior?
+at 4.: Should show "inline breakpoint markers" for loop initialization and loop condition in line 11, as it is done for line 7.
+at 5.: Should show "inline breakpoint markers" for loop condition and increment in line 17, as it is done for line 7.
+
+What went wrong?
+- When for-loop header is on a single line, "precise" breakpoints can be set by clicking on markers inside the line. 
+- However, when the for-loop header is distributed over multiple lines (by adding a line break after the loop variable initialization or after loop condition), one cannot set inline breakpoints since those markers are not shown.
+
+Did this work before? N/A 
+
+Chrome version: 58.0.3029.81  Channel: n/a
+OS Version: Ubuntu 16.10 (64-bit)
+Flash Version: Shockwave Flash 25.0 r0
+
+See attached screen capture for video of bug in Chromium 58 on Ubuntu

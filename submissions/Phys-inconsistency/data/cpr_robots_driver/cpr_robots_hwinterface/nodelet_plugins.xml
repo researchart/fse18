@@ -1,0 +1,7 @@
+<library path="lib/libCPRSlider_nodelet">
+	<class name="cpr_robots_hwinterface/CPRSliderNodelet" type="CPRSliderNodelet" base_class_type="nodelet::Nodelet">
+		<description>
+			This is the nodelet version of the CPRSlider driver.
+		</description>
+	</class>
+</library>

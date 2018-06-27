@@ -1,0 +1,29 @@
+https://bugzilla.mozilla.org/show_bug.cgi?id=1362403
+
+Steps to reproduce:
+
+1. Open attached example.html in Firefox 53.0 or Firefox Developer Edition 54.0a2 (both affected).
+2. Open Developer Tools, go to Debugger.
+3. Set breakpoints in lines 10, 15, and 20.
+4. Reload to hit first breakpoint.
+5. Click "Step In" once
+
+
+Actual results:
+
+- Debugger pauses at line 14 (after for...in loop!)
+- Console shows output of three iterations ("for ... in 1", "for ... in 2", and "for ... in 3")
+
+
+Expected results:
+
+- Debugger should pause at line 10 again for next iteration
+- Console should show output only of first iteration after one step ("for ... in 1")
+
+
+Note that the stepIn behavior in for...in loop is inconsistent with:
+
+1. Breakpoints in for...in loop: A breakpoint on line 15 is hit 3 times when resuming execution, once per loop iteration. This is expected and correct.
+2. Stepping and Breakpoints in for...of loop: stepIn on line 20 correctly executes only one iteration. We need to step multiple times to execute all iterations.
+
+This can also be seen in the video capture (see attachment 2 [details] [diff] [review]).

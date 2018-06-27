@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <script>
+
+      for (let i = 0; i < 3; i++) { // set breakpoint here: three possible inline breakpoint markers, one at init, one at condition, one at increment
+        console.log(i);
+      }
+
+      for (let i = 0; i < 3; // set breakpoint here: no inline breakpoint markers, breakpoint is set only at initialization, not condition
+        i++) {
+        console.log(i);
+      }
+
+      for (let i = 0; 
+      	i < 3; i++) { // set breakpoint here: no inline breakpoint markers, breakpoint is set only at condition, not increment
+        console.log(i);
+      }
+
+    </script>
+  </head>
+  <body>See script</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <script>
+      var array = [1, 2, 3];
+
+      // test case 1: step in for ... in loop doesn't pause at every iteration :(
+      for (var prop1 in array) {
+        console.log("for ... in " + array[prop1]); // set breakpoint here, then step -> directly jumps out of loop!
+      }
+
+      // test case 2: but breakpoints are hit multiple times, as expected :)
+      for (var prop2 in array) {
+        console.log("for ... in " + array[prop2]); // set breakpoint here, then resume -> is hit 3 times :)
+      }
+
+      // test case 3: one step per iteration with for ... of, as expected :)
+      for (var element of array) {
+        console.log("for ... of " + element); // set breakpoint here, then step -> can step 3 times, once per iteration :)
+      }
+    </script>
+  </head>
+  <body>See script</body>
+</html>

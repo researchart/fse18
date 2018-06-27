@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <script>
+
+      someFunction();
+
+      function someFunction() {
+        var someVar = 1; // set breakpoint here, when hit click "step out"
+        let someLet = 1;
+        const someConst = 1;
+        return 42;
+      } // debugger pauses here: someVar visible, someLet and someConst not :(
+
+    </script>
+  </head>
+  <body>See script</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Example</title>
+    <script>
+      {
+        let letBlock = 42; // breakpoint here: shown as undefined in debugger -> OK
+        const constBlock = 42;
+      }
+
+      someFunction();
+      function someFunction() {
+        let letFunction = 42; // breakpoint here: shown as undefined in debugger -> OK
+        const constFunction = 42;
+      }
+
+      let letGlobal = 42; // breakpoint here, not shown in debugger until after decl -> inconsistent?
+      const constGlobal = 42;
+    </script>
+  </head>
+  <body><!-- page content --></body>
+</html>

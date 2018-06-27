@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <script>
+      var array = [1, 2, 3];
+      
+      for (var prop1 in array) {
+        console.log("var + for...in"); // set breakpoint here -> OK :)
+      }
+
+      for (prop2 in array) {
+        console.log("no var + for...in"); // set breakpoint here -> not possible, slides after loop :(
+      }
+
+      for (var element1 of array) {
+        console.log("var + for...of"); // set breakpoint here -> OK :)
+      }
+
+      for (element2 of array) {
+        console.log("no var + for...of"); // set breakpoint here -> not possible, slides after loop :(
+      }
+
+      console.log("end")
+    </script>
+  </head>
+  <body>See script</body>
+</html>

@@ -1,0 +1,18 @@
+https://bugzilla.mozilla.org/show_bug.cgi?id=1370641
+
+1. Open attached example.html in Firefox 53.0 or Firefox Developer Edition 54.0 beta12 (both affected, new and old debugger!).
+2. Open Developer Tools, go to Debugger.
+3. Set breakpoints in line 8 and line 11.
+4. Reload to hit breakpoint in line 8.
+5. Click "resume".
+6. Next breakpoint in line 11 is hit, click "resume".
+7. Click "resume" again...
+
+
+
+
+- Breakpoint at line 8 is hit once (as expected :) )
+- Breakpoint at line 11 is hit twice! That is, after hitting it once, one needs to click on "resume" again (step 7 above) to get past line 11.
+
+
+- Breakpoint at line 11 should be hit only once. That is, when hitting the breakpoint, a single "resume" should get us past line 11.

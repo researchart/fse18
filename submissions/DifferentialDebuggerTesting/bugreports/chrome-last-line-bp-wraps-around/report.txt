@@ -1,0 +1,25 @@
+https://bugs.chromium.org/p/chromium/issues/detail?id=730177&q=component%3APlatform%3EDevTools
+
+Steps to reproduce the problem:
+1. Open example.html in Chromium 58
+2. Open DevTools > Debugger
+3. Set breakpoint in line 12 (where closing script tag is)
+4. Reload
+
+What is the expected behavior?
+- Two possiblities: 
+a) Breakpoint should stay at line 12 and be hit at the very end of script execution.
+b) It should not be possible to set breakpoint there, since there is no statement/meaningful code at this line anyway.
+
+What went wrong?
+- After reload breakpoint is moved to line 6 (at the beginning of script) and is hit, i.e., execution pauses at the first statement.
+- See attached screencapture for demonstration.
+
+Did this work before? N/A 
+
+Chrome version: 58.0.3029.110 (Developer Build) Built on Ubuntu  Channel: n/a
+OS Version: Ubuntu 16.10 (64-bit)
+Flash Version: Shockwave Flash 25.0 r0
+
+- Wrapping around of the breakpoint to the beginning is only triggered when line 12 is NOT indented, i.e., when there is no whitespace before the closing </script> tag.
+- Adding whitespace (for example one space) to the beginning of line 12 fixes the problem: The breakpoint is not moved to the beginning of the script and it is hit at the very end of the execution of the script.
