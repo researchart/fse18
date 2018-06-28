@@ -1,0 +1,14 @@
+We are applying for the "Available" badge.
+
+We believe our artifact (MT-ABC) deserves this because:
+
+- artifact is well documented, structured, complete, and thoroughly tested
+	* We ran our tool on over 30,000 different constraints of varying size and complexity (see paper for experiment information)
+	* We attempted to follow Google C++ coding standards throughout the implementation; the directory structure follows the GNU Autotools guideline
+
+- artifact is easy to use and integrate into existing projects as a library call, or as a stand-alone SMT model counter
+	* Java programs can call MT-ABC through the Java Native Interface implementation we have provided (with an example in the Virtual Machine)
+
+- artifact is placed on a publicly accessable archival repository
+	* DOI: 10.5281/zenodo.1297696
+	* https://doi.org/10.5281/zenodo.1297696

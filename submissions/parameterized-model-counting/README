@@ -1,0 +1,19 @@
+CONTACT AUTHOR: weiers@ucsb.edu
+TOOL NAME: MT-ABC
+PAPER ID: 209
+TITLE: Parameterized Model Counting for String and Numeric Constraints
+
+DOI: 10.5281/zenodo.1297696
+https://doi.org/10.5281/zenodo.1297696
+
+
+This artifact contains an UBUNTU 18.04 virtual machine with MT-ABC pre-installed in the home directory. Credentials:
+USERNAME: user
+PASSWORD: password
+
+Additionally, the source code is included in ABC-1.0.0.zip
+
+Within the home directory is a script (run.sh) to run a few experiments and quickly show results, with an accompanying HOW_TO_RUN.txt
+
+The Multi-Track Automata Based Counter (MT-ABC) is a string and numeric constriant solver and model counter. ABC provides solutions to systems of string and numeric constraints in the form of a multi-tracked deterministic finite automaton. In addition ABC produces symbolic representation of the number of strings and integers within a length bound, k, that satisfy a set of constraints. ABC can also output the number of satisfying solutions given a bound.
+

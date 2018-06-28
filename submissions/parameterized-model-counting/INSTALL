@@ -1,0 +1,121 @@
+
+-- QUICK START: RUNNING FROM VIRTUAL MACHINE --
+
+MT-ABC has been pre-installed for your convenience on a virtual machine (Ubuntu 18.04, made with VirtualBox) which you can download at the following link (2.9gb zipped, 6.8 gib unzipped): https://drive.google.com/open?id=1zmZHeM-7oQH-2DAAYMzF6Ox2Bu7PgVeZ
+
+PLEASE NOTE: The virtual machine needs at least 4GB of RAM allocated to it. Otherwise, you will get out-of-memory errors from one of the library packages we are using (can't fill zero-mapped pages).
+
+Within the home directory of the VM is a script (run.sh) to run a few experiments and quickly show results, with an accompanying HOW_TO_RUN.txt
+
+You can link to dynamic library generated in your program. An example executable for abc is generated for you and install in your system. You can run abc executable at your home directory as:
+
+$ abc -i  <input_file_path>
+$ abc --help #lists available command line options
+
+E.g.,
+
+$ abc -i <abc source folder>/test/fixtures/solver/ConstraintSolver/test_visitBegins_01.smt2
+
+For an example of model counting a string with bound <= 5:
+
+$ abc -i ~/example1.smt2 -v 0 -bs 5
+
+where -v 0 disables debugging output, and -bs 5 means count solutions with bound <= 5
+
+If there are more than one string variables, you can specify which one you want to model count with the argument: --count-variable <VARIABLE_NAME>
+
+
+-- MANUAL INSTALLATION --
+
+We have included a ZIP file of the source code which can be manually built, with the following instructions:
+
+###Step-by-Step(Semi-automated) Setup
+####System Dependencies
+  - C++ compiler with C++14 support. Latest ABC compilation is tested with g++ 5.4.0 on Ubuntu 16.04.
+  - [Git](https://git-scm.com/)
+
+  ```
+    $ sudo apt install git
+  ```
+  - ABC is an autotools project, you need to setup autotools in your system. Please make sure you have installed all the tools below.
+
+  ```
+    $ sudo apt install build-essential autoconf automake libtool intltool
+  ```
+  - Lex and Yacc. ABC is tested with [Flex 2.6.0](https://www.gnu.org/software/flex/flex.html) and [Bison 3.0.4](https://www.gnu.org/software/bison/).
+
+  ```
+    $ sudo apt install flex bison
+  ```
+
+  - Python (optional). A short installation script is written in pyhton.
+    
+  ```
+    $ sudo apt install python
+  ```
+
+####Project Dependencies
+  - [Glog](https://github.com/google/glog) logging library for C++. It is an autotools project. 
+  Please follow the instructions in their website if the below shortcut doesn't work for you. Don't forget to apply patch 
+  as below:
+
+  ```
+  $ cd <your home directory or a preferred directory>
+  $ git clone https://github.com/google/glog.git
+  $ cd glog
+  $ git apply <ABC_ROOT_DIR>/external/glog/glog_abc_autotools.patch
+  $ libtoolize && aclocal && automake --gnu --add-missing && autoreconf -ivf
+  $ ./configure
+  $ make all
+  $ sudo make install
+  $ sudo ldconfig
+  
+  ```
+  You should have glog libraries installed at */usr/local/lib* and headers installed at */usr/local/include/glog/* after running above commands. 
+
+  - [Mona](http://www.brics.dk/mona/) is used for symbolic representation of automata. Don't forget to apply patch as below: 
+
+  ```sh
+    $ cd <your home directory or a preferred directory>
+    $ git clone https://github.com/cs-au-dk/MONA.git
+    $ cd MONA
+    $ git apply <ABC_ROOT_DIR>/external/mona/mona_abc.patch
+    $ libtoolize && aclocal && automake --gnu --add-missing && autoreconf -ivf
+    $ ./configure
+    $ make all
+    $ sudo make install
+    $ sudo ldconfig
+
+  ``` 
+  You should have mona libraries installed at */usr/local/lib* and headers installed at */usr/local/include/mona/* after running above commands. 
+
+
+####ABC Installation
+
+  - [ABC](https://vlab.cs.ucsb.edu/ABC/).
+
+  ```
+    $ unzip ABC.zip
+    $ cd ABC
+    $ ./autogen.sh
+    $ ./configure
+    $ make all
+    $ sudo make install
+    $ sudo ldconfig
+  ```
+
+If you want to use *ABC* with *JAVA* programs, make sure JAVA_HOME environment variable is set and has a valid Java installation path before running *./configure* command. 
+
+--------------------------------------------------------
+
+####JAVA
+
+  You have to compile ABC with your JAVA_HOME path is set to a valid java path. Once you set your JAVA_HOME path, you need to install/re-install ABC on your system. 
+  
+  You need to set Java VM argument java.library.path to path where your shared libraries are install, or alternatively you can set LD_LIBRARY_PATH environment variable to that path.
+
+  You can use <abc-source-folder>/lib/ABCJava as an example Java program that calls abc.
+
+  In your Java project all you have to do is to include the contents of <abc-source-folder>/lib/ABCJava/src/. vlab.cs.ucsb.edu.DriverProxy.java class is the class that makes abc calls.
+
+
