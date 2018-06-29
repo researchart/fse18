@@ -1,4 +1,7 @@
-Reusable 
+Reusable and Available
+
+The DOI for this artifact is https://doi.org/10.5281/zenodo.1301239
+The public GitHub repo https://github.com/defreez-ucd/func2vec-fse2018-artifact
 
 This artifact includes sufficient code to run the experiments described in the paper, and python scripts for running func2vec on any LLVM bitcode file.
 The func2vec tool has all of the options parameterized and can be run on the command line in the docker container with very little setup.
