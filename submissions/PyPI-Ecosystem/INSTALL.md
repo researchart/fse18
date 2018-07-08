@@ -135,9 +135,12 @@ Step 3 - run the regression
 
 install R libraries:
 
-    install.packages(c("htmlTable", "OIsurv", "survival", "car", "survminer", 
+    install.packages(c("htmlTable", "OIsurv", "survival", "car", "survminer",
                        "ggplot2", "sqldf", "pscl", "texreg", "xtable"))
 
-Use `build_model.r` (e.g. in RStudio) and produced `survival_data.csv` to 
-build the regressions used in the paper. This process takes at least 16Gb of RAM 
-and takes few hours to run due to the gigantic size of the dataset.
+Open `build_model.r` in RStudio, update dataset path in line 12 and execute
+statement by statement.
+The whole process takes at least 4Gb of RAM at few minutes to run
+(up to 16Gb and few hours on some machines).
+
+The resulting tables () will be exported as a set of anova_model_all_%d.csv files with TeX tables, where %d designates the model number.

@@ -10,7 +10,7 @@ Link to the code will be included in the Camera Ready version as well.
 **Note2** Full dataset is a bit too big (5.4Gb compressed, 34Gb unpacked), and
 is not required minimal and thorough replications (see INSTALL.md for details).
 We published a separate version of this archive including the full dataset on Zenodo:
-<link to follow>, DOI: 10.5281/zenodo.1297925
+https://zenodo.org/record/1297925
 
 Content description
 ===================

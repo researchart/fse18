@@ -1,3 +1,5 @@
+install.packages(c('htmlTable', 'OIsurv', 'survival', 'car', 'survminer', 'ggplot2'))
+install.packages(c('sqldf', 'pscl', 'texreg', 'xtable'))
 
 library(htmlTable)
 library(OIsurv)
@@ -6,26 +8,19 @@ library(car)
 library(survminer)
 library(ggplot2)
 
-# Only do this once
-# sd <- read.csv("survival_data.pypi_2008_2017-12_6.csv")
-# sd$age_start = c(0, unlist(lapply(2:nrow(sd),
-#                                   function(x){ ifelse(sd[(x-1),"name"] == sd[x,"name"],
-#                                                       sd[(x-1),"age"],
-#                                                       0) })))
-# write.table(sd, file="survival_data.csv", sep=";", row.names = FALSE)
 
-# sd.noskip <- read.csv("no_skip_last_year.csv")
-# sd.noskip$age_start = c(0, unlist(lapply(2:nrow(sd.noskip),
-#                                   function(x){ ifelse(sd.noskip[(x-1),"name"] == sd.noskip[x,"name"],
-#                                                       sd.noskip[(x-1),"age"],
-#                                                       0) })))
-# write.table(sd.noskip, file="no_skip_last_year.repeated.csv", sep=";", row.names = FALSE)
+# set path to the extracted dataset archive
+setwd('~/set-path-here')
 
-
-sd <- read.csv("survival_data.csv", sep=";")
+sd <- read.csv("survival_data.csv")
+sd$age_start = c(0, unlist(lapply(2:nrow(sd),
+                                 function(x){ ifelse(sd[(x-1),"name"] == sd[x,"name"],
+                                                     sd[(x-1),"age"],
+                                                     0) })))
 
 # View(sd[1:100,])
 
+# license is a string ("GPL), license_code is a factor (3: non-viral, 2: semi-viral, 1: viral)
 sd$license_type = as.factor(sd$license_code)
 table(sd$license_type)
 
@@ -34,12 +29,11 @@ nrow(sd)
 length(unique(sd$name))
 
 
-
-sd$fy = sd$age <= 12
-sd$fhy = sd$age <= 6
-sd$has_university = sd$university>=0.1
-sd$has_commercial = sd$commercial>0.1
-sd$has_backporting = sd$backporting==1
+sd$fy = sd$age <= 12  # first year
+sd$fhy = sd$age <= 6  # first half an year
+sd$has_university = sd$university>=0.1  # binarize university involvement
+sd$has_commercial = sd$commercial>0.1  # binarize commercial involvement
+sd$has_backporting = sd$backporting==1  
 sd$upstreams_sq = sd$upstreams ^ 2
 sd$downstreams_sq = sd$downstreams ^ 2
 sd$commits_sq = sd$commits ^ 2
@@ -124,6 +118,9 @@ sd.prem.sample.f = subset(sd.prem.sample,
                             cc_degree<50 &
                             upstreams<30)
 
+# =======================================
+# The first model (early-stage survival)
+# =======================================
 m.prem = glm(dead ~ log(commits+1) +
                     # log(commits_sq + 1) +
                    log(contributors+1) +
@@ -151,7 +148,7 @@ m.prem = glm(dead ~ log(commits+1) +
              family="binomial",
              data=sd.prem.sample.f)
 
-
+# diagnostics of the early stage survival
 vif(m.prem)
 summary(m.prem)
 Anova(m.prem, type=2)
@@ -159,7 +156,11 @@ library(pscl)
 pR2(m.prem)
 # plot(m.prem)
 
+# Exponentiate coefficients (will go into the paper)
+exp(m.prem$coefficients)
 
+
+# export resuling table in TeX - will be merged with later model by Python script
 source("helpers.r")
 library(texreg)
 library(xtable)
@@ -193,16 +194,20 @@ table(sd.f$dead)
 # sd.0 = subset(sd, age_start!=age)
 # sfit0 = survfit(Surv(sd.0$age_start, sd.0$age, sd.0$dead) ~ 1)
 
-sd.f = subset(sd, age_start!=age & !(name %in% unique(age_stats[age_stats$start_month<"2012-01",]$name)))
-s = Surv(sd.f$age_start, sd.f$age, sd.f$dead)
+# BV!!!!
+sd.fb = subset(sd, age_start!=age & !(name %in% unique(age_stats[age_stats$start_month<"2012-01",]$name)))
+s = Surv(sd.fb$age_start, sd.fb$age, sd.fb$dead)
+
+# ==================================
+# survival curve - Figure 2
+# ==================================
 sfit = survfit(s ~ 1)
 # plot(sfit, xlab="months", ylab="proportion not dead")
-
 library(ggplot2)
 ggsurvplot(
   sfit,
   # sfit0,
-  data = sd.f,
+  data = sd.fb,
   # data = sd.0,
   size = 1,                 # change line size
   palette = c("#2E9FDF"),
@@ -256,7 +261,10 @@ boxplot(log(upstreams+1) ~ age, y)
 boxplot(log(upstreams_time+1) ~ age, y)
 boxplot(log(q90+1) ~ age, y)
 
-
+# ==================================
+# Second model - survival
+# some features commented out due to collinearity
+# ==================================
 sm_repeating <- coxph(Surv(age_start, age, dead) ~
 # sm_repeating <- coxph(Surv(age, dead) ~
                         # cluster(name) +
@@ -290,7 +298,7 @@ sm_repeating <- coxph(Surv(age_start, age, dead) ~
 
 summary(sm_repeating)
 
-
+# diagnostics
 hist(log(sd.prem.sample.f$commits+1))
 hist(log(sd.prem.sample.f$contributors+1))
 hist(log(sd.prem.sample.f$q90+1))
@@ -314,13 +322,17 @@ cox.zph(sm_repeating) %>%
   txtRound(digits = 2) %>%
   knitr::kable(align = "r")
 test.ph = cox.zph(sm_repeating)
+
+# residuals - this part might take quite a bit of time and memory
 ggcoxzph(test.ph)
 
 Anova(sm_repeating, type=2)
 
 round(exp(sm_repeating$coefficients), 2)
 
-
+# ==================================
+# Second model - survival + interactions suggested by interviews
+# ==================================
 sm_repeating_inter <- coxph(Surv(age_start, age, dead) ~
                         # sm_repeating <- coxph(Surv(age, dead) ~
                         # cluster(name) +
@@ -357,7 +369,7 @@ sm_repeating_inter <- coxph(Surv(age_start, age, dead) ~
 summary(sm_repeating_inter)
 vif(sm_repeating_inter)
 
-
+# export model to TeX - all three models will be merged later by a custom Python script
 source("helpers.r")
 library(texreg)
 library(xtable)
@@ -385,239 +397,3 @@ print_Anova_glm(sm_repeating, "anova_model_all_2.csv")
 print_Anova_glm(sm_repeating_inter, "anova_model_all_3.csv")
 
 # print_anova(rddFit, "~/R/anova_model_fresh_rdd_1.csv")
-
-
-
-
-
-################ BELOW BE PUMPKINS ################
-
-# sd.f = subset(sd, age_start!=age)
-nrow(sd)
-sd.f = droplevels(
-      subset(sd, age_start!=age &
-                !(name %in% age_stats[age_stats$start_month<"2012-01",]$name) &
-                commits<=exp(6) &
-                contributors<=exp(3.5) &
-                q90<=exp(3) &
-                issues<=exp(5) &
-                submitters<=exp(5) &
-                upstreams<=exp(4) &
-                downstreams<=exp(6.5) &
-                t_downstreams<=exp(8) &
-                dc_katz<=0.01)
-)
-nrow(sd.f)
-
-
-# Projects being born per month
-# plot(table(sd[sd$age==0,]$month))
-# Projects dying per month
-# plot(table(sd[sd$dead==1,]$month))
-
-
-plot(table(sd.f$month))
-
-
-
-sd_last <- sd[sd$last_observation == 1, ]
-sd_new <- sd_last[sample(nrow(sd_last), 2000), ]
-
-cox.fit.last <- coxph(Surv(age, dead) ~
-           + q90
-           , data=sd_new)
-summary(cox.fit.last)
-
-cox.zph.last <- survival::cox.zph(cox.fit.last)
-plot(cox.zph.last)
-
-sd_last <- read.csv("survival_data4R_last.csv")
-# sd_last$university <- as.integer(sd_last$uni > 0.2)
-sd_last$commercial <-  as.integer(sd_last$comm > 0.2)
-sd_last$trivial <- as.integer(sd_last$max_contrib <= 1)
-
-sd_full <- read.csv("survival_data4R.csv")
-# sd_full$university <- as.integer(sd_full$uni > 0.2)
-sd_full$commercial <-  as.integer(sd_full$comm > 0.2)
-sd_full$trivial <- as.integer(sd_full$max_contrib <= 1)
-
-?survival::Surv
-
-# baseline hazard
-surv_obj = survfit(Surv(age, dead) ~ 1, data=sdl)
-plot(surv_obj, xlab="months", ylab="proportion not dead")
-title("Baseline survival function")
-
-sd_last_split = survSplit(
-    Surv(age, dead) ~ .,
-    data=sd_last,
-    cut=c(1),
-    episode = 'tgroup'
-)
-head(sd_last_split)
-
-cox.fit.last <- coxph(Surv(age, dead) ~
-           + log(contributors1 + 1)
-           + q90
-           + log(non_dev_submitters + 1)
-           + log(closed_issues + 1)
-           + log(connectivity1000 + 1)
-           + a_downstreams
-           + upstreams
-           + d_upstreams0
-           + org
-           + university
-           + cc_closeness_1
-           , data=sd_last)
-summary(cox.fit.last)
-
-cox.zph.last <- cox.zph(cox.fit.last)
-cox.zph.last
-
-cox.zph.full <- cox.zph(cox.fit.full)
-cox.zph.full
-
-cox.fit.full <- coxph(Surv(age, dead) ~
-           + log(contributors1 + 1)
-           + q90
-           + log(non_dev_submitters + 1)
-           + log(closed_issues + 1)
-           + log(connectivity1000 + 1)
-           + a_downstreams
-           + upstreams
-           + d_upstreams0
-           + org
-           + university
-           + cc_closeness_1
-           , data=sd_full)
-summary(cox.fit.full)
-
-cox.zph.full <- cox.zph(cox.fit.full)
-cox.zph.full
-
-ggcoxzph(cox.zph.full)
-
-?sample
-
-# sample dataset to reduce memory consumption
-ggcoxdiagnostics(cox.fit.full)
-
-surv_obj = survfit(Surv(age, dead) ~ !commercial, data=sdl)
-plot(surv_obj, xlab="months", ylab="proportion not dead", col=c("blue", "red"))
-legend("topright", c("commercial", "not"), col=c("blue", "red"), lty=1)
-title("Commercial vs not")
-
-?legend
-
-surv_obj = survival::survfit(survival::Surv(age, dead) ~ !uni, data=sdl)
-plot(surv_obj, xlab="months", ylab="proportion not dead", col=c("blue", "red"))
-legend("topright", c("university", "not"), col=c("blue", "red"), lty=1)
-title("University vs not")
-
-surv_obj = survival::survfit(survival::Surv(age, dead) ~ !trivial, data=sdl)
-plot(surv_obj, xlab="months", ylab="proportion not dead", col=c("blue", "red"))
-legend("topright", c("trivial", "not"), col=c("blue", "red"), lty=1)
-title("Trivial vs not")
-
-# sd is just the same data without first year duplicates for compatibility
-sd = sdl[(sdl$age > 11) | sdl$dead,]
-head(sd)
-
-s <- coxph(Surv(age, dead) ~
-           # fy  # S INSIGNIFICANT
-           + log(contributors1 + 1)
-           # + fy*log(contributors1 + 1)  # S INSIGNIFICANT
-           #
-           + q90  #+ gini # + commits # + q50 + q70
-           + fy*q90
-           + log(non_dev_submitters + 1)
-           # + fy*log(non_dev_submitters + 1)  # S INSIGNIFICANT
-           #
-           + log(closed_issues + 1)
-           # + fy*log(closed_issues + 1)  # P INSIGNIFICANT
-           #
-           + log(connectivity1000 + 1)
-           # + fy*log(connectivity1000 + 1)  # S INSIGNIFICANT
-           #
-           + a_downstreams # + a_downstreams + ac_downstreams + c_downstreams
-           + fy*a_downstreams
-           #
-           + upstreams
-           # + fy*upstreams  # S INSIGNIFICANT
-           #
-           + d_upstreams0
-           # + fy*d_upstreams0 # NA
-           #
-           + org
-           + fy*org
-           #
-           + university
-           # + fy*university   # P INSIGNIFICANT
-           # + commercial
-#            + dc_katz
-#            + fy*dc_katz
-           #
-           + cc_closeness_1
-           # + fy*cc_closeness_1  # P INSIGNIFICANT
-           , data=sdl)
-summary(s)
-
-vif(s)
-
-anova(s)
-
-plot(survfit(s), xlab="months", ylab="proportion not dead")
-
-# TODO:
-# get number of commits in general for active developers
-# also number of projects
-
-s_nov <- coxph(Surv(age, dead) ~
-           + log(contributors1 + 1)
-           + q90  #+ gini # + commits # + q50 + q70
-           + log(non_dev_submitters + 1)
-#            + non_dev_issues + issues  # useless
-           + log(closed_issues + 1)
-           # connectivity in the last month/year
-           + log(connectivity1000 + 1)
-           + a_downstreams # + a_downstreams + ac_downstreams + c_downstreams
-           # upstreams / a_upstreams:
-           + upstreams
-           # binarize dead upstreams
-           + d_upstreams0
-           + org
-           + dc_katz
-           + cc_closeness_1
-           , data=sd)
-summary(s_nov)
-
-vif(s_nov)
-
-anova(s_nov)
-
-# Repeating observations
-# Index([u'age', u'date', u'project', u'q50', u'gini', u'contributors',
-#        u'upstreams', u'commits', u'submitters', u'c_upstreams',
-#        u'c_downstreams', u'dead', u'ac_downstreams', u'connectivity',
-#        u'non_dev_issues', u'a_downstreams', u'closed_issues', u'ac_upstreams',
-#        u'a_upstreams', u'downstreams', u'issues', u'q70'],
-#       dtype='object')
-
-# TO_CHECK (1|project_id) - random effect term
-sm_repeating <- coxph(Surv(age, dead) ~ cluster(project)
-            + log(contributors + 1) + q70 + gini
-           + submitters
-           + closed_issues
-           + log(connectivity + 1)
-           + a_downstreams
-           + a_upstreams
-           , data=sd)
-summary(sm_repeating)
-
-vif(sm_repeating)
-
-plot(survfit(s_nov), xlab="months", ylab="proportion not dead")
-
-library(car)
-
-vif(s)
