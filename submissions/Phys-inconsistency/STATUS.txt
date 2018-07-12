@@ -11,9 +11,8 @@ As per https://arxiv.org/pdf/1609.00037, please find the source code in the 'src
 
 
 Available:
-The artifact is publicly available at https://git.io/f4SjG  (LINK MIGHT UNMASK AUTHORS!!!).
-We have a data management plan to to enable permanent  accessibility.
-ARTIFACT REVIEWER NOTE: We will replace the anonymous GitHub account with our own after the review period.
+The artifact is publicly available at https://doi.org/10.5281/zenodo.1310129   
+
 
 
 
