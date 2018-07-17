@@ -1,0 +1,6 @@
+"p-value","sample2.q1_experience_general","sample2.q2_experience_java","sample2.q3_expertise_general","sample2.q4_expertise_java","sample2.q16_age"
+"sample2.q1_experience_general",,"0","0","2.3123059023078e-11","0"
+"sample2.q2_experience_java","0",,"6.0631499820829e-12","0","2.22044604925031e-16"
+"sample2.q3_expertise_general","0","6.0631499820829e-12",,"0","1.99840144432528e-15"
+"sample2.q4_expertise_java","2.3123059023078e-11","0","0",,"1.45179424038133e-11"
+"sample2.q16_age","0","2.22044604925031e-16","1.99840144432528e-15","1.45179424038133e-11",
