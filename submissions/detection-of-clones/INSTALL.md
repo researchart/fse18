@@ -1,3 +1,4 @@
+Oreo can be downloaded from https://github.com/Mondego/oreo-artifact ([![DOI](https://zenodo.org/badge/141662165.svg)](https://zenodo.org/badge/latestdoi/141662165))
 # 1. Prerequisites
 # 1.1 System Requirements
 You need Linux  OS (We have not tested Oreo on any Operating System other than Linux- CentOs), and at least 12 GB of RAM to run Oreo. Also, you need to have Java 8, and Python 3.6 installed. After installing these two, follow the following instructions to download all the prerequisites. 
