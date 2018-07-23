@@ -4,8 +4,7 @@ Email : guosj@vt.edu
 Github: https://github.com/DanielGuoVT/symsc
 ### Introduction
 This repository contains artifacts for the FSE'18 paper "Adversarial Symbolic Execution for 
-Detecting Concurrency-Related Cache Timing Leaks". It consists of following files:
-
+Detecting Concurrency-Related Cache Timing Leaks". It consists of following files:  
 * The SymSC symbolic execution tool for the cache side-channel leak detection.
 * The benchmarks used in Table 3, Table 4 and Table 5 in our paper.
 * The scripts running these benchmarks for the experimental data collection.
@@ -37,14 +36,14 @@ csc
 Some benchmarks have the same name in our paper and they are differentiated by the
 name-suffixes as following:
 
-| Benchmark        | Directory  |
+| Benchmark     | Directory     |
 | ------------- |:-------------:|
-| AES\[6\]      | aes-openssl |
-| AES\[9\]      | aes      |
-|CAST5\[4\] | cast5-tom      |
-|CAST5\[19\] | cast5      |
-|DES\[3\] | des-libgcrypt      |
-|DES\[19\] | des      |
+| AES\[6\]      | aes-openssl   |
+| AES\[9\]      | aes           |
+|CAST5\[4\]     | cast5-tom     |
+|CAST5\[19\]    | cast5         |
+|DES\[3\]       | des-libgcrypt |
+|DES\[19\]      | des           |
 
 I also created five script files (also in the benchmark directory) for the experimental data collection.  
 You can directly run them (no parameters required) to generate data tables:  
