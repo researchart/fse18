@@ -1,6 +1,7 @@
 # SYMSC
 Author: Shengjian (Daniel) Guo  
 Email : guosj@vt.edu  
+Github: https://github.com/DanielGuoVT/symsc
 ### Introduction
 This repository contains artifacts for the FSE'18 paper "Adversarial Symbolic Execution for 
 Detecting Concurrency-Related Cache Timing Leaks". It consists of following files:
